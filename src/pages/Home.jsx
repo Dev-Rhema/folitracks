@@ -36,7 +36,7 @@ function Home() {
             with QR-enabled records that give you instant access to your
             vehicle’s complete service history.
           </p>
-          <div className="flex gap-4 max-lg:justify-center max-md:flex-col">
+          <div className="flex gap-4 max-md:gap-2 max-lg:justify-center max-md:flex-col">
             <CTA color="red" name="Repair Your Car" />
             <CTA color="blue" name="Scan QR Code" />
           </div>
