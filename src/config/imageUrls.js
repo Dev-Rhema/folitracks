@@ -1,6 +1,6 @@
 // Cloudinary Image URLs Configuration
 // Replace 'YOUR_CLOUD_NAME' with your actual Cloudinary cloud name
-const CLOUD_NAME = 'dwzojroob';
+const CLOUD_NAME = "dwzojroob";
 const BASE_URL = `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/v1/folitracks`;
 
 export const imageUrls = {

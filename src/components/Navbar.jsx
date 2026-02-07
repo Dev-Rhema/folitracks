@@ -68,7 +68,11 @@ function Navbar({ onContactClick }) {
                     onClick={() => setOpenDropdown(null)}
                     className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 text-sm transition-colors duration-200"
                   >
-                    <img src={imageUrls.repair} alt="repair" className="w-5 h-5" />
+                    <img
+                      src={imageUrls.repair}
+                      alt="repair"
+                      className="w-5 h-5"
+                    />
                     Car Repairs & Maintenance
                   </Link>
                   <Link
@@ -84,7 +88,11 @@ function Navbar({ onContactClick }) {
                     onClick={() => setOpenDropdown(null)}
                     className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 text-sm transition-colors duration-200"
                   >
-                    <img src={imageUrls.parts} alt="parts" className="w-5 h-5" />
+                    <img
+                      src={imageUrls.parts}
+                      alt="parts"
+                      className="w-5 h-5"
+                    />
                     Spare Parts Sales
                   </Link>
                   <Link
@@ -92,7 +100,11 @@ function Navbar({ onContactClick }) {
                     onClick={() => setOpenDropdown(null)}
                     className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 text-sm transition-colors duration-200"
                   >
-                    <img src={imageUrls.paint} alt="paint" className="w-5 h-5" />
+                    <img
+                      src={imageUrls.paint}
+                      alt="paint"
+                      className="w-5 h-5"
+                    />
                     Body Work & Paint Jobs
                   </Link>
                 </div>
@@ -305,7 +317,11 @@ function Navbar({ onContactClick }) {
                     }}
                     className="flex items-center gap-3 text-gray-700 hover:text-blue-900 text-sm transition-colors duration-200 py-2"
                   >
-                    <img src={imageUrls.qr} alt="qr" className="w-5 h-5 shrink-0" />
+                    <img
+                      src={imageUrls.qr}
+                      alt="qr"
+                      className="w-5 h-5 shrink-0"
+                    />
                     Service History via QR Code
                   </Link>
                   <Link
@@ -316,7 +332,11 @@ function Navbar({ onContactClick }) {
                     }}
                     className="flex items-center gap-3 text-gray-700 hover:text-blue-900 text-sm transition-colors duration-200 py-2"
                   >
-                    <img src={imageUrls.parts} alt="parts" className="w-5 h-5 shrink-0" />
+                    <img
+                      src={imageUrls.parts}
+                      alt="parts"
+                      className="w-5 h-5 shrink-0"
+                    />
                     Spare Parts Sales
                   </Link>
                   <Link
@@ -327,7 +347,11 @@ function Navbar({ onContactClick }) {
                     }}
                     className="flex items-center gap-3 text-gray-700 hover:text-blue-900 text-sm transition-colors duration-200 py-2"
                   >
-                    <img src={imageUrls.paint} alt="paint" className="w-5 h-5 shrink-0" />
+                    <img
+                      src={imageUrls.paint}
+                      alt="paint"
+                      className="w-5 h-5 shrink-0"
+                    />
                     Body Work & Paint Jobs
                   </Link>
                 </div>
