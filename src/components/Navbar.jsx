@@ -64,7 +64,7 @@ function Navbar({ onContactClick }) {
                 </button>
               </div>
               {openDropdown === "services" && (
-                <div className="absolute top-full left-0 pt-2 bg-white border border-gray-200 rounded-md shadow-lg min-w-56 animate-fadeIn z-50">
+                <div className="absolute top-full left-0 pt-2 bg-white border border-gray-200 rounded-md shadow-lg min-w-72 animate-fadeIn z-50">
                   <Link
                     to="/#services"
                     onClick={() => setOpenDropdown(null)}
@@ -127,7 +127,7 @@ function Navbar({ onContactClick }) {
                 </svg>
               </button>
               {openDropdown === "resources" && (
-                <div className="absolute top-full left-0 pt-2 bg-white border border-gray-200 rounded-md shadow-lg min-w-56 animate-fadeIn z-50">
+                <div className="absolute top-full left-0 pt-2 bg-white border border-gray-200 rounded-md shadow-lg min-w-72 animate-fadeIn z-50">
                   <Link
                     to="/#how-it-works"
                     onClick={() => setOpenDropdown(null)}
