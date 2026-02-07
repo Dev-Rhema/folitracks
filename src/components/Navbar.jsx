@@ -253,6 +253,7 @@ function Navbar({ onContactClick }) {
           <div className="px-4 py-6 flex flex-col gap-4">
             <Link
               to="/"
+              onClick={() => setMobileMenuOpen(false)}
               className="text-gray-800 hover:text-blue-900 transition-colors duration-200 py-3 px-4 text-lg font-medium bg-blue-100 rounded-lg"
             >
               Home
@@ -263,6 +264,7 @@ function Navbar({ onContactClick }) {
               <div className="flex items-center justify-between">
                 <Link
                   to="/services"
+                  onClick={() => setMobileMenuOpen(false)}
                   className="flex-1 text-gray-800 hover:text-blue-900 transition-colors duration-200 py-3 px-4 text-lg font-medium"
                 >
                   Services
@@ -290,7 +292,10 @@ function Navbar({ onContactClick }) {
                 <div className="pl-4 flex flex-col gap-3 py-3 animate-slideDown">
                   <Link
                     to="/#services"
-                    onClick={() => setOpenDropdown(null)}
+                    onClick={() => {
+                      setOpenDropdown(null);
+                      setMobileMenuOpen(false);
+                    }}
                     className="flex items-center gap-3 text-gray-700 hover:text-blue-900 text-sm transition-colors duration-200 py-2"
                   >
                     <img
@@ -302,7 +307,10 @@ function Navbar({ onContactClick }) {
                   </Link>
                   <Link
                     to="/#services"
-                    onClick={() => setOpenDropdown(null)}
+                    onClick={() => {
+                      setOpenDropdown(null);
+                      setMobileMenuOpen(false);
+                    }}
                     className="flex items-center gap-3 text-gray-700 hover:text-blue-900 text-sm transition-colors duration-200 py-2"
                   >
                     <img src={qr} alt="qr" className="w-5 h-5 shrink-0" />
@@ -310,7 +318,10 @@ function Navbar({ onContactClick }) {
                   </Link>
                   <Link
                     to="/#services"
-                    onClick={() => setOpenDropdown(null)}
+                    onClick={() => {
+                      setOpenDropdown(null);
+                      setMobileMenuOpen(false);
+                    }}
                     className="flex items-center gap-3 text-gray-700 hover:text-blue-900 text-sm transition-colors duration-200 py-2"
                   >
                     <img src={parts} alt="parts" className="w-5 h-5 shrink-0" />
@@ -318,7 +329,10 @@ function Navbar({ onContactClick }) {
                   </Link>
                   <Link
                     to="/#services"
-                    onClick={() => setOpenDropdown(null)}
+                    onClick={() => {
+                      setOpenDropdown(null);
+                      setMobileMenuOpen(false);
+                    }}
                     className="flex items-center gap-3 text-gray-700 hover:text-blue-900 text-sm transition-colors duration-200 py-2"
                   >
                     <img src={paint} alt="paint" className="w-5 h-5 shrink-0" />
@@ -353,7 +367,10 @@ function Navbar({ onContactClick }) {
                 <div className="pl-4 flex flex-col gap-3 py-3 animate-slideDown">
                   <Link
                     to="/#how-it-works"
-                    onClick={() => setOpenDropdown(null)}
+                    onClick={() => {
+                      setOpenDropdown(null);
+                      setMobileMenuOpen(false);
+                    }}
                     className="flex items-center gap-3 text-gray-700 hover:text-blue-900 text-sm transition-colors duration-200 py-2"
                   >
                     <svg
@@ -367,7 +384,10 @@ function Navbar({ onContactClick }) {
                   </Link>
                   <Link
                     to="/#testimonials"
-                    onClick={() => setOpenDropdown(null)}
+                    onClick={() => {
+                      setOpenDropdown(null);
+                      setMobileMenuOpen(false);
+                    }}
                     className="flex items-center gap-3 text-gray-700 hover:text-blue-900 text-sm transition-colors duration-200 py-2"
                   >
                     <svg
@@ -381,7 +401,10 @@ function Navbar({ onContactClick }) {
                   </Link>
                   <Link
                     to="/#faq"
-                    onClick={() => setOpenDropdown(null)}
+                    onClick={() => {
+                      setOpenDropdown(null);
+                      setMobileMenuOpen(false);
+                    }}
                     className="flex items-center gap-3 text-gray-700 hover:text-blue-900 text-sm transition-colors duration-200 py-2"
                   >
                     <svg
@@ -399,6 +422,7 @@ function Navbar({ onContactClick }) {
 
             <Link
               to="/about"
+              onClick={() => setMobileMenuOpen(false)}
               className="text-gray-800 hover:text-blue-900 transition-colors duration-200 py-3 px-4 text-lg font-medium"
             >
               About Us
@@ -408,7 +432,10 @@ function Navbar({ onContactClick }) {
           {/* Footer with Contact Button */}
           <div className="px-4 py-4 border-t border-gray-200 mt-auto sticky bottom-0 bg-white">
             <button
-              onClick={onContactClick}
+              onClick={() => {
+                setMobileMenuOpen(false);
+                onContactClick();
+              }}
               className="w-full bg-blue-900 text-white px-6 py-3 rounded-lg hover:bg-blue-800 transition-colors duration-200 text-base font-medium cursor-pointer"
             >
               Contact Us
