@@ -8,7 +8,7 @@ function Brands() {
       <p className="text-xl text-(--white) text-center mb-10 font-[title]">
         Our Key Focus
       </p>
-      <div className="flex flex-wrap gap-x-40 gap-y-10 items-center justify-center px-10 max-lg:gap-x-4 max-lg:gap-y-6 max-lg:px-0 max-md:grid max-md:grid-cols-3 ">
+      <div className="flex flex-wrap gap-x-40 gap-y-10 items-center justify-center px-10 max-lg:gap-x-4 max-lg:gap-y-6 max-lg:px-0 max-md:grid max-md:grid-cols-3 py-4">
         {BRANDS.map((brand) => (
           <div
             key={brand.id}

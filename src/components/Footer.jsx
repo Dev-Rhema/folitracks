@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import Container from "./Container";
 import CTA from "./CTA";
 import footerLogo from "../assets/images/footer/footer-logo.svg?url";
@@ -13,47 +14,51 @@ const SERVICES = [
   {
     id: 1,
     name: "Car Repairs & Maintenance",
+    href: "/#services",
   },
   {
     id: 2,
     name: "Service History via QR Code",
+    href: "/#services",
   },
   {
     id: 3,
     name: "Spare Parts Sales",
+    href: "/#services",
   },
   {
     id: 4,
     name: "Body Work & Paint Jobs",
+    href: "/#services",
   },
 ];
 const RESOURCES = [
   {
     id: 1,
     name: "How It Works",
-    href: "#",
+    href: "/#how-it-works",
   },
   {
     id: 2,
     name: "FAQs",
-    href: "#",
+    href: "/#faq",
   },
   {
     id: 3,
     name: "Testimonials",
-    href: "#",
+    href: "/#testimonials",
   },
 ];
 const COMPANY = [
   {
     id: 1,
     name: "About Us",
-    href: "#",
+    href: "/about",
   },
   {
     id: 2,
     name: "Contact Us",
-    href: "#",
+    isButton: true,
   },
 ];
 const CONTACTS = [
@@ -69,22 +74,10 @@ const CONTACTS = [
   },
 ];
 
-function Footer() {
+function Footer({ onContactClick }) {
   return (
     <>
       <section>
-        <FooterBanner
-          title="Keep Your Car Running Smoothly"
-          subTitle="Your car deserves expert care and easy access to its full service
-          history. With your unique QR code, you can track repairs, schedule
-          maintenance, and order authentic auto parts across Nigeria all in one
-          place."
-          button1="Register Your Car"
-          button1Color="red"
-          button2="Scan QR Code"
-          button2Color="blue"
-          img="cta-img.svg"
-        />
         <footer className="xl:px-30 px-10 max-md:px-4 py-10 bg-(--darkBlue) max-md:">
           <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 text-(--white)">
             <div className="space-y-4">
@@ -119,7 +112,14 @@ function Footer() {
               <h3 className="text-xl font-bold text-(--white) ">SERVICES</h3>
               <ul className="space-y-3 text-sm">
                 {SERVICES.map((service) => (
-                  <li key={service.id}>{service.name}</li>
+                  <li key={service.id}>
+                    <Link
+                      to={service.href}
+                      className="hover:text-blue-400 transition-colors duration-200"
+                    >
+                      {service.name}
+                    </Link>
+                  </li>
                 ))}
               </ul>
             </div>
@@ -127,7 +127,14 @@ function Footer() {
               <h3 className="text-xl font-bold  ">RESOURCES</h3>
               <ul className="space-y-3 text-sm">
                 {RESOURCES.map((resource) => (
-                  <li key={resource.id}>{resource.name}</li>
+                  <li key={resource.id}>
+                    <Link
+                      to={resource.href}
+                      className="hover:text-blue-400 transition-colors duration-200"
+                    >
+                      {resource.name}
+                    </Link>
+                  </li>
                 ))}
               </ul>
             </div>
@@ -135,7 +142,23 @@ function Footer() {
               <h3 className="text-xl font-bold  ">COMPANY</h3>
               <ul className="space-y-3 text-sm">
                 {COMPANY.map((comp) => (
-                  <li key={comp.id}>{comp.name}</li>
+                  <li key={comp.id}>
+                    {comp.isButton ? (
+                      <button
+                        onClick={onContactClick}
+                        className="hover:text-blue-400 transition-colors duration-200 bg-none border-none cursor-pointer text-left"
+                      >
+                        {comp.name}
+                      </button>
+                    ) : (
+                      <Link
+                        to={comp.href}
+                        className="hover:text-blue-400 transition-colors duration-200"
+                      >
+                        {comp.name}
+                      </Link>
+                    )}
+                  </li>
                 ))}
               </ul>
             </div>
@@ -152,9 +175,19 @@ function Footer() {
             <p>
               &copy; {new Date().getFullYear()} FOLITRACKS. All rights reserved.
             </p>
-            <div>
-              <a href="#">Privacy Policy</a>
-              <a href="#">Terms of service</a>
+            <div className="space-x-6">
+              <Link
+                to="/policy"
+                className="hover:text-blue-400 transition-colors duration-200"
+              >
+                Privacy Policy
+              </Link>
+              <Link
+                to="/terms"
+                className="hover:text-blue-400 transition-colors duration-200"
+              >
+                Terms of service
+              </Link>
             </div>
           </div>
         </footer>

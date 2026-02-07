@@ -19,23 +19,21 @@
 @font-face {
   font-family: "title";
   src: url("./assets/fonts/Montserrat-Regular.ttf");
-  font-display: swap;
 }
 
 @font-face {
   font-family: "body";
   src: url("./assets/fonts/Lato-Regular.ttf");
-  font-display: swap;
 }
 
 @font-face {
   font-family: "number";
   src: url("./assets/fonts/Anton-Regular.ttf");
-  font-display: swap;
 }
 
 body {
   background-color: #fffcfc;
+  font-family: "body";
   color: #04040d;
 }
 
@@ -151,9 +149,36 @@ body {
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    border-color: var(--border);
+    outline-color: rgb(0 0 0 / 0.5);
   }
-  body {
-    @apply bg-background text-foreground;
+}
+@layer utilities {
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  .animate-slideDown {
+    animation: slideDown 0.3s ease-in-out;
   }
 }

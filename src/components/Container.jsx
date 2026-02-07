@@ -1,9 +1,10 @@
 import React from "react";
 
-function Container({ children, className = "", style, height = "" }) {
+function Container({ children, className = "", style, id }) {
   return (
     <div
-      className={`xl:px-30 py-10 h-${height} px-10 max-md:py-6 max-md:px-4 ${className}`}
+      id={id}
+      className={`xl:px-30 py-14 px-10 max-md:py-8 max-md:px-4 ${className}`}
       style={style}
     >
       <div>{children}</div>

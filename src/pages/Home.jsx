@@ -1,4 +1,3 @@
-import React from "react";
 import heroImg from "../assets/images/hero-img.svg";
 import ratingStars from "../assets/images/RatingStars.svg";
 import arrowCircle from "../assets/images/arrow-circle.svg";
@@ -11,8 +10,28 @@ import Stats from "../components/Stats.jsx";
 import Footer from "../components/Footer.jsx";
 import Faqs from "../components/Faq.jsx";
 import Brands from "../components/Brands.jsx";
+import React, { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import footerLogo from "../assets/images/footer/footer-logo.svg?url";
+import FooterBanner from "../components/footerBanner.jsx";
 
-function Home() {
+function Home({ onContactClick }) {
+  const location = useLocation();
+
+  useEffect(() => {
+    // Scroll to hash if present
+    if (location.hash) {
+      const element = document.querySelector(location.hash);
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: "smooth" });
+        }, 0);
+      }
+    } else {
+      // Scroll to top if no hash
+      window.scrollTo(0, 0);
+    }
+  }, [location]);
   return (
     <section className="h-screen max-lg:h-full relative">
       <div
@@ -62,7 +81,10 @@ function Home() {
           title="Our Services"
           sub2="Your one-stop workshop for repairs, maintenance, sales, and shipping — with QR-enabled records that give you instant access to your vehicle’s complete service history."
         />
-        <div className="grid grid-cols-4 gap-4 max-lg:grid-cols-2 max-md:grid-cols-1">
+        <div
+          id="services"
+          className="grid grid-cols-4 gap-4 max-lg:grid-cols-2 max-md:grid-cols-1 scroll-mt-20"
+        >
           {SERVICES.map((service) => (
             <div
               key={service.id}
@@ -91,9 +113,15 @@ function Home() {
           sub2="With a unique QR-enabled service profile, you can track, access, and manage your vehicle’s health in just a few easy steps."
           className=""
         />
-        <div className="flex flex-col xl:gap-4 gap-2 max-md:gap-1">
+        <div
+          id="how-it-works"
+          className="flex flex-col xl:gap-4 gap-2 max-md:gap-1 scroll-mt-20"
+        >
           {HOWS.map((how) => (
-            <div className="flex justify-between items-center gap-6 max-md:flex-col max-md:gap-0">
+            <div
+              key={how.id}
+              className="flex justify-between items-center gap-6 max-md:flex-col max-md:gap-0"
+            >
               <div className="flex items-center  relative w-1/2 max-md:w-full">
                 <p className="text-(--red)/12 font-[number] text-[300px] max-lg:text-[260px] leading-snug max-md:text-[220px]">
                   {how.id}
@@ -119,7 +147,10 @@ function Home() {
       </Container>
       {/* HOW IT WORKS END */}
       {/* REVIEW */}
-      <Container className="bg-(--darkBlue) text-white ">
+      <Container
+        id="testimonials"
+        className="bg-(--darkBlue) text-white scroll-mt-20"
+      >
         <div className="text-center flex flex-col px-30 gap-y-2 max-lg:p-10 max-md:px-0 py-10">
           <div className="text-center  flex items-center justify-center">
             <img src={ratingStars} alt="" />
@@ -151,18 +182,35 @@ function Home() {
           title="Frequently Asked Questions"
           sub2="Find quick answers to common questions about our services, service tracking, and the QR Code system. If you still need help, our team is always ready to assist."
         />
-        <Faqs />
+        <div id="faq" className="scroll-mt-20">
+          <Faqs />
+        </div>
 
         <div className="flex gap-1 text-center w-full items-center justify-center mt-4">
           <p>Can’t find the answer you’re looking for?</p>
-          <a href="#" className="text-(--red)">
+          <button
+            onClick={onContactClick}
+            className="text-(--red) bg-none border-none cursor-pointer hover:underline"
+          >
             Contact Us
-          </a>
+          </button>
         </div>
       </Container>
       {/* FAQS END */}
       {/* FOOTER  */}
-      <Footer />
+      <FooterBanner
+        title="Keep Your Car Running Smoothly"
+        subTitle="Your car deserves expert care and easy access to its full service
+          history. With your unique QR code, you can track repairs, schedule
+          maintenance, and order authentic auto parts across Nigeria all in one
+          place."
+        button1="Register Your Car"
+        button1Color="red"
+        button2="Scan QR Code"
+        button2Color="blue"
+        img="cta-img.svg"
+      />
+      <Footer onContactClick={onContactClick} />
       {/* FOOTER END */}
     </section>
   );
