@@ -104,9 +104,9 @@ function Home() {
           sub2="With a unique QR-enabled service profile, you can track, access, and manage your vehicle’s health in just a few easy steps."
           className=""
         />
-        <div className="">
+        <div className="flex flex-col xl:gap-4 gap-2 max-md:gap-1">
           {HOWS.map((how) => (
-            <div className="flex justify-between items-center gap-4 max-md:flex-col max-md:gap-0">
+            <div className="flex justify-between items-center gap-6 max-md:flex-col max-md:gap-0">
               <div className="flex items-center  relative w-1/2 max-md:w-full">
                 <p className="text-(--red)/12 font-[number] text-[300px] max-lg:text-[260px] leading-snug max-md:text-[220px]">
                   {how.id}
