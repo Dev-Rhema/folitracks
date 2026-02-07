@@ -10,6 +10,7 @@ import Header from "../components/Header.jsx";
 import Stats from "../components/Stats.jsx";
 import Footer from "../components/Footer.jsx";
 import Faqs from "../components/Faq.jsx";
+import Brands from "../components/Brands.jsx";
 
 function Home() {
   return (
@@ -80,21 +81,7 @@ function Home() {
       </Container>
       {/* HOW WE HELP END */}
       {/* BRANDS */}
-      <Container className="bg-(--black) flex flex-col ">
-        <p className="text-xl text-(--white) text-center mb-10 font-[title]">
-          Our Key Focus
-        </p>
-        <div className="flex flex-wrap gap-x-40 gap-y-10 items-center justify-center px-10 max-lg:gap-x-4 max-lg:gap-y-6 max-lg:px-0 max-md:grid max-md:grid-cols-3 ">
-          {BRANDS.map((brand) => (
-            <div
-              key={brand.id}
-              className="max-md:last:col-start-2 max-md:last:justify-self-center"
-            >
-              <img src={brand.img} alt="" className="" />
-            </div>
-          ))}
-        </div>
-      </Container>
+      <Brands />
       {/* BRANDS END */}
       {/* HOW IT WORKS */}
       <Container>
@@ -133,7 +120,7 @@ function Home() {
       {/* HOW IT WORKS END */}
       {/* REVIEW */}
       <Container className="bg-(--darkBlue) text-white ">
-        <div className="text-center flex flex-col px-30 gap-y-2 max-lg:p-10 max-md:px-0">
+        <div className="text-center flex flex-col px-30 gap-y-2 max-lg:p-10 max-md:px-0 py-10">
           <div className="text-center  flex items-center justify-center">
             <img src={ratingStars} alt="" />
           </div>

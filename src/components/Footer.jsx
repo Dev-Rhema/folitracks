@@ -7,6 +7,7 @@ import footerLogo from "../assets/images/footer/footer-logo.svg?url";
 import x from "../assets/images/footer/socials/x.svg";
 import whatsapp from "../assets/images/footer/socials/whatsapp.svg";
 import ig from "../assets/images/footer/socials/ig.svg";
+import FooterBanner from "./footerBanner";
 
 const SERVICES = [
   {
@@ -72,32 +73,18 @@ function Footer() {
   return (
     <>
       <section>
-        <div className="relative text-white flex items-center justify-center">
-          <Container
-            className="w-full h-full top-0 left-0 -z-100 brightness-20 absolute inline-flex "
-            style={{
-              backgroundImage: `url(/cta-img.svg)`,
-              backgroundPosition: "top",
-              backgroundSize: "cover",
-              backgroundRepeat: "no-repeat",
-            }}
-          />
-          <div className="flex flex-col items-center justify-center text-center xl:px-30 py-10 w-[80%] gap-4 px-10 max-md:px-4  max-lg:py-6 max-lg:w-full">
-            <p className="font-[title] text-5xl font-bold max-md:text-[32px] max-md:px-0">
-              Keep Your Car Running Smoothly
-            </p>
-            <p className="text-(--lightGrey)">
-              Your car deserves expert care and easy access to its full service
-              history. With your unique QR code, you can track repairs, schedule
-              maintenance, and order authentic auto parts across Nigeria all in
-              one place.
-            </p>
-            <div className="gap-4 flex justify-center max-md:flex-col max-lg:gap-2 w-full">
-              <CTA name="Repair Your Car" color="red" />
-              <CTA name="Scan QR Code" color="blue" />
-            </div>
-          </div>
-        </div>
+        <FooterBanner
+          title="Keep Your Car Running Smoothly"
+          subTitle="Your car deserves expert care and easy access to its full service
+          history. With your unique QR code, you can track repairs, schedule
+          maintenance, and order authentic auto parts across Nigeria all in one
+          place."
+          button1="Register Your Car"
+          button1Color="red"
+          button2="Scan QR Code"
+          button2Color="blue"
+          img="cta-img.svg"
+        />
         <footer className="xl:px-30 px-10 max-md:px-4 py-10 bg-(--darkBlue) max-md:">
           <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 text-(--white)">
             <div className="space-y-4">
