@@ -26,7 +26,7 @@ function Footer() {
               maintenance, and order authentic auto parts across Nigeria all in
               one place.
             </p>
-            <div className="gap-4 flex max-md:flex-col max-md:gap-2">
+            <div className="gap-4 flex max-md:flex-col max-md:gap-2 w-full">
               <CTA name="Repair Your Car" color="red" />
               <CTA name="Scan QR Code" color="blue" />
             </div>
