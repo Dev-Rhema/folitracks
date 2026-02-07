@@ -5,7 +5,7 @@ function CTA({ name = "", color = "" }) {
     <button
       className="text-[16px] px-6 py-3 font-[body] text-(--white) rounded-md"
       style={{
-        backgroundColor: `var(--${color})`
+        backgroundColor: `var(--${color})`,
       }}
     >
       {name}
