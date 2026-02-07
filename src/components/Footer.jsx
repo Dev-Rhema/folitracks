@@ -1,12 +1,12 @@
 import React from "react";
 import Container from "./Container";
 import CTA from "./CTA";
-import footerLogo from "../assets/images/footer/footer-logo.svg";
-import location from "../assets/images/footer/location.svg";
-import mail from "../assets/images/footer/mail.svg";
-import x from "../assets/images/footer/socials/x.svg";
-import whatsapp from "../assets/images/footer/socials/whatsapp.svg";
-import ig from "../assets/images/footer/socials/ig.svg";
+import footerLogo from "../assets/images/footer/footer-logo.svg?url";
+import location from "../assets/images/footer/location.svg?url";
+import mail from "../assets/images/footer/mail.svg?url";
+import x from "../assets/images/footer/socials/x.svg?url";
+import whatsapp from "../assets/images/footer/socials/whatsapp.svg?url";
+import ig from "../assets/images/footer/socials/ig.svg?url";
 
 const SERVICES = [
   {
