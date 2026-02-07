@@ -41,7 +41,7 @@ function Home() {
         }}
       />
       {/* HERO */}
-      <div className="h-full w-full inline-flex xl:pl-30  pl-10 max-lg:flex max-lg:flex-col max-lg:static max-lg:px-10 tracking-tight max-md:px-4">
+      <div className="h-full w-full inline-flex xl:pl-30  pl-10 max-lg:flex max-lg:flex-col max-lg:static max-lg:px-10 tracking-tight max-md:px-4 max-md:py-12">
         <div className=" flex flex-col gap-2 w-[60%] justify-center max-lg:w-full max-lg:justify-center max-lg:text-center max-lg:mb-6 max-md:mb-4">
           <p className="text-(--red) text-sm ">
             QR-ENABLED VEHICLE SERVICE SYSTEM
