@@ -34,7 +34,7 @@ function Home() {
       <div
         className="absolute top-0 left-0 w-full  h-screen"
         style={{
-          backgroundImage: `url(/hero-bg.svg)`,
+          backgroundImage: `url(${imageUrls.heroBg})`,
           backgroundPosition: "top",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
@@ -205,7 +205,7 @@ function Home() {
         button1Color="red"
         button2="Scan QR Code"
         button2Color="blue"
-        img="cta-img.svg"
+        img={imageUrls.ctaImg}
       />
       <Footer onContactClick={onContactClick} />
       {/* FOOTER END */}

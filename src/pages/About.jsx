@@ -17,7 +17,7 @@ function About() {
         <div
           className={`w-full h-full -z-100 brightness-20 absolute inline-flex`}
           style={{
-            backgroundImage: `url(aboutHero.svg)`,
+            backgroundImage: `url(${imageUrls.aboutHeroBg})`,
             backgroundPosition: "top",
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
@@ -112,7 +112,7 @@ function About() {
         subTitle="Stay in control of your vehicle’s maintenance. Schedule a service today and experience car care that’s simple, transparent, and powered by precision."
         button1="Schedule Service"
         button1Color="red"
-        img="cta-img.svg"
+        img={imageUrls.ctaImg}
       />
       <Footer onContactClick={onContactClick} />
       {/* FOOTER END */}

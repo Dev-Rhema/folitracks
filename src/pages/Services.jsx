@@ -34,7 +34,7 @@ function Services() {
         <div
           className={`w-full h-full -z-100 brightness-20 absolute inline-flex`}
           style={{
-            backgroundImage: `url(servicesHero.svg)`,
+            backgroundImage: `url(${imageUrls.servicesHeroBg})`,
             backgroundPosition: "top",
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
@@ -150,7 +150,7 @@ function Services() {
         button1Color="red"
         button2="Scan QR Code"
         button2Color="blue"
-        img="cta-img.svg"
+        img={imageUrls.ctaImg}
       />
       <Footer onContactClick={onContactClick} />
       {/* FOOTER END */}
