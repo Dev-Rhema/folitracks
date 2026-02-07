@@ -2,11 +2,11 @@ import React from "react";
 import Container from "./Container";
 import CTA from "./CTA";
 import footerLogo from "../assets/images/footer/footer-logo.svg?url";
-import location from "../assets/images/footer/location.svg?url";
-import mail from "../assets/images/footer/mail.svg?url";
-import x from "../assets/images/footer/socials/x.svg?url";
-import whatsapp from "../assets/images/footer/socials/whatsapp.svg?url";
-import ig from "../assets/images/footer/socials/ig.svg?url";
+// import location from "../assets/images/footer/location.svg?url";
+// import mail from "../assets/images/footer/mail.svg";
+import x from "../assets/images/footer/socials/x.svg";
+import whatsapp from "../assets/images/footer/socials/whatsapp.svg";
+import ig from "../assets/images/footer/socials/ig.svg";
 
 const SERVICES = [
   {
@@ -59,12 +59,12 @@ const CONTACTS = [
   {
     id: 1,
     name: "Lekki Phase 1, Lagos, Nigeria.",
-    img: location,
+    // img: location,
   },
   {
     id: 2,
     name: "support@folitracks.com",
-    img: mail,
+    // img: mail,
   },
 ];
 
@@ -155,7 +155,7 @@ function Footer() {
             <div className="space-y-4 text-sm">
               {CONTACTS.map((contact) => (
                 <div key={contact.id} className="flex gap-2">
-                  <img src={contact.img} alt="" />
+                  {/* <img src={contact.img} alt="" /> */}
                   <p>{contact.name}</p>
                 </div>
               ))}
