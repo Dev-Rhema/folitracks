@@ -1,13 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { imageUrls } from "../config/imageUrls";
 import Container from "./Container";
 import CTA from "./CTA";
-import footerLogo from "../assets/images/footer/footer-logo.svg?url";
-// import location from "../assets/images/footer/location.svg?url";
-// import mail from "../assets/images/footer/mail.svg";
-import x from "../assets/images/footer/socials/x.svg";
-import whatsapp from "../assets/images/footer/socials/whatsapp.svg";
-import ig from "../assets/images/footer/socials/ig.svg";
 import FooterBanner from "./footerBanner";
 
 const SERVICES = [
@@ -82,7 +77,7 @@ function Footer({ onContactClick }) {
           <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 text-(--white)">
             <div className="space-y-4">
               <div className="flex items-center space-x-2">
-                <img src={footerLogo} alt="" />
+                <img src={imageUrls.footerLogo} alt="" />
               </div>
               <p className="  text-sm leading-relaxed">
                 Maintenance Evolved: Driven by Data. Powered by Precision.
@@ -92,19 +87,19 @@ function Footer({ onContactClick }) {
                   href="#"
                   className=" hover:text-blue-600 transition-transform transform hover:scale-110"
                 >
-                  <img src={x} alt="" />
+                  <img src={imageUrls.x} alt="" />
                 </a>
                 <a
                   href="#"
                   className=" hover:text-blue-600 transition-transform transform hover:scale-110"
                 >
-                  <img src={whatsapp} alt="" />
+                  <img src={imageUrls.whatsapp} alt="" />
                 </a>
                 <a
                   href="#"
                   className=" hover:text-blue-600 transition-transform transform hover:scale-110"
                 >
-                  <img src={ig} alt="" />
+                  <img src={imageUrls.ig} alt="" />
                 </a>
               </div>
             </div>

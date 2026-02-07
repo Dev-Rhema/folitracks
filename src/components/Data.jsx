@@ -1,37 +1,4 @@
-import repair from "../assets/images/services/repair.svg";
-import qr from "../assets/images/services/qr-code.svg";
-import parts from "../assets/images/services/car-parts.svg";
-import paint from "../assets/images/services/paint.svg";
-import bmw from "../assets/images/brands/BMW.svg";
-import ford from "../assets/images/brands/Ford.svg";
-import hyundai from "../assets/images/brands/Hyundai.svg";
-import kia from "../assets/images/brands/kia.svg";
-import lexus from "../assets/images/brands/Lexus.svg";
-import mercedes from "../assets/images/brands/Mercedes.svg";
-import toyota from "../assets/images/brands/Toyota.svg";
-import how1 from "../assets/images/how-img/how1.svg";
-import how2 from "../assets/images/how-img/how2.svg";
-import how3 from "../assets/images/how-img/how3.svg";
-import how4 from "../assets/images/how-img/how4.svg";
-import aboutCard1 from "../assets/images/About/section/aboutCard1.svg";
-import aboutCard2 from "../assets/images/About/section/aboutCard2.svg";
-import aboutCard3 from "../assets/images/About/section/aboutCard3.svg";
-import aboutCard4 from "../assets/images/About/section/aboutCard4.svg";
-import commonService1 from "../assets/images/ServicesPage/serviceIcons/icon1.svg";
-import commonService2 from "../assets/images/ServicesPage/serviceIcons/icon2.svg";
-import commonService3 from "../assets/images/ServicesPage/serviceIcons/icon3.svg";
-import commonService4 from "../assets/images/ServicesPage/serviceIcons/icon4.svg";
-import commonService5 from "../assets/images/ServicesPage/serviceIcons/icon5.svg";
-import commonService6 from "../assets/images/ServicesPage/serviceIcons/icon6.svg";
-import commonService7 from "../assets/images/ServicesPage/serviceIcons/icon7.svg";
-import commonService8 from "../assets/images/ServicesPage/serviceIcons/icon8.svg";
-import commonService9 from "../assets/images/ServicesPage/serviceIcons/icon9.svg";
-import commonService10 from "../assets/images/ServicesPage/serviceIcons/icon10.svg";
-import checkIcon from "../assets/images/ServicesPage/serviceIcons/check.svg";
-import serviceCard1 from "../assets/images/ServicesPage/section/serviceCard1.svg";
-import serviceCard2 from "../assets/images/ServicesPage/section/serviceCard2.svg";
-import serviceCard3 from "../assets/images/ServicesPage/section/serviceCard3.svg";
-import serviceCard4 from "../assets/images/ServicesPage/section/serviceCard4.svg";
+import { imageUrls } from "../config/imageUrls";
 
 export const HOWS = [
   {
@@ -39,57 +6,57 @@ export const HOWS = [
     title: "Register Your Vehicle",
     body: "Create your account and register your car in just a few clicks. Each vehicle gets a unique QR code linked to its service profile.",
     btn: "Register Your Car",
-    img: how1,
+    img: imageUrls.how1,
   },
   {
     id: 2,
     title: "Access via QR Code",
     body: "Scan or upload your car’s QR code anytime to instantly view its service history, repair details, and upcoming maintenance needs.",
     btn: "Scan QR Code",
-    img: how2,
+    img: imageUrls.how2,
   },
   {
     id: 3,
     title: "View and Track Your Service History",
     body: "Each time your car is serviced, the details are automatically added by our team. You can view your complete maintenance history anytime and track upcoming or overdue services.",
-    img: how3,
+    img: imageUrls.how3,
   },
   {
     id: 4,
     title: "Set Maintenance Reminders",
     body: "Never miss a service again. Set automatic reminders for upcoming services and periodic checkups to keep your car running smoothly.",
-    img: how4,
+    img: imageUrls.how4,
   },
 ];
 
 export const BRANDS = [
   {
     id: 1,
-    img: mercedes,
+    img: imageUrls.mercedes,
   },
   {
     id: 2,
-    img: toyota,
+    img: imageUrls.toyota,
   },
   {
     id: 3,
-    img: lexus,
+    img: imageUrls.lexus,
   },
   {
     id: 4,
-    img: bmw,
+    img: imageUrls.bmw,
   },
   {
     id: 5,
-    img: ford,
+    img: imageUrls.ford,
   },
   {
     id: 6,
-    img: hyundai,
+    img: imageUrls.hyundai,
   },
   {
     id: 7,
-    img: kia,
+    img: imageUrls.kia,
   },
 ];
 
@@ -114,28 +81,28 @@ export const STATS = [
 export const SERVICES = [
   {
     id: 1,
-    img: repair,
+    img: imageUrls.repair,
     title: "Car Repair & Maintenance",
     body: "Keep your car running smoothly with expert repairs and regular servicing in Lagos. From oil changes to diagnostics and suspension work, our certified mechanics ensure your vehicle stays reliable on the road.",
     color: "#F59E0B",
   },
   {
     id: 2,
-    img: qr,
+    img: imageUrls.qr,
     title: "Service History Record via QR Code",
     body: "Track every service, repair, and maintenance update in one place. Your car’s complete digital record is accessible anytime, anywhere through your unique QR code—making vehicle management transparent.",
     color: "#1FA750",
   },
   {
     id: 3,
-    img: parts,
+    img: imageUrls.parts,
     title: "Spare Parts Sales & Shipping",
     body: "Get genuine spare parts for any car brand, including rare and hard-to-find components. We source quality parts and deliver across Nigeria to keep your car in top condition without stress.",
     color: "#3B82F6",
   },
   {
     id: 4,
-    img: paint,
+    img: imageUrls.paint,
     title: "Body Work & Paint Jobs",
     body: "Restore your vehicle’s look with premium body repair and professional paint jobs. Whether it’s fixing dents, scratches, or a full respray, we deliver factory-finish results that make your car look brand new.",
     color: "#FF0000",
@@ -148,7 +115,7 @@ export const ABOUTS = [
     title: "Expert Car Repair & Maintenance in Lagos",
     subtitle:
       "Get premium car repair and maintenance from trusted in-house mechanics in Lagos. Every service is handled with precision, transparency, and genuine expertise to keep your vehicle performing at its best.",
-    img: aboutCard1,
+    img: imageUrls.aboutCard1,
     bg: "#000038",
     text: "#E6E6F0",
   },
@@ -157,7 +124,7 @@ export const ABOUTS = [
     title: "Digitized Service Records with Smart QR Access",
     subtitle:
       "Your car’s full maintenance history is securely stored and accessible through a unique QR code. View every service record anytime, anywhere—bringing complete transparency to your vehicle’s care.",
-    img: aboutCard2,
+    img: imageUrls.aboutCard2,
     bg: "#E6E6F0",
     text: "#000038",
   },
@@ -166,7 +133,7 @@ export const ABOUTS = [
     title: "Genuine Spare Parts, Delivered Nationwide",
     subtitle:
       "Find and order original car parts with confidence. From common replacements to rare components, Folitracks ensures fast, reliable access to genuine spare parts anywhere in Nigeria.",
-    img: aboutCard3,
+    img: imageUrls.aboutCard3,
     bg: "#E6E6F0",
     text: "#000038",
   },
@@ -175,7 +142,7 @@ export const ABOUTS = [
     title: "Premium Body Work & Paint Jobs",
     subtitle:
       "Restore your car’s look with precision body work and factory-quality paint jobs. Our team handles everything from dents to full resprays with the same care your car deserves.",
-    img: aboutCard4,
+    img: imageUrls.aboutCard4,
     bg: "#000038",
     text: "#E6E6F0",
   },
@@ -208,106 +175,106 @@ export const OURSERVICES = [
   {
     id: 1,
     title: "Trusted Car Repairs and Routine Servicing in Lagos",
-    img: serviceCard1,
+    img: imageUrls.serviceCard1,
     para: "Service your car in Lagos with top-rated mechanics who get it right the first time. From routine checks to full repairs, we ensure your car runs smoothly and reliably.",
     sub: "Common services:",
     list: [
       {
         id: 1,
         name: "Engine Checks & Replacement",
-        icon: commonService1,
+        icon: imageUrls.commonService1,
       },
       {
         id: 2,
         name: "Oil Change & Filter Replacement",
-        icon: commonService2,
+        icon: imageUrls.commonService2,
       },
       {
         id: 3,
         name: "Exhaust System Service",
-        icon: commonService3,
+        icon: imageUrls.commonService3,
       },
       {
         id: 4,
         name: "Brake Inspection & Repair",
-        icon: commonService4,
+        icon: imageUrls.commonService4,
       },
       {
         id: 5,
         name: "Air Conditioning Services",
-        icon: commonService5,
+        icon: imageUrls.commonService5,
       },
       {
         id: 6,
         name: "Battery Check & Replacement",
-        icon: commonService6,
+        icon: imageUrls.commonService6,
       },
       {
         id: 7,
         name: "Shock Absorber & Suspension Repair",
-        icon: commonService7,
+        icon: imageUrls.commonService7,
       },
       {
         id: 8,
         name: "Wheel Alignment & Balancing",
-        icon: commonService8,
+        icon: imageUrls.commonService8,
       },
       {
         id: 9,
         name: "Electrical & Lighting Issues",
-        icon: commonService9,
+        icon: imageUrls.commonService9,
       },
       {
         id: 10,
         name: "Diagnostics Scan..... and more",
-        icon: commonService10,
+        icon: imageUrls.commonService10,
       },
     ],
   },
   {
     id: 2,
     title: "Your Car’s Complete Service Record Always Within Reach",
-    img: serviceCard2,
+    img: imageUrls.serviceCard2,
     para: "Register your car on Folitracks to access your full maintenance history anytime. Your vehicle’s unique QR code keeps every detail organized and easy to find.",
     sub: "What You Get:",
     list: [
       {
         id: 1,
         name: "Complete service history with upcoming and overdue alerts",
-        icon: checkIcon,
+        icon: imageUrls.checkIcon,
       },
       {
         id: 2,
         name: "Automatic next-service calculator",
-        icon: checkIcon,
+        icon: imageUrls.checkIcon,
       },
       {
         id: 3,
         name: "Multiple vehicle management in one dashboard",
-        icon: checkIcon,
+        icon: imageUrls.checkIcon,
       },
       {
         id: 4,
         name: "Service reminders and notifications",
-        icon: checkIcon,
+        icon: imageUrls.checkIcon,
       },
       {
         id: 5,
         name: "Accessibility across all devices",
-        icon: checkIcon,
+        icon: imageUrls.checkIcon,
       },
     ],
   },
   {
     id: 3,
     title: "Get Quality Spare Parts Without the Stress",
-    img: serviceCard3,
+    img: imageUrls.serviceCard3,
     para: "We make it easy to find and order genuine spare parts for any car model — even the rare ones. With our trusted network of suppliers, you’ll never worry about fake or low-quality parts again. Order with confidence and enjoy fast delivery anywhere in Nigeria.",
   },
   {
     id: 4,
     title: "Restore Your Car’s Look with Precision and Care",
-    img: serviceCard4,
+    img: imageUrls.serviceCard4,
     para: "From panel beating to full-body resprays, our experts handle every detail to perfection. We use premium materials and modern techniques to ensure your car looks brand new again. Drive out with a flawless finish that reflects true craftsmanship.",
   },
 ];

@@ -1,5 +1,6 @@
+import { useOutletContext } from "react-router-dom";
+import { imageUrls } from "../config/imageUrls";
 import Container from "../components/Container";
-import aboutMan from "../assets/images/About/aboutMan.svg";
 import Brands from "../components/Brands";
 import { ABOUTS } from "../components/Data";
 import Stats from "../components/Stats";
@@ -7,7 +8,8 @@ import Footer from "../components/Footer";
 import React from "react";
 import FooterBanner from "../components/footerBanner";
 
-function About({ onContactClick }) {
+function About() {
+  const { onContactClick } = useOutletContext();
   return (
     <section>
       {/* ABOUT HERO */}
@@ -58,7 +60,7 @@ function About({ onContactClick }) {
             </p>
           </div>
           <div className="">
-            <img className="rounded-md" src={aboutMan} alt="" />
+            <img className="rounded-md" src={imageUrls.aboutMan} alt="" />
           </div>
         </div>
       </Container>

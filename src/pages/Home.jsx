@@ -1,7 +1,4 @@
-import heroImg from "../assets/images/hero-img.svg";
-import ratingStars from "../assets/images/RatingStars.svg";
-import arrowCircle from "../assets/images/arrow-circle.svg";
-import avatar from "../assets/images/Avatar.svg";
+import { imageUrls } from "../config/imageUrls";
 import CTA from "../components/CTA";
 import Container from "../components/Container";
 import { HOWS, STATS, SERVICES, BRANDS } from "../components/Data.jsx";
@@ -11,12 +8,12 @@ import Footer from "../components/Footer.jsx";
 import Faqs from "../components/Faq.jsx";
 import Brands from "../components/Brands.jsx";
 import React, { useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import footerLogo from "../assets/images/footer/footer-logo.svg?url";
+import { useLocation, useOutletContext } from "react-router-dom";
 import FooterBanner from "../components/footerBanner.jsx";
 
-function Home({ onContactClick }) {
+function Home() {
   const location = useLocation();
+  const { onContactClick } = useOutletContext();
 
   useEffect(() => {
     // Scroll to hash if present
@@ -64,7 +61,7 @@ function Home({ onContactClick }) {
         </div>
         <div className="flex justify-end bottom-0 right-0 absolute max-lg:static max-lg:justify-center">
           <img
-            src={heroImg}
+            src={imageUrls.heroImg}
             alt=""
             className="xl:w-full w-[80%] max-lg:w-[60%]"
           />
@@ -153,7 +150,7 @@ function Home({ onContactClick }) {
       >
         <div className="text-center flex flex-col px-30 gap-y-2 max-lg:p-10 max-md:px-0 py-10">
           <div className="text-center  flex items-center justify-center">
-            <img src={ratingStars} alt="" />
+            <img src={imageUrls.ratingStars} alt="" />
           </div>
           <p className="text-[56px]  text-white font-[title] text-center font-bold leading-snug max-lg:text-[48px] max-md:text-[32px]">
             “I never thought car repairs could feel this transparent.”
@@ -166,7 +163,7 @@ function Home({ onContactClick }) {
             is due. It gives me peace of mind every time I drive.
           </p>
           <div className="flex items-center justify-center gap-2">
-            <img src={avatar} alt="" />
+            <img src={imageUrls.avatar} alt="" />
             <div className="flex flex-col text-left">
               <p className="text-lg">Adedeji Boluwatife</p>
               <p className="text-(--lightGrey)">Car Owner</p>

@@ -1,6 +1,5 @@
 import Container from "../components/Container";
-import aboutMan from "../assets/images/About/aboutMan.svg";
-import serviceMan from "../assets/images/ServicesPage/servicesMan.svg";
+import { imageUrls } from "../config/imageUrls";
 import Brands from "../components/Brands";
 import { ABOUTS, OURSERVICES, PROBLEMS } from "../components/Data";
 import Stats from "../components/Stats";
@@ -8,10 +7,11 @@ import Footer from "../components/Footer";
 import React, { useEffect } from "react";
 import FooterBanner from "../components/footerBanner";
 import Header from "../components/Header";
-import { useLocation } from "react-router-dom";
+import { useLocation, useOutletContext } from "react-router-dom";
 
-function Services({ onContactClick }) {
+function Services() {
   const location = useLocation();
+  const { onContactClick } = useOutletContext();
 
   useEffect(() => {
     // Scroll to hash if present
@@ -76,7 +76,7 @@ function Services({ onContactClick }) {
             <div className="w-full flex items-center justify-end col-span-1 ">
               <img
                 className="rounded-md max-md:w-full"
-                src={serviceMan}
+                src={imageUrls.serviceMan}
                 alt=""
               />
             </div>
@@ -131,7 +131,7 @@ function Services({ onContactClick }) {
                   </div>
                 </div>
                 <div className="w-1/2 max-lg:w-full">
-                  <img src={ourservice.img} className="max-lg:w-full" alt="" />
+                  <img src={ourservice.img} className="w-full" alt="" />
                 </div>
               </div>
             ))}
