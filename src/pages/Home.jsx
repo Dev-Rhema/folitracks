@@ -36,7 +36,7 @@ function Home() {
             with QR-enabled records that give you instant access to your
             vehicle’s complete service history.
           </p>
-          <div className="flex gap-4 max-md:gap-2 max-lg:justify-center max-md:flex-col">
+          <div className="flex gap-4 max-lg:gap-2 max-lg:justify-center max-md:flex-col">
             <CTA color="red" name="Repair Your Car" />
             <CTA color="blue" name="Scan QR Code" />
           </div>
@@ -83,7 +83,7 @@ function Home() {
         <p className="text-xl text-(--white) text-center mb-10 font-[title]">
           Our Key Focus
         </p>
-        <div className="flex flex-wrap gap-x-40 gap-y-10 items-center justify-center px-10 max-lg:gap-x-4 max-lg:gap-y-6 max-lg:px-0 max-md:grid max-md:grid-cols-3">
+        <div className="flex flex-wrap gap-x-40 gap-y-10 items-center justify-center px-10 max-lg:gap-x-4 max-lg:gap-y-6 max-lg:px-0 max-md:grid max-md:grid-cols-3 ">
           {BRANDS.map((brand) => (
             <div
               key={brand.id}
