@@ -161,7 +161,7 @@ function Footer() {
               ))}
             </div>
           </div>
-          <div className="flex justify-between items-center  dark:text-gray-400 text-sm pt-10 mt-10 border-t border-gray-200 dark:border-gray-700 max-md:flex-col max-md:gap-2">
+          <div className="flex justify-between items-center  text-gray-600 text-sm pt-10 mt-10 border-t border-gray-900  max-md:flex-col max-md:gap-2">
             <p>
               &copy; {new Date().getFullYear()} FOLITRACKS. All rights reserved.
             </p>

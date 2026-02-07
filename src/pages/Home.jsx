@@ -9,6 +9,7 @@ import { HOWS, STATS, SERVICES, BRANDS } from "../components/Data.jsx";
 import Header from "../components/Header.jsx";
 import Stats from "../components/Stats.jsx";
 import Footer from "../components/Footer.jsx";
+import Faqs from "../components/Faq.jsx";
 
 function Home() {
   return (
@@ -157,6 +158,21 @@ function Home() {
       </Container>
       {/* REVIEW END */}
       {/* FAQS */}
+      <Container>
+        <Header
+          sub1="FAQS"
+          title="Frequently Asked Questions"
+          sub2="Find quick answers to common questions about our services, service tracking, and the QR Code system. If you still need help, our team is always ready to assist."
+        />
+        <Faqs />
+
+        <div className="flex gap-1 text-center w-full items-center justify-center mt-4">
+          <p>Can’t find the answer you’re looking for?</p>
+          <a href="#" className="text-(--red)">
+            Contact Us
+          </a>
+        </div>
+      </Container>
       {/* FAQS END */}
       {/* FOOTER  */}
       <Footer />
