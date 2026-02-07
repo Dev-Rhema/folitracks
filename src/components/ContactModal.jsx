@@ -42,7 +42,8 @@ function ContactModal({ isOpen, onClose }) {
           <div>
             <h2 className="text-3xl font-bold text-gray-900">Contact Us</h2>
             <p className="text-gray-600 text-sm mt-1">
-              Have questions or feedback? Fill in the form below and we will reach out to you soon.
+              Have questions or feedback? Fill in the form below and we will
+              reach out to you soon.
             </p>
           </div>
           <button
@@ -54,7 +55,10 @@ function ContactModal({ isOpen, onClose }) {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="px-8 py-6 max-md:px-6 space-y-6">
+        <form
+          onSubmit={handleSubmit}
+          className="px-8 py-6 max-md:px-6 space-y-6"
+        >
           {/* Topic Dropdown */}
           <div>
             <label className="block text-gray-900 font-semibold mb-2">

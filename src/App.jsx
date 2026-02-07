@@ -19,19 +19,24 @@ function App() {
         onClose={() => setIsContactModalOpen(false)}
       />
       <main className="flex flex-col pt-16">
-        
         <Routes>
           <Route
             path="/"
-            element={<Home onContactClick={() => setIsContactModalOpen(true)} />}
+            element={
+              <Home onContactClick={() => setIsContactModalOpen(true)} />
+            }
           />
           <Route
             path="/about"
-            element={<About onContactClick={() => setIsContactModalOpen(true)} />}
+            element={
+              <About onContactClick={() => setIsContactModalOpen(true)} />
+            }
           />
           <Route
             path="/services"
-            element={<Services onContactClick={() => setIsContactModalOpen(true)} />}
+            element={
+              <Services onContactClick={() => setIsContactModalOpen(true)} />
+            }
           />
           <Route path="/terms" element={<Terms />} />
           <Route path="/policy" element={<Policy />} />
