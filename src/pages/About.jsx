@@ -69,7 +69,7 @@ function About({ onContactClick }) {
       {/* BRINGING CLARITY */}
       <Container>
         <div className="flex flex-col gap-6">
-          <h1 className="text-5xl font-[title] font-black text-center max-md:text-[32px]">
+          <h1 className="text-5xl font-[title] font-black text-center max-md:text-[32px] px-20 max-lg:px-6 max-md:px-0">
             Bringing Clarity & Confidence to Car Maintenance
           </h1>
           <div className="grid grid-cols-2 gap-4 auto-rows-fr max-lg:grid-cols-1">

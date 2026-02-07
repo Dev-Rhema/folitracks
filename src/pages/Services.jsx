@@ -90,7 +90,7 @@ function Services({ onContactClick }) {
       {/* BRANDS */}
       <Brands />
       {/* BRANDS END */}
-      {/* BRINGING CLARITY */}
+      {/* OUR SERVICES */}
       <Container>
         <div className="flex flex-col gap-6">
           <Header
@@ -112,7 +112,7 @@ function Services({ onContactClick }) {
                 }
                 className="flex gap-20 justify-between items-center even:flex-row-reverse max-lg:even:flex-col max-lg:flex-col max-lg:gap-4 scroll-mt-20"
               >
-                <div className="flex flex-col gap-2 max-lg:w-full">
+                <div className="flex flex-col gap-2 w-1/2 max-lg:w-full">
                   <p className="text-[32px] font-[title] font-black">
                     {ourservice.title}
                   </p>
@@ -138,7 +138,7 @@ function Services({ onContactClick }) {
           </div>
         </div>
       </Container>
-      {/* BRINGING CLARITY END */}
+      {/* OUR SERVICES END */}
       {/* STATS  */}
       <Stats />
       {/* STATS END */}

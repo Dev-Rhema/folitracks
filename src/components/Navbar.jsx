@@ -20,7 +20,9 @@ function Navbar({ onContactClick }) {
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 md:py-4 w-full">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <img src={logo} alt="" />
+          <a href="/">
+            <img src={logo} alt="" />
+          </a>
 
           {/* Desktop Nav Links */}
           <div className="hidden lg:flex gap-8 items-center">
@@ -220,15 +222,9 @@ function Navbar({ onContactClick }) {
         >
           {/* Header */}
           <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-3 flex justify-between items-center">
-            <div className="flex items-center gap-1">
-              <div className="w-6 h-6 bg-red-600 rounded-full transform rotate-45 flex items-center justify-center flex-shrink-0">
-                <div className="w-3 h-3 bg-white rounded-full"></div>
-              </div>
-              <span className="font-bold text-lg">
-                <span className="text-blue-900">FOLIT</span>
-                <span className="text-red-600">RACKS</span>
-              </span>
-            </div>
+            <a href="/">
+              <img src={logo} alt="" />
+            </a>
             <button
               onClick={() => setMobileMenuOpen(false)}
               className="text-gray-800 hover:text-gray-600"
