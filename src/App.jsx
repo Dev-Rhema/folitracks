@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import ContactModal from "./components/ContactModal";
-import Auth from "./pages/Auth";
 
 function App() {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
