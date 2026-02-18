@@ -17,8 +17,7 @@ function App() {
         onClose={() => setIsContactModalOpen(false)}
       />
       <main className="flex flex-col pt-16">
-        <Auth />
-        {/* <Outlet context={{ onContactClick: handleContactClick }} /> */}
+        <Outlet context={{ onContactClick: handleContactClick }} />
       </main>
     </>
   );
