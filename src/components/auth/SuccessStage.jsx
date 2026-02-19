@@ -1,5 +1,6 @@
 import { Download, ArrowRight, CheckCircle } from "lucide-react";
 import CTA from "../CTA";
+import AuthLayout from "./AuthLayout";
 
 export default function SuccessStage({ onDownloadQR, onContinueDashboard }) {
   // Mock QR code - in real app, generate from backend
@@ -31,27 +32,16 @@ export default function SuccessStage({ onDownloadQR, onContinueDashboard }) {
   };
 
   return (
-    <div className="min-h-screen bg-white pt-20 pb-10">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <AuthLayout
+      title="Account & QR Code Created"
+      titleClassName="text-3xl sm:text-4xl font-bold mb-3 text-green-600 text-center"
+      subtitle="Your account has been created successfully and your unique QR code has been automatically generated."
+    >
+      <div className="text-center">
         {/* Success Icon */}
         <div className="mb-6 flex justify-center">
           <CheckCircle size={80} className="text-green-500" />
         </div>
-
-        {/* Heading */}
-        <h1
-          className="text-3xl sm:text-4xl font-bold mb-3 text-green-600"
-          style={{ fontFamily: "title" }}
-        >
-          Account & QR Code Created
-        </h1>
-        <p
-          className="text-sm sm:text-base text-gray-600 mb-8"
-          style={{ fontFamily: "body" }}
-        >
-          Your account has been created successfully and your unique QR code has
-          been automatically generated.
-        </p>
 
         {/* QR Code Display */}
         <div className="bg-gray-100 rounded p-8 mb-8 inline-block">
@@ -101,6 +91,6 @@ export default function SuccessStage({ onDownloadQR, onContinueDashboard }) {
           Continue to Dashboard
         </button>
       </div>
-    </div>
+    </AuthLayout>
   );
 }

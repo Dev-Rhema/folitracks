@@ -20,7 +20,7 @@ export default function FormInputField({
         value={value}
         onChange={onChange}
         required={required}
-        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+        className="w-full px-4 py-3 bg-[#EEEEEE] border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm placeholder-[#A5A5A5]"
       />
     </div>
   );

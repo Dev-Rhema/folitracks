@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { ChevronLeft, Lock } from "lucide-react";
+import { Lock } from "lucide-react";
 import CTA from "../CTA";
 import FileUploadField from "./FileUploadField";
 import FormInputField from "./FormInputField";
+import AuthLayout from "./AuthLayout";
+import CustomSelect from "./CustomSelect";
 
 export default function VehicleOwnershipStage({
   onContinue,
@@ -62,165 +64,142 @@ export default function VehicleOwnershipStage({
   const isIndividual = accountType === "individual";
 
   return (
-    <div className="min-h-screen bg-white pt-20 pb-10">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1
-          className="text-3xl sm:text-4xl font-bold text-center mb-3"
-          style={{ fontFamily: "title" }}
-        >
-          Confirm Vehicle Ownership
-        </h1>
-        <p
-          className="text-center text-sm sm:text-base text-gray-600 mb-8"
-          style={{ fontFamily: "body" }}
-        >
-          Provide the required documents to prove you are the rightful owner or
-          authorized dealer of this vehicle.
-        </p>
+    <AuthLayout
+      title="Confirm Vehicle Ownership"
+      subtitle="Provide the required documents to prove you are the rightful owner or authorized dealer of this vehicle."
+      onBack={onBack}
+    >
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-6"
+        style={{ fontFamily: "body" }}
+      >
+        {/* Account Type */}
+        <div>
+          <label
+            className="block text-sm font-medium text-gray-700 mb-2"
+            style={{ fontFamily: "title" }}
+          >
+            Account Type
+          </label>
+          <CustomSelect
+            value={accountType}
+            onChange={handleAccountTypeChange}
+            options={[
+              { value: "individual", label: "Individual Car Owner" },
+              { value: "business", label: "Automobile Related Business" },
+            ]}
+            placeholder="Select account type"
+          />
+        </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-6"
-          style={{ fontFamily: "body" }}
-        >
-          {/* Account Type */}
-          <div>
-            <label
-              className="block text-sm font-medium text-gray-700 mb-2"
-              style={{ fontFamily: "title" }}
-            >
-              Account Type
-            </label>
-            <select
-              value={accountType}
-              onChange={(e) => handleAccountTypeChange(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-100 rounded border border-gray-200 focus:outline-none focus:border-blue-500"
-            >
-              <option value="individual">Individual Car Owner</option>
-              <option value="business">Automobile Related Business</option>
-            </select>
-          </div>
+        {/* Name Field */}
+        <div>
+          <label
+            className="block text-sm font-medium text-gray-700 mb-2"
+            style={{ fontFamily: "title" }}
+          >
+            {isIndividual ? "Full Name" : "Business Name"}
+          </label>
+          <input
+            type="text"
+            value={formData.name}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, name: e.target.value }))
+            }
+            placeholder={
+              isIndividual
+                ? "Obafemi Olusuntimilehin"
+                : "Optional Olusuntimilehin"
+            }
+            className="w-full px-4 py-3 bg-gray-100 rounded border border-gray-200 focus:outline-none focus:border-blue-500"
+          />
+        </div>
 
-          {/* Name Field */}
-          <div>
-            <label
-              className="block text-sm font-medium text-gray-700 mb-2"
-              style={{ fontFamily: "title" }}
-            >
-              {isIndividual ? "Full Name" : "Business Name"}
-            </label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, name: e.target.value }))
-              }
-              placeholder={
-                isIndividual
-                  ? "Obafemi Olusuntimilehin"
-                  : "Optional Olusuntimilehin"
-              }
-              className="w-full px-4 py-3 bg-gray-100 rounded border border-gray-200 focus:outline-none focus:border-blue-500"
+        {/* Individual Car Owner Documents */}
+        {isIndividual && (
+          <>
+            {/* Vehicle Registration Document */}
+            <FileUploadField
+              label="Vehicle Registration Document"
+              fieldId="regDoc"
+              fileName={files.registrationDocument}
+              onFileChange={(e) => handleFileChange(e, "registrationDocument")}
             />
-          </div>
 
-          {/* Individual Car Owner Documents */}
-          {isIndividual && (
-            <>
-              {/* Vehicle Registration Document */}
-              <FileUploadField
-                label="Vehicle Registration Document"
-                fieldId="regDoc"
-                fileName={files.registrationDocument?.name}
-                onFileChange={(e) =>
-                  handleFileChange(e, "registrationDocument")
-                }
-              />
-
-              {/* Driver's License */}
-              <FileUploadField
-                label="Driver's License"
-                fieldId="driverLic"
-                fileName={files.driverLicense?.name}
-                onFileChange={(e) => handleFileChange(e, "driverLicense")}
-              />
-            </>
-          )}
-
-          {/* Business Documents */}
-          {!isIndividual && (
-            <>
-              {/* Business License */}
-              <div>
-                <label
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                  style={{ fontFamily: "title" }}
-                >
-                  Must match Business License/registration certificate
-                </label>
-                <p className="text-sm text-gray-600 mb-3">
-                  Business License / Registration Certificate
-                </p>
-                <FileUploadField
-                  label=""
-                  fieldId="busLic"
-                  fileName={files.businessLicense?.name}
-                  onFileChange={(e) => handleFileChange(e, "businessLicense")}
-                />
-              </div>
-
-              {/* Vehicle Registration Document */}
-              <FileUploadField
-                label="Vehicle Registration Document"
-                fieldId="busRegDoc"
-                fileName={files.registrationDocument?.name}
-                onFileChange={(e) =>
-                  handleFileChange(e, "registrationDocument")
-                }
-              />
-
-              {/* Representative's Driver License */}
-              <FileUploadField
-                label="Representative's Driver's License"
-                fieldId="repLic"
-                fileName={files.represLicense?.name}
-                onFileChange={(e) => handleFileChange(e, "represLicense")}
-              />
-            </>
-          )}
-
-          {/* Privacy Notice */}
-          <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
-            <p className="text-xs sm:text-sm text-blue-800 flex gap-2">
-              <Lock size={20} className="flex-shrink-0 mt-0.5" />
-              <span>
-                Your privacy is important to us. The documents you upload are
-                only used to confirm your vehicle details and ownership. We do
-                not share your information with third parties. All data is
-                securely stored and protected.
-              </span>
-            </p>
-          </div>
-
-          {/* Continue Button */}
-          <div className="pt-4">
-            <CTA
-              name="Continue"
-              color="blue"
-              className="w-full"
-              onClick={() => handleSubmit({ preventDefault: () => {} })}
+            {/* Driver's License */}
+            <FileUploadField
+              label="Driver's License"
+              fieldId="driverLic"
+              fileName={files.driverLicense}
+              onFileChange={(e) => handleFileChange(e, "driverLicense")}
             />
-          </div>
-        </form>
+          </>
+        )}
 
-        {/* Back Button */}
-        <button
-          onClick={onBack}
-          className="mt-8 text-gray-600 hover:text-gray-900 flex items-center gap-2 cursor-pointer"
-        >
-          <ChevronLeft size={20} /> Back
-        </button>
-      </div>
-    </div>
+        {/* Business Documents */}
+        {!isIndividual && (
+          <>
+            {/* Business License */}
+            <div>
+              <label
+                className="block text-sm font-medium text-gray-700 mb-2"
+                style={{ fontFamily: "title" }}
+              >
+                Must match Business License/registration certificate
+              </label>
+              <p className="text-sm text-gray-600 mb-3">
+                Business License / Registration Certificate
+              </p>
+              <FileUploadField
+                label=""
+                fieldId="busLic"
+                fileName={files.businessLicense}
+                onFileChange={(e) => handleFileChange(e, "businessLicense")}
+              />
+            </div>
+
+            {/* Vehicle Registration Document */}
+            <FileUploadField
+              label="Vehicle Registration Document"
+              fieldId="busRegDoc"
+              fileName={files.registrationDocument}
+              onFileChange={(e) => handleFileChange(e, "registrationDocument")}
+            />
+
+            {/* Representative's Driver License */}
+            <FileUploadField
+              label="Representative's Driver's License"
+              fieldId="repLic"
+              fileName={files.represLicense}
+              onFileChange={(e) => handleFileChange(e, "represLicense")}
+            />
+          </>
+        )}
+
+        {/* Privacy Notice */}
+        <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+          <p className="text-xs sm:text-sm text-blue-800 flex gap-2">
+            <Lock size={20} className="flex-shrink-0 mt-0.5" />
+            <span>
+              Your privacy is important to us. The documents you upload are only
+              used to confirm your vehicle details and ownership. We do not
+              share your information with third parties. All data is securely
+              stored and protected.
+            </span>
+          </p>
+        </div>
+
+        {/* Continue Button */}
+        <div className="pt-4">
+          <CTA
+            name="Continue"
+            color="blue"
+            className="w-full"
+            onClick={() => handleSubmit({ preventDefault: () => {} })}
+          />
+        </div>
+      </form>
+    </AuthLayout>
   );
 }
