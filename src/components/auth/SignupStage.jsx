@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { Eye, EyeOff, Check } from "lucide-react";
+import { Check, Circle } from "lucide-react";
 import CTA from "../CTA";
+import FormInputField from "./FormInputField";
+import PasswordInputField from "./PasswordInputField";
 
 export default function SignupStage({ onContinue, onScanQR }) {
   const [formData, setFormData] = useState({
@@ -95,150 +97,145 @@ export default function SignupStage({ onContinue, onScanQR }) {
           style={{ fontFamily: "body" }}
         >
           {/* Full Name */}
-          <div>
-            <label
-              className="block text-sm font-medium text-gray-700 mb-2"
-              style={{ fontFamily: "title" }}
-            >
-              Full Name
-            </label>
-            <input
-              type="text"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleChange}
-              placeholder="Obafemi Martins"
-              className="w-full px-4 py-3 bg-gray-100 rounded border border-gray-200 focus:outline-none focus:border-blue-500"
-              required
-            />
-          </div>
+          <FormInputField
+            label="Full Name"
+            name="fullName"
+            type="text"
+            placeholder="Obafemi Martins"
+            value={formData.fullName}
+            onChange={handleChange}
+            required
+          />
 
           {/* Email */}
-          <div>
-            <label
-              className="block text-sm font-medium text-gray-700 mb-2"
-              style={{ fontFamily: "title" }}
-            >
-              Email Address
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="youremail@example.com"
-              className="w-full px-4 py-3 bg-gray-100 rounded border border-gray-200 focus:outline-none focus:border-blue-500"
-              required
-            />
-          </div>
+          <FormInputField
+            label="Email Address"
+            name="email"
+            type="email"
+            placeholder="youremail@example.com"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
 
           {/* Phone */}
-          <div>
-            <label
-              className="block text-sm font-medium text-gray-700 mb-2"
-              style={{ fontFamily: "title" }}
-            >
-              Phone Number
-            </label>
-            <input
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="+234 912 653 1214"
-              className="w-full px-4 py-3 bg-gray-100 rounded border border-gray-200 focus:outline-none focus:border-blue-500"
-              required
-            />
-          </div>
+          <FormInputField
+            label="Phone Number"
+            name="phone"
+            type="tel"
+            placeholder="+234 912 653 1214"
+            value={formData.phone}
+            onChange={handleChange}
+            required
+          />
 
           {/* Password */}
-          <div>
-            <label
-              className="block text-sm font-medium text-gray-700 mb-2"
-              style={{ fontFamily: "title" }}
-            >
-              Password
-            </label>
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="••••••••••••"
-                className="w-full px-4 py-3 bg-gray-100 rounded border border-gray-200 focus:outline-none focus:border-blue-500"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
-              >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
-            </div>
+          <PasswordInputField
+            label="Password"
+            name="password"
+            placeholder="••••••••••••"
+            value={formData.password}
+            onChange={handleChange}
+            showPassword={showPassword}
+            onTogglePassword={() => setShowPassword(!showPassword)}
+            required
+          />
 
-            {/* Password Requirements */}
-            <div
-              className="mt-4 space-y-2 text-xs sm:text-sm"
-              style={{ fontFamily: "body" }}
-            >
-              <div
-                className={`flex items-center gap-2 ${passwordChecks.length ? "text-gray-600" : "text-gray-400"}`}
+          {/* Password Requirements */}
+          <div
+            className="mt-4 space-y-2 text-xs sm:text-sm"
+            style={{ fontFamily: "body" }}
+          >
+            <div className="flex items-center gap-2">
+              {passwordChecks.length ? (
+                <div className="w-5 h-5 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Check size={12} className="text-white" />
+                </div>
+              ) : (
+                <Circle size={16} className="text-gray-400" />
+              )}
+              <span
+                className={
+                  passwordChecks.length ? "text-gray-600" : "text-gray-400"
+                }
               >
-                {passwordChecks.length ? (
-                  <Check size={16} />
-                ) : (
-                  <div className="w-4 h-4" />
-                )}
                 Must be at least 8 characters long
-              </div>
-              <div
-                className={`flex items-center gap-2 ${passwordChecks.number ? "text-gray-600" : "text-gray-400"}`}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              {passwordChecks.number ? (
+                <div className="w-5 h-5 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Check size={12} className="text-white" />
+                </div>
+              ) : (
+                <Circle size={16} className="text-gray-400" />
+              )}
+              <span
+                className={
+                  passwordChecks.number ? "text-gray-600" : "text-gray-400"
+                }
               >
-                {passwordChecks.number ? (
-                  <Check size={16} />
-                ) : (
-                  <div className="w-4 h-4" />
-                )}
                 Must contain at least one number (0-9)
-              </div>
-              <div
-                className={`flex items-center gap-2 ${passwordChecks.uppercase ? "text-gray-600" : "text-gray-400"}`}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              {passwordChecks.uppercase ? (
+                <div className="w-5 h-5 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Check size={12} className="text-white" />
+                </div>
+              ) : (
+                <Circle size={16} className="text-gray-400" />
+              )}
+              <span
+                className={
+                  passwordChecks.uppercase ? "text-gray-600" : "text-gray-400"
+                }
               >
-                {passwordChecks.uppercase ? (
-                  <Check size={16} />
-                ) : (
-                  <div className="w-4 h-4" />
-                )}
                 Must contain at least one uppercase letter (A-Z)
-              </div>
-              <div
-                className={`flex items-center gap-2 ${passwordChecks.lowercase ? "text-green-600" : "text-gray-400"}`}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              {passwordChecks.lowercase ? (
+                <div className="w-5 h-5 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Check size={12} className="text-white" />
+                </div>
+              ) : (
+                <Circle size={16} className="text-gray-400" />
+              )}
+              <span
+                className={
+                  passwordChecks.lowercase ? "text-gray-600" : "text-gray-400"
+                }
               >
-                {passwordChecks.lowercase ? (
-                  <Check size={16} />
-                ) : (
-                  <div className="w-4 h-4" />
-                )}
                 Must contain at least one lowercase letter (a-z)
-              </div>
-              <div
-                className={`flex items-center gap-2 ${passwordChecks.special ? "text-green-600" : "text-gray-400"}`}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              {passwordChecks.special ? (
+                <div className="w-5 h-5 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Check size={12} className="text-white" />
+                </div>
+              ) : (
+                <Circle size={16} className="text-gray-400" />
+              )}
+              <span
+                className={
+                  passwordChecks.special ? "text-gray-600" : "text-gray-400"
+                }
               >
-                {passwordChecks.special ? (
-                  <Check size={16} />
-                ) : (
-                  <div className="w-4 h-4" />
-                )}
                 Must contain at least one special character (!@#$%^&*)
-              </div>
+              </span>
             </div>
           </div>
 
           {/* Continue Button */}
           <div className="pt-4">
-            <CTA name="Continue" color="blue" onClick={handleContinueClick} />
+            <CTA
+              name="Continue"
+              color="blue"
+              className="w-full"
+              onClick={handleContinueClick}
+            />
           </div>
         </form>
 
@@ -250,7 +247,7 @@ export default function SignupStage({ onContinue, onScanQR }) {
           Already have your QR Code?{" "}
           <button
             onClick={onScanQR}
-            className="text-red-500 font-semibold hover:underline"
+            className="text-red-500 font-semibold hover:underline cursor-pointer"
           >
             Scan QR Code
           </button>

@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { ChevronLeft, Upload, Lock, FileText } from "lucide-react";
+import { ChevronLeft, Lock } from "lucide-react";
 import CTA from "../CTA";
+import FileUploadField from "./FileUploadField";
+import FormInputField from "./FormInputField";
 
 export default function VehicleOwnershipStage({
   onContinue,
@@ -126,87 +128,22 @@ export default function VehicleOwnershipStage({
           {isIndividual && (
             <>
               {/* Vehicle Registration Document */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Vehicle Registration Document
-                </label>
-                <div className="border-2 border-dashed border-gray-300 rounded p-6 sm:p-8 text-center">
-                  {files.registrationDocument ? (
-                    <div className="bg-black text-white p-3 rounded inline-block flex items-center gap-2">
-                      <FileText size={18} /> {files.registrationDocument.name}
-                    </div>
-                  ) : (
-                    <>
-                      <Upload
-                        size={32}
-                        className="mx-auto mb-2 text-gray-400"
-                      />
-                      <p className="text-xs sm:text-sm">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            document.getElementById("regDoc").click()
-                          }
-                          className="text-blue-900 font-semibold hover:underline"
-                        >
-                          Click to Upload
-                        </button>{" "}
-                        or drag and drop
-                      </p>
-                      <input
-                        id="regDoc"
-                        type="file"
-                        onChange={(e) =>
-                          handleFileChange(e, "registrationDocument")
-                        }
-                        className="hidden"
-                      />
-                    </>
-                  )}
-                </div>
-              </div>
+              <FileUploadField
+                label="Vehicle Registration Document"
+                fieldId="regDoc"
+                fileName={files.registrationDocument?.name}
+                onFileChange={(e) =>
+                  handleFileChange(e, "registrationDocument")
+                }
+              />
 
               {/* Driver's License */}
-              <div>
-                <label
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                  style={{ fontFamily: "title" }}
-                >
-                  Driver's License
-                </label>
-                <div className="border-2 border-dashed border-gray-300 rounded p-6 sm:p-8 text-center">
-                  {files.driverLicense ? (
-                    <div className="bg-black text-white p-3 rounded inline-block flex items-center gap-2">
-                      <FileText size={18} /> {files.driverLicense.name}
-                    </div>
-                  ) : (
-                    <>
-                      <Upload
-                        size={32}
-                        className="mx-auto mb-2 text-gray-400"
-                      />
-                      <p className="text-xs sm:text-sm">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            document.getElementById("driverLic").click()
-                          }
-                          className="text-blue-900 font-semibold hover:underline"
-                        >
-                          Click to Upload
-                        </button>{" "}
-                        or drag and drop
-                      </p>
-                      <input
-                        id="driverLic"
-                        type="file"
-                        onChange={(e) => handleFileChange(e, "driverLicense")}
-                        className="hidden"
-                      />
-                    </>
-                  )}
-                </div>
-              </div>
+              <FileUploadField
+                label="Driver's License"
+                fieldId="driverLic"
+                fileName={files.driverLicense?.name}
+                onFileChange={(e) => handleFileChange(e, "driverLicense")}
+              />
             </>
           )}
 
@@ -224,122 +161,31 @@ export default function VehicleOwnershipStage({
                 <p className="text-sm text-gray-600 mb-3">
                   Business License / Registration Certificate
                 </p>
-                <div className="border-2 border-dashed border-gray-300 rounded p-6 sm:p-8 text-center">
-                  {files.businessLicense ? (
-                    <div className="bg-black text-white p-3 rounded inline-block flex items-center gap-2">
-                      <FileText size={18} /> {files.businessLicense.name}
-                    </div>
-                  ) : (
-                    <>
-                      <Upload
-                        size={32}
-                        className="mx-auto mb-2 text-gray-400"
-                      />
-                      <p className="text-xs sm:text-sm">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            document.getElementById("busLic").click()
-                          }
-                          className="text-blue-900 font-semibold hover:underline"
-                        >
-                          Click to Upload
-                        </button>{" "}
-                        or drag and drop
-                      </p>
-                      <input
-                        id="busLic"
-                        type="file"
-                        onChange={(e) => handleFileChange(e, "businessLicense")}
-                        className="hidden"
-                      />
-                    </>
-                  )}
-                </div>
+                <FileUploadField
+                  label=""
+                  fieldId="busLic"
+                  fileName={files.businessLicense?.name}
+                  onFileChange={(e) => handleFileChange(e, "businessLicense")}
+                />
               </div>
 
               {/* Vehicle Registration Document */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Vehicle Registration Document
-                </label>
-                <div className="border-2 border-dashed border-gray-300 rounded p-8 text-center">
-                  {files.registrationDocument ? (
-                    <div className="bg-black text-white p-3 rounded inline-block flex items-center gap-2">
-                      <FileText size={18} /> {files.registrationDocument.name}
-                    </div>
-                  ) : (
-                    <>
-                      <Upload
-                        size={32}
-                        className="mx-auto mb-2 text-gray-400"
-                      />
-                      <p className="text-xs sm:text-sm">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            document.getElementById("busRegDoc").click()
-                          }
-                          className="text-blue-900 font-semibold hover:underline"
-                        >
-                          Click to Upload
-                        </button>{" "}
-                        or drag and drop
-                      </p>
-                      <input
-                        id="busRegDoc"
-                        type="file"
-                        onChange={(e) =>
-                          handleFileChange(e, "registrationDocument")
-                        }
-                        className="hidden"
-                      />
-                    </>
-                  )}
-                </div>
-              </div>
+              <FileUploadField
+                label="Vehicle Registration Document"
+                fieldId="busRegDoc"
+                fileName={files.registrationDocument?.name}
+                onFileChange={(e) =>
+                  handleFileChange(e, "registrationDocument")
+                }
+              />
 
               {/* Representative's Driver License */}
-              <div>
-                <label
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                  style={{ fontFamily: "title" }}
-                >
-                  Representative's Driver's License
-                </label>
-                <div className="border-2 border-dashed border-gray-300 rounded p-6 sm:p-8 text-center">
-                  {files.represLicense ? (
-                    <div className="bg-black text-white p-3 rounded inline-block flex items-center gap-2">
-                      <FileText size={18} /> {files.represLicense.name}
-                    </div>
-                  ) : (
-                    <>
-                      <Upload
-                        size={32}
-                        className="mx-auto mb-2 text-gray-400"
-                      />
-                      <p className="text-xs sm:text-sm">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            document.getElementById("repLic").click()
-                          }
-                          className="text-blue-900 font-semibold hover:underline"
-                        >
-                          Click to Upload
-                        </button>{" "}
-                        or drag and drop
-                      </p>
-                      <input
-                        id="repLic"
-                        type="file"
-                        onChange={(e) => handleFileChange(e, "represLicense")}
-                        className="hidden"
-                      />
-                    </>
-                  )}
-                </div>
-              </div>
+              <FileUploadField
+                label="Representative's Driver's License"
+                fieldId="repLic"
+                fileName={files.represLicense?.name}
+                onFileChange={(e) => handleFileChange(e, "represLicense")}
+              />
             </>
           )}
 
@@ -361,6 +207,7 @@ export default function VehicleOwnershipStage({
             <CTA
               name="Continue"
               color="blue"
+              className="w-full"
               onClick={() => handleSubmit({ preventDefault: () => {} })}
             />
           </div>
@@ -369,7 +216,7 @@ export default function VehicleOwnershipStage({
         {/* Back Button */}
         <button
           onClick={onBack}
-          className="mt-8 text-gray-600 hover:text-gray-900 flex items-center gap-2"
+          className="mt-8 text-gray-600 hover:text-gray-900 flex items-center gap-2 cursor-pointer"
         >
           <ChevronLeft size={20} /> Back
         </button>

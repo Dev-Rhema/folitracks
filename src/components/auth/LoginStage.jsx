@@ -1,6 +1,9 @@
 import { useState } from "react";
-import { Camera, Upload, Eye, EyeOff } from "lucide-react";
+import { Camera, Upload } from "lucide-react";
 import CTA from "../CTA";
+import TabNavigation from "./TabNavigation";
+import FormInputField from "./FormInputField";
+import PasswordInputField from "./PasswordInputField";
 
 export default function LoginStage({ onContinue, onSignup }) {
   const [activeTab, setActiveTab] = useState("scan");
@@ -51,41 +54,15 @@ export default function LoginStage({ onContinue, onSignup }) {
         </p>
 
         {/* Tab Navigation */}
-        <div
-          className="flex gap-2 sm:gap-4 mb-8 border-b border-gray-200 overflow-x-auto"
-          style={{ fontFamily: "body" }}
-        >
-          <button
-            onClick={() => setActiveTab("scan")}
-            className={`pb-3 whitespace-nowrap text-xs sm:text-base ${
-              activeTab === "scan"
-                ? "text-blue-900 border-b-2 border-blue-900 font-semibold"
-                : "text-gray-500"
-            }`}
-          >
-            Scan QR Code
-          </button>
-          <button
-            onClick={() => setActiveTab("upload")}
-            className={`pb-3 whitespace-nowrap text-xs sm:text-base ${
-              activeTab === "upload"
-                ? "text-blue-900 border-b-2 border-blue-900 font-semibold"
-                : "text-gray-500"
-            }`}
-          >
-            Upload QR Code
-          </button>
-          <button
-            onClick={() => setActiveTab("email")}
-            className={`pb-3 whitespace-nowrap text-xs sm:text-base ${
-              activeTab === "email"
-                ? "text-blue-900 border-b-2 border-blue-900 font-semibold"
-                : "text-gray-500"
-            }`}
-          >
-            Sign in with Email
-          </button>
-        </div>
+        <TabNavigation
+          tabs={[
+            { id: "scan", label: "Scan QR Code" },
+            { id: "upload", label: "Upload QR Code" },
+            { id: "email", label: "Sign in with Email" },
+          ]}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+        />
 
         {/* Scan QR Tab */}
         {activeTab === "scan" && (
@@ -104,6 +81,7 @@ export default function LoginStage({ onContinue, onSignup }) {
                   </span>
                 }
                 color="blue"
+                className="w-full"
                 onClick={handleScanQR}
               />
             </div>
@@ -126,7 +104,7 @@ export default function LoginStage({ onContinue, onSignup }) {
                 <p className="text-xs sm:text-sm">
                   <span
                     onClick={() => document.getElementById("qr-upload").click()}
-                    className="text-blue-900 font-semibold hover:underline"
+                    className="text-blue-900 font-semibold hover:underline cursor-pointer\"
                   >
                     Click to Upload
                   </span>{" "}
@@ -134,10 +112,11 @@ export default function LoginStage({ onContinue, onSignup }) {
                 </p>
               </label>
             </div>
-            <div className="pt-4">
+            <div className="pt-4 w-full">
               <CTA
                 name="Upload File"
                 color="blue"
+                className="w-full"
                 onClick={() => document.getElementById("qr-upload").click()}
               />
             </div>
@@ -152,51 +131,27 @@ export default function LoginStage({ onContinue, onSignup }) {
             style={{ fontFamily: "body" }}
           >
             {/* Email */}
-            <div>
-              <label
-                className="block text-sm font-medium text-gray-700 mb-2"
-                style={{ fontFamily: "title" }}
-              >
-                Email Address
-              </label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                placeholder="youremail@example.com"
-                className="w-full px-4 py-3 bg-gray-100 rounded border border-gray-200 focus:outline-none focus:border-blue-500"
-                required
-              />
-            </div>
+            <FormInputField
+              label="Email Address"
+              name="email"
+              type="email"
+              placeholder="youremail@example.com"
+              value={formData.email}
+              onChange={handleInputChange}
+              required
+            />
 
             {/* Password */}
-            <div>
-              <label
-                className="block text-sm font-medium text-gray-700 mb-2"
-                style={{ fontFamily: "title" }}
-              >
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  placeholder="••••••••••••"
-                  className="w-full px-4 py-3 bg-gray-100 rounded border border-gray-200 focus:outline-none focus:border-blue-500"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
-                >
-                  {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
-                </button>
-              </div>
-            </div>
+            <PasswordInputField
+              label="Password"
+              name="password"
+              placeholder="••••••••••••"
+              value={formData.password}
+              onChange={handleInputChange}
+              showPassword={showPassword}
+              onTogglePassword={() => setShowPassword(!showPassword)}
+              required
+            />
 
             {/* Forgot Password Link */}
             <div className="text-right">
@@ -210,7 +165,12 @@ export default function LoginStage({ onContinue, onSignup }) {
 
             {/* Sign In Button */}
             <div className="pt-4">
-              <CTA name="Sign In" color="blue" type="submit" />
+              <CTA
+                name="Sign In"
+                color="blue"
+                className="w-full"
+                type="submit"
+              />
             </div>
           </form>
         )}
@@ -223,7 +183,7 @@ export default function LoginStage({ onContinue, onSignup }) {
           Don't have your QR code yet?{" "}
           <button
             onClick={onSignup}
-            className="text-red-500 font-semibold hover:underline"
+            className="text-red-500 font-semibold hover:underline cursor-pointer"
           >
             Register Your Car
           </button>

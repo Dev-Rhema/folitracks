@@ -44,7 +44,7 @@ function Navbar({ onContactClick }) {
                 </Link>
                 <button
                   onClick={() => toggleDropdown("services")}
-                  className="text-gray-800 hover:text-blue-900 transition-colors duration-200 text-sm p-1"
+                  className="text-gray-800 hover:text-blue-900 transition-colors duration-200 text-sm p-1 cursor-pointer"
                 >
                   <svg
                     className={`w-4 h-4 transition-transform duration-300 ${openDropdown === "services" ? "rotate-180" : ""}`}
@@ -119,7 +119,7 @@ function Navbar({ onContactClick }) {
             >
               <button
                 onClick={() => toggleDropdown("resources")}
-                className="text-gray-800 hover:text-blue-900 transition-colors duration-200 flex items-center gap-1 text-sm"
+                className="text-gray-800 hover:text-blue-900 transition-colors duration-200 flex items-center gap-1 text-sm cursor-pointer"
               >
                 Resources
                 <svg
@@ -203,7 +203,7 @@ function Navbar({ onContactClick }) {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden flex flex-col gap-1"
+            className="lg:hidden flex flex-col gap-1 cursor-pointer\"
           >
             <div
               className={`w-6 h-0.5 bg-gray-800 transition-all duration-300 ${mobileMenuOpen ? "rotate-45 translate-y-2" : ""}`}
@@ -275,7 +275,7 @@ function Navbar({ onContactClick }) {
                 </Link>
                 <button
                   onClick={() => toggleDropdown("services")}
-                  className="text-gray-800 hover:text-blue-900 transition-colors duration-200 px-4 py-3"
+                  className="text-gray-800 hover:text-blue-900 transition-colors duration-200 px-4 py-3 cursor-pointer"
                 >
                   <svg
                     className={`w-5 h-5 transition-transform duration-300 ${openDropdown === "services" ? "rotate-180" : ""}`}
@@ -362,7 +362,7 @@ function Navbar({ onContactClick }) {
             <div>
               <button
                 onClick={() => toggleDropdown("resources")}
-                className="w-full text-left text-gray-800 hover:text-blue-900 transition-colors duration-200 py-3 px-4 text-lg font-medium flex items-center justify-between"
+                className="w-full text-left text-gray-800 hover:text-blue-900 transition-colors duration-200 py-3 px-4 text-lg font-medium flex items-center justify-between cursor-pointer"
               >
                 Resources
                 <svg

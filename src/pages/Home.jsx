@@ -8,12 +8,13 @@ import Footer from "../components/Footer.jsx";
 import Faqs from "../components/Faq.jsx";
 import Brands from "../components/Brands.jsx";
 import React, { useEffect } from "react";
-import { useLocation, useOutletContext } from "react-router-dom";
+import { useLocation, useOutletContext, useNavigate } from "react-router-dom";
 import FooterBanner from "../components/footerBanner.jsx";
 
 function Home() {
   const location = useLocation();
   const { onContactClick } = useOutletContext();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Scroll to hash if present
@@ -32,7 +33,7 @@ function Home() {
   return (
     <section className="h-screen max-lg:h-full relative">
       <div
-        className="absolute top-0 left-0 w-full  h-screen"
+        className="absolute top-0 left-0 w-full h-screen -z-10"
         style={{
           backgroundImage: `url(${imageUrls.heroBg})`,
           backgroundPosition: "top",
@@ -41,7 +42,7 @@ function Home() {
         }}
       />
       {/* HERO */}
-      <div className="h-full w-full inline-flex xl:pl-30  pl-10 max-lg:flex max-lg:flex-col max-lg:static max-lg:px-10 tracking-tight max-md:px-4 max-md:pt-12">
+      <div className="h-full w-full flex xl:pl-30 pl-10 max-lg:flex max-lg:flex-col max-lg:static max-lg:px-10 tracking-tight max-md:px-4 max-md:pt-12 relative z-10">
         <div className=" flex flex-col gap-2 w-[60%] justify-center max-lg:w-full max-lg:justify-center max-lg:text-center max-lg:mb-6 max-md:mb-4">
           <p className="text-(--red) text-sm ">
             QR-ENABLED VEHICLE SERVICE SYSTEM
@@ -55,8 +56,16 @@ function Home() {
             vehicle’s complete service history.
           </p>
           <div className="flex gap-4 max-lg:gap-2 max-lg:justify-center max-md:flex-col">
-            <CTA color="red" name="Repair Your Car" />
-            <CTA color="blue" name="Scan QR Code" />
+            <CTA
+              color="red"
+              name="Repair Your Car"
+              onClick={() => navigate("/sign-up")}
+            />
+            <CTA
+              color="blue"
+              name="Scan QR Code"
+              onClick={() => navigate("/login")}
+            />
           </div>
         </div>
         <div className="flex justify-end bottom-0 right-0 absolute max-lg:static max-lg:justify-center">
@@ -129,9 +138,18 @@ function Home() {
                   </p>
                   <p className="text-[18px] mb-4 max-lg:text-sm">{how.body}</p>
                   {how.btn && (
-                    <p className="text-[16px] px-6 py-3 font-[body] text-(--white) bg-(--red) inline rounded-md ">
+                    <button
+                      onClick={() => {
+                        if (how.id === 1) {
+                          navigate("/sign-up");
+                        } else if (how.id === 2) {
+                          navigate("/login");
+                        }
+                      }}
+                      className="text-[16px] px-6 py-3 font-[body] text-(--white) bg-(--red) rounded-md hover:opacity-90 transition-opacity cursor-pointer"
+                    >
                       {how.btn}
-                    </p>
+                    </button>
                   )}
                 </div>
               </div>
@@ -203,8 +221,10 @@ function Home() {
           place."
         button1="Register Your Car"
         button1Color="red"
+        button1Click={() => navigate("/sign-up")}
         button2="Scan QR Code"
         button2Color="blue"
+        button2Click={() => navigate("/login")}
         img={imageUrls.ctaImg}
       />
       <Footer onContactClick={onContactClick} />

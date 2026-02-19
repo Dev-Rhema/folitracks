@@ -87,6 +87,7 @@ export default function SuccessStage({ onDownloadQR, onContinueDashboard }) {
               </span>
             }
             color="blue"
+            className="w-full"
             onClick={handleDownloadQR}
           />
         </div>
@@ -94,7 +95,7 @@ export default function SuccessStage({ onDownloadQR, onContinueDashboard }) {
         {/* Continue to Dashboard Button */}
         <button
           onClick={onContinueDashboard}
-          className="w-full border-2 text-white font-semibold py-3 rounded hover:opacity-90"
+          className="w-full border-2 text-white font-semibold py-3 rounded hover:opacity-90 cursor-pointer"
           style={{ backgroundColor: "var(--blue)", borderColor: "var(--blue)" }}
         >
           Continue to Dashboard

@@ -8,6 +8,9 @@ import About from "./pages/About.jsx";
 import Services from "./pages/Services.jsx";
 import Terms from "./pages/Terms.jsx";
 import Policy from "./pages/Policy.jsx";
+import Auth from "./pages/Auth.jsx";
+import Login from "./pages/Login.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
 
 const router = createBrowserRouter([
   {
@@ -33,6 +36,18 @@ const router = createBrowserRouter([
       {
         path: "policy",
         element: <Policy />,
+      },
+      {
+        path: "sign-up",
+        element: <Auth />,
+      },
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "dashboard",
+        element: <Dashboard />,
       },
     ],
   },

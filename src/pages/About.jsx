@@ -1,4 +1,4 @@
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 import { imageUrls } from "../config/imageUrls";
 import Container from "../components/Container";
 import Brands from "../components/Brands";
@@ -10,6 +10,7 @@ import FooterBanner from "../components/footerBanner";
 
 function About() {
   const { onContactClick } = useOutletContext();
+  const navigate = useNavigate();
   return (
     <section>
       {/* ABOUT HERO */}
@@ -112,6 +113,7 @@ function About() {
         subTitle="Stay in control of your vehicle’s maintenance. Schedule a service today and experience car care that’s simple, transparent, and powered by precision."
         button1="Schedule Service"
         button1Color="red"
+        button1Click={() => navigate("/sign-up")}
         img={imageUrls.ctaImg}
       />
       <Footer onContactClick={onContactClick} />

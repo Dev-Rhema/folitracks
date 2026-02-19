@@ -1,14 +1,15 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import SignupStage from "../components/auth/SignupStage";
 import OTPStage from "../components/auth/OTPStage";
 import VehicleRegistrationStage from "../components/auth/VehicleRegistrationStage";
 import VehicleOwnershipStage from "../components/auth/VehicleOwnershipStage";
 import SuccessStage from "../components/auth/SuccessStage";
-import LoginStage from "../components/auth/LoginStage";
 
 export default function Auth() {
-  const [currentStage, setCurrentStage] = useState("signup"); // signup, otp, vehicle, ownership, success, login
+  const navigate = useNavigate();
+  const [currentStage, setCurrentStage] = useState("signup"); // signup, otp, vehicle, ownership, success
   const [authData, setAuthData] = useState({});
   const [stageHistory, setStageHistory] = useState(["signup"]);
 
@@ -20,8 +21,7 @@ export default function Auth() {
   };
 
   const handleSignupQRClick = () => {
-    setCurrentStage("login");
-    setStageHistory((prev) => [...prev, "login"]);
+    navigate("/login");
   };
 
   // Handle OTP Stage
@@ -72,21 +72,7 @@ export default function Auth() {
   };
 
   const handleContinueDashboard = () => {
-    // Navigate to dashboard
-    console.log("Going to dashboard with auth data:", authData);
-    // window.location.href = '/dashboard';
-  };
-
-  // Handle Login Stage
-  const handleLoginContinue = (data) => {
-    console.log("Login attempt:", data);
-    // API call to authenticate
-  };
-
-  const handleLoginSignup = () => {
-    setCurrentStage("signup");
-    setStageHistory(["signup"]);
-    setAuthData({});
+    navigate("/dashboard");
   };
 
   return (
@@ -139,13 +125,6 @@ export default function Auth() {
           <SuccessStage
             onDownloadQR={handleDownloadQR}
             onContinueDashboard={handleContinueDashboard}
-          />
-        )}
-
-        {currentStage === "login" && (
-          <LoginStage
-            onContinue={handleLoginContinue}
-            onSignup={handleLoginSignup}
           />
         )}
       </div>

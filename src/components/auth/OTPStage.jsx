@@ -77,6 +77,7 @@ export default function OTPStage({ email, onContinue, onBack, onResend }) {
             <CTA
               name="Continue"
               color="blue"
+              className="w-full"
               onClick={handleSubmit}
               disabled={otp.some((digit) => !digit)}
             />
@@ -91,7 +92,7 @@ export default function OTPStage({ email, onContinue, onBack, onResend }) {
           Didn't receive OTP?{" "}
           <button
             onClick={onResend}
-            className="text-red-500 font-semibold hover:underline"
+            className="text-red-500 font-semibold hover:underline cursor-pointer"
           >
             Resend OTP
           </button>
@@ -100,7 +101,7 @@ export default function OTPStage({ email, onContinue, onBack, onResend }) {
         {/* Back Button */}
         <button
           onClick={onBack}
-          className="mt-12 text-gray-600 hover:text-gray-900 flex items-center gap-2"
+          className="mt-12 text-gray-600 hover:text-gray-900 flex items-center gap-2 cursor-pointer"
         >
           <ChevronLeft size={20} /> Back
         </button>

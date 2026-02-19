@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ChevronLeft } from "lucide-react";
 import CTA from "../CTA";
+import FormInputField from "./FormInputField";
 
 const VEHICLE_MAKES = [
   "Toyota",
@@ -124,66 +125,44 @@ export default function VehicleRegistrationStage({ onContinue, onBack }) {
           </div>
 
           {/* Year of Manufacture */}
-          <div>
-            <label
-              className="block text-sm font-medium text-gray-700 mb-2"
-              style={{ fontFamily: "title" }}
-            >
-              Year of Manufacture
-            </label>
-            <input
-              type="text"
-              name="year"
-              value={formData.year}
-              onChange={handleChange}
-              placeholder="2017"
-              className="w-full px-4 py-3 bg-gray-100 rounded border border-gray-200 focus:outline-none focus:border-blue-500"
-              required
-            />
-          </div>
+          <FormInputField
+            label="Year of Manufacture"
+            name="year"
+            type="text"
+            placeholder="2017"
+            value={formData.year}
+            onChange={handleChange}
+            required
+          />
 
           {/* Vehicle Plate Number */}
-          <div>
-            <label
-              className="block text-sm font-medium text-gray-700 mb-2"
-              style={{ fontFamily: "title" }}
-            >
-              Vehicle Plate Number
-            </label>
-            <input
-              type="text"
-              name="plateNumber"
-              value={formData.plateNumber}
-              onChange={handleChange}
-              placeholder="Enter Vehicle Plate Number"
-              className="w-full px-4 py-3 bg-gray-100 rounded border border-gray-200 focus:outline-none focus:border-blue-500"
-              required
-            />
-          </div>
+          <FormInputField
+            label="Vehicle Plate Number"
+            name="plateNumber"
+            type="text"
+            placeholder="Enter Vehicle Plate Number"
+            value={formData.plateNumber}
+            onChange={handleChange}
+            required
+          />
 
           {/* VIN */}
-          <div>
-            <label
-              className="block text-sm font-medium text-gray-700 mb-2"
-              style={{ fontFamily: "title" }}
-            >
-              VIN <span className="text-gray-500">(Optional)</span>
-            </label>
-            <input
-              type="text"
-              name="vin"
-              value={formData.vin}
-              onChange={handleChange}
-              placeholder="Enter Vehicle Identification Number"
-              className="w-full px-4 py-3 bg-gray-100 rounded border border-gray-200 focus:outline-none focus:border-blue-500"
-            />
-          </div>
+          <FormInputField
+            label="VIN (Optional)"
+            name="vin"
+            type="text"
+            placeholder="Enter Vehicle Identification Number"
+            value={formData.vin}
+            onChange={handleChange}
+            required={false}
+          />
 
           {/* Continue Button */}
           <div className="pt-4">
             <CTA
               name="Continue"
               color="blue"
+              className="w-full"
               onClick={() => handleSubmit({ preventDefault: () => {} })}
             />
           </div>
@@ -192,7 +171,7 @@ export default function VehicleRegistrationStage({ onContinue, onBack }) {
         {/* Back Button */}
         <button
           onClick={onBack}
-          className="mt-8 text-gray-600 hover:text-gray-900 flex items-center gap-2"
+          className="mt-8 text-gray-600 hover:text-gray-900 flex items-center gap-2 cursor-pointer"
         >
           <ChevronLeft size={20} /> Back
         </button>

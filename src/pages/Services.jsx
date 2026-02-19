@@ -7,11 +7,12 @@ import Footer from "../components/Footer";
 import React, { useEffect } from "react";
 import FooterBanner from "../components/footerBanner";
 import Header from "../components/Header";
-import { useLocation, useOutletContext } from "react-router-dom";
+import { useLocation, useOutletContext, useNavigate } from "react-router-dom";
 
 function Services() {
   const location = useLocation();
   const { onContactClick } = useOutletContext();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Scroll to hash if present
@@ -148,8 +149,10 @@ function Services() {
         subTitle="Register your vehicle, get your unique QR code, and enjoy full visibility into every service and repair all from one place."
         button1="Register Your Car"
         button1Color="red"
+        button1Click={() => navigate("/sign-up")}
         button2="Scan QR Code"
         button2Color="blue"
+        button2Click={() => navigate("/login")}
         img={imageUrls.ctaImg}
       />
       <Footer onContactClick={onContactClick} />

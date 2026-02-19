@@ -9,8 +9,10 @@ function FooterBanner({
   subTitle = "",
   button1 = "",
   button1Color = "",
+  button1Click = null,
   button2 = "",
   button2Color = "",
+  button2Click = null,
   img = "",
 }) {
   return (
@@ -24,8 +26,10 @@ function FooterBanner({
           </p>
           <p className="text-(--lightGrey)">{subTitle}</p>
           <div className="gap-4 flex justify-center max-md:flex-col max-lg:gap-2 w-full">
-            <CTA name={button1} color={button1Color} />
-            {button2 && <CTA name={button2} color={button2Color} />}
+            <CTA name={button1} color={button1Color} onClick={button1Click} />
+            {button2 && (
+              <CTA name={button2} color={button2Color} onClick={button2Click} />
+            )}
           </div>
         </div>
       </Container>
