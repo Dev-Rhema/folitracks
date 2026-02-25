@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import Navbar from "../components/Navbar";
 import SignupStage from "../components/auth/SignupStage";
 import OTPStage from "../components/auth/OTPStage";
@@ -7,93 +8,83 @@ import VehicleRegistrationStage from "../components/auth/VehicleRegistrationStag
 import VehicleOwnershipStage from "../components/auth/VehicleOwnershipStage";
 import SuccessStage from "../components/auth/SuccessStage";
 
+const URL_STAGES = ["vehicle", "ownership", "success"];
+const ALL_STAGES = ["signup", "otp", "vehicle", "ownership", "success"];
+
 export default function Auth() {
   const navigate = useNavigate();
-  const [currentStage, setCurrentStage] = useState("signup"); // signup, otp, vehicle, ownership, success
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { userInfo } = useSelector((state) => state.app);
   const [authData, setAuthData] = useState({});
-  const [stageHistory, setStageHistory] = useState(["signup"]);
 
-  // Handle Signup Stage
+
+  const stepFromUrl = searchParams.get("step");
+  const currentStage = URL_STAGES.includes(stepFromUrl) ? stepFromUrl : stepFromUrl === "otp" ? "otp" : "signup";
+
+  const goToUrlStep = (step) => setSearchParams({ step });
+
+  const stageIndex = ALL_STAGES.indexOf(currentStage);
+
+  // ── Signup ──────────────────────────────────────────────
   const handleSignupContinue = (data) => {
     setAuthData((prev) => ({ ...prev, ...data }));
-    setCurrentStage("otp");
-    setStageHistory((prev) => [...prev, "otp"]);
+    setSearchParams({ step: "otp" });
   };
 
-  const handleSignupQRClick = () => {
-    navigate("/login");
-  };
+  const handleSignupQRClick = () => navigate("/login");
 
-  // Handle OTP Stage
+  // ── OTP ─────────────────────────────────────────────────
   const handleOTPContinue = (data) => {
-    setAuthData((prev) => ({ ...prev, otp: data.otp }));
-    setCurrentStage("vehicle");
-    setStageHistory((prev) => [...prev, "vehicle"]);
+    setAuthData((prev) => ({ ...prev, ...data }));
+    // From here on, the step is in the URL so refresh is safe
+    goToUrlStep("vehicle");
   };
 
-  const handleOTPBack = () => {
-    setCurrentStage("signup");
-    setStageHistory((prev) => prev.slice(0, -1));
-  };
+  const handleOTPBack = () => setSearchParams({});   // back to signup (no param)
 
   const handleOTPResend = () => {
-    // API call to resend OTP
     console.log("Resending OTP to:", authData.email);
   };
 
-  // Handle Vehicle Registration Stage
   const handleVehicleContinue = (data) => {
     setAuthData((prev) => ({ ...prev, vehicle: data }));
-    setCurrentStage("ownership");
-    setStageHistory((prev) => [...prev, "ownership"]);
+    goToUrlStep("ownership");
   };
 
-  const handleVehicleBack = () => {
-    setCurrentStage("otp");
-    setStageHistory((prev) => prev.slice(0, -1));
+  const handleVehicleBack = (data) => {
+    if (data) setAuthData((prev) => ({ ...prev, vehicle: data }));
+    setSearchParams({ step: "otp" });
   };
 
-  // Handle Vehicle Ownership Stage
   const handleOwnershipContinue = (data) => {
     setAuthData((prev) => ({ ...prev, ownership: data }));
-    setCurrentStage("success");
-    setStageHistory((prev) => [...prev, "success"]);
+    goToUrlStep("success");
   };
 
-  const handleOwnershipBack = () => {
-    setCurrentStage("vehicle");
-    setStageHistory((prev) => prev.slice(0, -1));
+  const handleOwnershipBack = (data) => {
+    if (data) setAuthData((prev) => ({ ...prev, ownership: data }));
+    goToUrlStep("vehicle");
   };
 
-  // Handle Success Stage
-  const handleDownloadQR = () => {
-    console.log("Downloading QR code...");
-    // Implement QR code download
-  };
-
-  const handleContinueDashboard = () => {
-    navigate("/dashboard");
-  };
+  const handleDownloadQR = () => console.log("Downloading QR code...");
+  const handleContinueDashboard = () => navigate("/dashboard");
 
   return (
-    <div className="min-h-screen bg-white pt-20">
-      {/* Navbar */}
+    <div className="min-h-screen bg-white pt-3">
       <Navbar />
 
-      {/* Progress line */}
+      {/* Progress line driven by stage index */}
       <div
-        className="h-1 bg-linear-to-r from-blue-500 to-blue-900"
-        style={{
-          width: `${(stageHistory.length / 6) * 100}%`,
-        }}
-      ></div>
+        className="h-1 bg-linear-to-r from-blue-500 to-blue-900 transition-all duration-300"
+        style={{ width: `${((stageIndex + 1) / ALL_STAGES.length) * 100}%` }}
+      />
 
-      {/* Stage Content */}
       <div className="flex-1">
         {currentStage === "signup" && (
           <SignupStage
             onContinue={handleSignupContinue}
             onScanQR={handleSignupQRClick}
+            defaultValues={authData}
           />
         )}
 
@@ -110,6 +101,7 @@ export default function Auth() {
           <VehicleRegistrationStage
             onContinue={handleVehicleContinue}
             onBack={handleVehicleBack}
+            defaultValues={authData.vehicle}
           />
         )}
 
@@ -117,13 +109,14 @@ export default function Auth() {
           <VehicleOwnershipStage
             onContinue={handleOwnershipContinue}
             onBack={handleOwnershipBack}
-            fullName={authData.fullName}
+            fullName={userInfo?.fullname || ""}
+            vehicleData={authData.vehicle}
+            defaultValues={authData.ownership}
           />
         )}
 
         {currentStage === "success" && (
           <SuccessStage
-            onDownloadQR={handleDownloadQR}
             onContinueDashboard={handleContinueDashboard}
           />
         )}

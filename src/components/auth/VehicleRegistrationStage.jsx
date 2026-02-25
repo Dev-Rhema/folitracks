@@ -1,18 +1,15 @@
-import { useState } from "react";
+import { ChevronLeft } from "lucide-react";
 import CTA from "../CTA";
 import FormInputField from "./FormInputField";
-import AuthLayout from "./AuthLayout";
-import CustomSelect from "./CustomSelect";
+import SearchableSelect from "./SearchableSelect";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { vehicleSchema } from "../../validation/authSchema";
+import { useSelector } from "react-redux";
 
 const VEHICLE_MAKES = [
-  "Toyota",
-  "Lexus",
-  "Mercedes-Benz",
-  "Ford",
-  "BMW",
-  "Hyundai",
-  "KIA",
-  "Other",
+  "Toyota", "Lexus", "Mercedes-Benz", "Ford",
+  "BMW", "Hyundai", "KIA", "Other",
 ];
 
 const VEHICLE_MODELS = {
@@ -26,131 +23,146 @@ const VEHICLE_MODELS = {
   Other: ["Other Model"],
 };
 
-export default function VehicleRegistrationStage({ onContinue, onBack }) {
-  const [formData, setFormData] = useState({
-    make: "",
-    model: "",
-    year: "",
-    plateNumber: "",
-    vin: "",
+export default function VehicleRegistrationStage({ onContinue, onBack, defaultValues }) {
+
+  const userInfo = useSelector(state => state.app.userInfo);
+
+  console.log("User Info:", userInfo);
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    watch,
+    setValue,
+    getValues,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(vehicleSchema),
+    mode: "all",
+    defaultValues: {
+      make: defaultValues?.make || "",
+      vehicleModel: defaultValues?.vehicleModel || "",
+      yearOfManufacture: defaultValues?.yearOfManufacture || "",
+      plateNumber: defaultValues?.plateNumber || "",
+      vin: defaultValues?.vin || "",
+    },
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const selectedMake = watch("make");
+  const availableModels = VEHICLE_MODELS[selectedMake] || [];
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (
-      formData.make &&
-      formData.model &&
-      formData.year &&
-      formData.plateNumber
-    ) {
-      onContinue(formData);
-    }
-  };
+  console.log("Errors:", errors);
 
-  const availableModels = VEHICLE_MODELS[formData.make] || [];
+  const onSubmit = (data) => {
+    console.log("Form Data:", data);
+    onContinue(data);
+  };
 
   return (
-    <AuthLayout
-      title="Vehicle Registration"
-      subtitle="Provide your car details so we can build an accurate service profile for you."
-      onBack={onBack}
-    >
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-6"
-        style={{ fontFamily: "body" }}
-      >
-        {/* Vehicle Make */}
-        <div>
-          <label
-            className="block text-sm font-medium text-gray-700 mb-2"
-            style={{ fontFamily: "title" }}
-          >
-            Vehicle Make
-          </label>
-          <CustomSelect
-            value={formData.make}
-            onChange={(value) =>
-              handleChange({ target: { name: "make", value } })
-            }
-            options={VEHICLE_MAKES.map((make) => ({
-              value: make,
-              label: make,
-            }))}
-            placeholder="Type to search"
+    <div className="min-h-screen bg-white pt-20 pb-10">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1
+          className="text-3xl sm:text-4xl font-bold text-center mb-3"
+          style={{ fontFamily: "title" }}
+        >
+          Vehicle Registration
+        </h1>
+        <p
+          className="text-center text-sm sm:text-base text-gray-600 mb-8"
+          style={{ fontFamily: "body" }}
+        >
+          Provide your car details so we can build an accurate service profile for you.
+        </p>
+
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-6"
+          style={{ fontFamily: "body" }}
+        >
+          {/* Vehicle Make */}
+          <Controller
+            name="make"
+            control={control}
+            render={({ field }) => (
+              <SearchableSelect
+                label="Vehicle Make"
+                options={VEHICLE_MAKES}
+                value={field.value}
+                onChange={(val) => {
+                  field.onChange(val);
+                  // Reset model when make changes
+                  setValue("vehicleModel", "", { shouldValidate: true });
+                }}
+                placeholder="Select vehicle make"
+                error={errors.make?.message}
+                required
+              />
+            )}
           />
-        </div>
 
-        {/* Vehicle Model */}
-        <div>
-          <label
-            className="block text-sm font-medium text-gray-700 mb-2"
-            style={{ fontFamily: "title" }}
-          >
-            Vehicle Model
-          </label>
-          <CustomSelect
-            value={formData.model}
-            onChange={(value) =>
-              handleChange({ target: { name: "model", value } })
-            }
-            disabled={!formData.make}
-            options={availableModels.map((model) => ({
-              value: model,
-              label: model,
-            }))}
-            placeholder="Type to search"
+          {/* Vehicle Model */}
+          <Controller
+            name="vehicleModel"
+            control={control}
+            render={({ field }) => (
+              <SearchableSelect
+                label="Vehicle Model"
+                options={availableModels}
+                value={field.value}
+                onChange={field.onChange}
+                placeholder={selectedMake ? "Select vehicle model" : "Select a make first"}
+                disabled={!selectedMake}
+                error={errors.vehicleModel?.message}
+                required
+              />
+            )}
           />
-        </div>
 
-        {/* Year of Manufacture */}
-        <FormInputField
-          label="Year of Manufacture"
-          name="year"
-          type="text"
-          placeholder="2017"
-          value={formData.year}
-          onChange={handleChange}
-          required
-        />
-
-        {/* Vehicle Plate Number */}
-        <FormInputField
-          label="Vehicle Plate Number"
-          name="plateNumber"
-          type="text"
-          placeholder="Enter Vehicle Plate Number"
-          value={formData.plateNumber}
-          onChange={handleChange}
-          required
-        />
-
-        {/* VIN */}
-        <FormInputField
-          label="VIN (Optional)"
-          name="vin"
-          type="text"
-          placeholder="Enter Vehicle Identification Number"
-          value={formData.vin}
-          onChange={handleChange}
-          required={false}
-        />
-
-        {/* Continue Button */}
-        <div className="pt-4">
-          <CTA
-            name="Continue"
-            color="blue"
-            className="w-full"
-            onClick={() => handleSubmit({ preventDefault: () => {} })}
+          {/* Year of Manufacture */}
+          <FormInputField
+            label="Year of Manufacture"
+            name="yearOfManufacture"
+            type="text"
+            placeholder="2017"
+            error={errors.yearOfManufacture?.message}
+            {...register("yearOfManufacture")}
           />
-        </div>
-      </form>
-    </AuthLayout>
+
+          {/* Vehicle Plate Number */}
+          <FormInputField
+            label="Vehicle Plate Number"
+            name="plateNumber"
+            type="text"
+            placeholder="Enter Vehicle Plate Number"
+            error={errors.plateNumber?.message}
+            {...register("plateNumber")}
+          />
+
+          {/* VIN (optional) */}
+          <FormInputField
+            label="VIN"
+            name="vin"
+            type="text"
+            placeholder="Enter Vehicle Identification Number"
+            error={errors.vin?.message}
+            {...register("vin")}
+          />
+
+          {/* Continue Button */}
+          <div className="pt-4">
+              <CTA name="Continue" color="blue" className="w-full"  type="submit"/>
+          </div>
+        </form>
+
+        {/* <button
+          onClick={() => onBack(getValues())}
+          className="mt-8 text-gray-600 hover:text-gray-900 flex items-center gap-2 cursor-pointer"
+        >
+          <ChevronLeft size={20} /> Back
+        </button> */}
+      </div>
+    </div>
   );
 }
+

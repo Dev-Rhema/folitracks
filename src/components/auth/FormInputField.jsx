@@ -3,9 +3,9 @@ export default function FormInputField({
   name,
   type = "text",
   placeholder,
-  value,
-  onChange,
   required = false,
+  error,
+  ...props
 }) {
   return (
     <div className="mb-4">
@@ -17,11 +17,12 @@ export default function FormInputField({
         type={type}
         name={name}
         placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        required={required}
-        className="w-full px-4 py-3 bg-[#EEEEEE] border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm placeholder-[#A5A5A5]"
+        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm ${
+          error ? "border-red-500" : "border-gray-300"
+        }`}
+        {...props}
       />
+      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
     </div>
   );
 }

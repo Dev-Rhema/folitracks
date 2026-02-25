@@ -1,5 +1,3 @@
-import React from "react";
-
 function CTA({
   name = "",
   color = "",
@@ -7,15 +5,20 @@ function CTA({
   type = "button",
   disabled = false,
   className = "",
+  variant = "filled",
 }) {
+  const isOutline = variant === "outline";
+
   return (
     <button
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`text-[16px] cursor-pointer px-6 py-3 font-[body] text-(--white) rounded-md  disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+      className={`text-[16px] cursor-pointer px-6 py-3 font-[body] rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 ${className}`}
       style={{
-        backgroundColor: `var(--${color})`,
+        backgroundColor: isOutline ? "white" : `var(--${color})`,
+        color: isOutline ? `var(--${color})` : "var(--white)",
+        border: isOutline ? `1px solid var(--${color})` : "none",
       }}
     >
       {name}

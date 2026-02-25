@@ -1,8 +1,13 @@
 import { useState, useRef } from "react";
 import CTA from "../CTA";
+import { useVerifyUserEmailMutation } from "../../redux/api/authApiSlice";
+import usePost from "../../hooks/usePost";
+import { setUserInfo } from "../../redux/slices/appSlice";
+import { useDispatch } from "react-redux";
 import AuthLayout from "./AuthLayout";
 
 export default function OTPStage({ email, onContinue, onBack, onResend }) {
+  const dispatch = useDispatch();
   const [otp, setOtp] = useState(["", "", "", ""]);
   const inputRefs = useRef([]);
 
@@ -24,14 +29,24 @@ export default function OTPStage({ email, onContinue, onBack, onResend }) {
       inputRefs.current[index - 1]?.focus();
     }
   };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const otpCode = otp.join("");
-    if (otpCode.length === 4) {
-      onContinue({ otp: otpCode });
+  
+  const { postData: verifyUserEmail, isLoading: isVerifying } = usePost(useVerifyUserEmailMutation);
+ 
+  const handleSubmit = async (e) => {
+    if (e) e.preventDefault();
+    const response = await verifyUserEmail({ code: otp.join("")});
+    if (response) {
+      console.log("OTP Verification Response:", response);
+      // Store the token in the global state
+      dispatch(setUserInfo({ 
+        authResponse: { 
+          accessToken: response?.token || response?.data?.token 
+        } 
+      }));
+      onContinue(response);
     }
   };
+
 
   return (
     <AuthLayout
@@ -66,17 +81,17 @@ export default function OTPStage({ email, onContinue, onBack, onResend }) {
           ))}
         </div>
 
-        {/* Continue Button */}
-        <div className="pt-4">
-          <CTA
-            name="Continue"
-            color="blue"
-            className="w-full"
-            onClick={handleSubmit}
-            disabled={otp.some((digit) => !digit)}
-          />
-        </div>
-      </form>
+          {/* Continue Button */}
+          <div className="pt-4">
+            <CTA
+              name={isVerifying ? "Verifying..." : "Continue"}
+              color="blue"
+              className="w-full"
+              onClick={handleSubmit}
+              disabled={otp.some((digit) => !digit) || isVerifying}
+            />
+          </div>
+        </form>
 
       {/* Resend OTP */}
       <p

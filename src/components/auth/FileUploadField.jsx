@@ -73,7 +73,8 @@ export default function FileUploadField({
       <label className="block text-sm font-medium text-gray-700 mb-2">
         {label}
       </label>
-      <div className="border-2 border-dashed border-gray-300 rounded p-6 sm:p-8 text-center">
+
+      <div className="border-2 border-dashed border-gray-300 rounded text-center">
         {fileInfo ? (
           <div className="w-full">
             {isImage && preview ? (
@@ -103,7 +104,7 @@ export default function FileUploadField({
             )}
           </div>
         ) : (
-          <>
+          <div className="min-h-[200px] flex flex-col items-center justify-center">
             <Upload size={32} className="mx-auto mb-2 text-gray-400" />
             <p className="text-xs sm:text-sm">
               <button
@@ -115,7 +116,7 @@ export default function FileUploadField({
               </button>{" "}
               or drag and drop
             </p>
-          </>
+          </div>
         )}
         <input
           type="file"

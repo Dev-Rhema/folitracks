@@ -3,179 +3,245 @@ import { Lock } from "lucide-react";
 import CTA from "../CTA";
 import FileUploadField from "./FileUploadField";
 import FormInputField from "./FormInputField";
-import AuthLayout from "./AuthLayout";
-import CustomSelect from "./CustomSelect";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { vehicleOwnershipSchema } from "../../validation/authSchema";
+import { useRegisterVehicleMutation } from "../../redux/api/vehicleApiSlice";
+import { useUploadDocumentMutation } from "../../redux/api/documentApiSlice";
+import usePost from "../../hooks/usePost";
+import { toast } from "react-toastify";
+import { ChevronLeft } from "lucide-react";
+
+const ACCOUNT_TYPE_LABELS = {
+  individual: "Individual Car Owner",
+  business: "Automobile Related Business",
+};
 
 export default function VehicleOwnershipStage({
   onContinue,
   onBack,
   fullName,
+  vehicleData,
+  defaultValues,
 }) {
-  const [accountType, setAccountType] = useState("individual");
+  const { postData: registerVehicle, isLoading: isRegistering } = usePost(useRegisterVehicleMutation);
+  const { postData: uploadDocument, isLoading: isUploading } = usePost(useUploadDocumentMutation);
+
   const [files, setFiles] = useState({
-    registrationDocument: null,
-    driverLicense: null,
-    businessLicense: null,
-    represLicense: null,
-  });
-  const [formData, setFormData] = useState({
-    name: accountType === "individual" ? fullName : "",
+    vehicleRegistrationDocument: defaultValues?.files?.vehicleRegistrationDocument || null,
+    driverLicense: defaultValues?.files?.driverLicense || null,
+    businessLicense: defaultValues?.files?.businessLicense || null,
   });
 
+  const [uploadedUrls, setUploadedUrls] = useState({
+    vehicleRegistrationDocument: defaultValues?.uploadedUrls?.vehicleRegistrationDocument || null,
+    driverLicense: defaultValues?.uploadedUrls?.driverLicense || null,
+    businessLicense: defaultValues?.uploadedUrls?.businessLicense || null,
+  });
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    getValues,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(vehicleOwnershipSchema),
+    mode: "all",
+    defaultValues: {
+      accountType: defaultValues?.accountType || "individual",
+      fullName: defaultValues?.fullName || fullName || "",
+      businessName: defaultValues?.businessName || "",
+    },
+  });
+
+  const accountType = watch("accountType");
+  const isIndividual = accountType === "individual";
+
   const handleAccountTypeChange = (type) => {
-    setAccountType(type);
-    setFormData({ name: type === "individual" ? fullName : "" });
+    setValue("accountType", type, { shouldValidate: true });
+    if (type === "individual") {
+      setValue("fullName", fullName || "", { shouldValidate: false });
+      setValue("businessName", "");
+    } else {
+      setValue("fullName", "");
+      setValue("businessName", "", { shouldValidate: false });
+    }
     setFiles({
-      registrationDocument: null,
+      vehicleRegistrationDocument: null,
       driverLicense: null,
       businessLicense: null,
-      represLicense: null,
     });
   };
 
-  const handleFileChange = (e, fileType) => {
+  const handleFileChange = async (e, fileKey) => {
     const file = e.target.files?.[0];
     if (file) {
-      setFiles((prev) => ({ ...prev, [fileType]: file }));
+      setFiles((prev) => ({ ...prev, [fileKey]: file }));
+      
+      try {
+        const formData = new FormData();
+        formData.append("files", file);
+        
+        const response = await uploadDocument(formData, "Document uploaded successfully!");
+        if (response) {
+          const url = response?.data?.[0]
+          setUploadedUrls((prev) => ({ ...prev, [fileKey]: url }));
+        }
+      } catch (error) {
+        console.error("Upload error:", error);
+        setFiles((prev) => ({ ...prev, [fileKey]: null }));
+        setUploadedUrls((prev) => ({ ...prev, [fileKey]: null }));
+      }
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
 
-    const requiredFiles =
-      accountType === "individual"
-        ? [files.registrationDocument, files.driverLicense]
-        : [
-            files.businessLicense,
-            files.registrationDocument,
-            files.represLicense,
-          ];
+  const onSubmit = async (data) => {
+    const requiredUrls = isIndividual
+      ? [uploadedUrls.vehicleRegistrationDocument, uploadedUrls.driverLicense]
+      : [uploadedUrls.vehicleRegistrationDocument, uploadedUrls.businessLicense];
 
-    if (requiredFiles.every((f) => f)) {
-      onContinue({
-        accountType,
-        name: formData.name,
-        files,
-      });
+      console.log("Required URLs:", requiredUrls);
+
+    if (!requiredUrls.every(Boolean)) {
+      toast.error("Please upload all required documents and wait for them to finish.");
+      return;
+    }
+
+    try {
+      const payload = {
+        make: vehicleData?.make || "",
+        vehicleModel: vehicleData?.vehicleModel || "",
+        yearOfManufacture: vehicleData?.yearOfManufacture || "",
+        plateNumber: vehicleData?.plateNumber || "",
+        vin: vehicleData?.vin || "",
+        accountType: ACCOUNT_TYPE_LABELS[data.accountType],
+        ...(isIndividual
+          ? { fullName: data.fullName }
+          : { businessName: data.businessName }),
+        vehicleRegistrationDocument: uploadedUrls.vehicleRegistrationDocument,
+        driverLicense: uploadedUrls.driverLicense,
+        ...(isIndividual ? {} : { businessLicense: uploadedUrls.businessLicense })
+      };
+
+      const response = await registerVehicle(
+        payload,
+        "Vehicle registered successfully!"
+      );
+      if (response) {
+        onContinue(response);
+      }
+    } catch (error) {
+      console.error("Error during vehicle registration:", error);
+      const errorMsg = error?.data?.message || error?.message || "Failed to register vehicle. Please try again.";
+      toast.error(errorMsg);
     }
   };
-
-  const isIndividual = accountType === "individual";
 
   return (
-    <AuthLayout
-      title="Confirm Vehicle Ownership"
-      subtitle="Provide the required documents to prove you are the rightful owner or authorized dealer of this vehicle."
-      onBack={onBack}
-    >
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-6"
-        style={{ fontFamily: "body" }}
-      >
-        {/* Account Type */}
-        <div>
-          <label
-            className="block text-sm font-medium text-gray-700 mb-2"
-            style={{ fontFamily: "title" }}
-          >
-            Account Type
-          </label>
-          <CustomSelect
-            value={accountType}
-            onChange={handleAccountTypeChange}
-            options={[
-              { value: "individual", label: "Individual Car Owner" },
-              { value: "business", label: "Automobile Related Business" },
-            ]}
-            placeholder="Select account type"
-          />
-        </div>
+    <div className="min-h-screen bg-white pt-20 pb-10">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1
+          className="text-3xl sm:text-4xl font-bold text-center mb-3"
+          style={{ fontFamily: "title" }}
+        >
+          Confirm Vehicle Ownership
+        </h1>
+        <p
+          className="text-center text-sm sm:text-base text-gray-600 mb-8"
+          style={{ fontFamily: "body" }}
+        >
+          Provide the required documents to prove you are the rightful owner or
+          authorized dealer of this vehicle.
+        </p>
 
-        {/* Name Field */}
-        <div>
-          <label
-            className="block text-sm font-medium text-gray-700 mb-2"
-            style={{ fontFamily: "title" }}
-          >
-            {isIndividual ? "Full Name" : "Business Name"}
-          </label>
-          <input
-            type="text"
-            value={formData.name}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, name: e.target.value }))
-            }
-            placeholder={
-              isIndividual
-                ? "Obafemi Olusuntimilehin"
-                : "Optional Olusuntimilehin"
-            }
-            className="w-full px-4 py-3 bg-gray-100 rounded border border-gray-200 focus:outline-none focus:border-blue-500"
-          />
-        </div>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-6"
+          style={{ fontFamily: "body" }}
+        >
+          {/* Account Type */}
+          <div>
+            <label
+              className="block text-sm font-medium text-gray-700 mb-2"
+              style={{ fontFamily: "title" }}
+            >
+              Account Type
+            </label>
+            <select
+              value={accountType}
+              onChange={(e) => handleAccountTypeChange(e.target.value)}
+              className="w-full px-4 py-3 bg-gray-100 rounded border border-gray-200 focus:outline-none focus:border-blue-500"
+            >
+              <option value="individual">Individual Car Owner</option>
+              <option value="business">Automobile Related Business</option>
+            </select>
+          </div>
 
-        {/* Individual Car Owner Documents */}
-        {isIndividual && (
-          <>
-            {/* Vehicle Registration Document */}
-            <FileUploadField
-              label="Vehicle Registration Document"
-              fieldId="regDoc"
-              fileName={files.registrationDocument}
-              onFileChange={(e) => handleFileChange(e, "registrationDocument")}
+          {/* Full Name (individual) */}
+          {isIndividual && (
+            <FormInputField
+              label="Full Name"
+              placeholder="Obafemi Olusuntimilehin"
+              error={errors.fullName?.message}
+              {...register("fullName")}
             />
+          )}
 
-            {/* Driver's License */}
-            <FileUploadField
-              label="Driver's License"
-              fieldId="driverLic"
-              fileName={files.driverLicense}
-              onFileChange={(e) => handleFileChange(e, "driverLicense")}
+          {/* Business Name (business) */}
+          {!isIndividual && (
+            <FormInputField
+              label="Business Name"
+              placeholder="Acme Auto Ltd."
+              error={errors.businessName?.message}
+              {...register("businessName")}
             />
-          </>
-        )}
+          )}
 
-        {/* Business Documents */}
-        {!isIndividual && (
-          <>
-            {/* Business License */}
-            <div>
-              <label
-                className="block text-sm font-medium text-gray-700 mb-2"
-                style={{ fontFamily: "title" }}
-              >
-                Must match Business License/registration certificate
-              </label>
-              <p className="text-sm text-gray-600 mb-3">
-                Business License / Registration Certificate
-              </p>
+
+          {/* Individual Documents */}
+          {isIndividual && (
+            <>
               <FileUploadField
-                label=""
-                fieldId="busLic"
-                fileName={files.businessLicense}
-                onFileChange={(e) => handleFileChange(e, "businessLicense")}
+                label="Vehicle Registration Document"
+                fieldId="regDoc"
+                fileName={files.vehicleRegistrationDocument}
+                onFileChange={(e) => handleFileChange(e, "vehicleRegistrationDocument")}
               />
-            </div>
+              
+              <FileUploadField
+                label="Driver's License"
+                fieldId="driverLic"
+                fileName={files.driverLicense}
+                onFileChange={(e) => handleFileChange(e, "driverLicense")}
+              />
+            </>
+          )}
 
-            {/* Vehicle Registration Document */}
-            <FileUploadField
-              label="Vehicle Registration Document"
-              fieldId="busRegDoc"
-              fileName={files.registrationDocument}
-              onFileChange={(e) => handleFileChange(e, "registrationDocument")}
-            />
-
-            {/* Representative's Driver License */}
-            <FileUploadField
-              label="Representative's Driver's License"
-              fieldId="repLic"
-              fileName={files.represLicense}
-              onFileChange={(e) => handleFileChange(e, "represLicense")}
-            />
-          </>
-        )}
+          {/* Business Documents */}
+          {!isIndividual && (
+            <>
+              <div>
+                <p className="text-sm font-medium text-gray-700 mb-1" style={{ fontFamily: "title" }}>
+                  Must match Business License / Registration Certificate
+                </p>
+                <FileUploadField
+                  label="Business License / Registration Certificate"
+                  fieldId="busLic"
+                  fileName={files.businessLicense}
+                  onFileChange={(e) => handleFileChange(e, "businessLicense")}
+                />
+              </div>
+              <FileUploadField
+                label="Vehicle Registration Document"
+                fieldId="busRegDoc"
+                fileName={files.vehicleRegistrationDocument}
+                onFileChange={(e) => handleFileChange(e, "vehicleRegistrationDocument")}
+              />
+            </>
+          )}
 
         {/* Privacy Notice */}
         <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
@@ -190,16 +256,25 @@ export default function VehicleOwnershipStage({
           </p>
         </div>
 
-        {/* Continue Button */}
-        <div className="pt-4">
-          <CTA
-            name="Continue"
-            color="blue"
-            className="w-full"
-            onClick={() => handleSubmit({ preventDefault: () => {} })}
-          />
-        </div>
-      </form>
-    </AuthLayout>
+          {/* Continue Button */}
+          <div className="pt-4">
+            <button type="submit" className="w-full" disabled={isRegistering || isUploading}>
+              <CTA
+                name={isRegistering || isUploading ? "Submitting..." : "Continue"}
+                color="blue"
+                className="w-full"
+              />
+            </button>
+          </div>
+        </form>
+
+        <button
+          onClick={() => onBack({ ...getValues(), files, uploadedUrls })}
+          className="mt-8 text-gray-600 hover:text-gray-900 flex items-center gap-2 cursor-pointer"
+        >
+          <ChevronLeft size={20} /> Back
+        </button>
+      </div>
+    </div>
   );
 }

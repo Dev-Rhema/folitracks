@@ -44,7 +44,7 @@ function Home() {
       {/* HERO */}
       <div className="h-full w-full flex xl:pl-30 pl-10 max-lg:flex max-lg:flex-col max-lg:static max-lg:px-10 tracking-tight max-md:px-4 max-md:pt-12 relative z-10">
         <div className=" flex flex-col gap-2 w-[60%] justify-center max-lg:w-full max-lg:justify-center max-lg:text-center max-lg:mb-6 max-md:mb-4">
-          <p className="text-(--red) text-sm ">
+          <p className="text-(--red) text-sm max-lg:mt-5">
             QR-ENABLED VEHICLE SERVICE SYSTEM
           </p>
           <p className="text-[56px] font-bold leading-tight tracking-tight max-md:text-[40px]">
