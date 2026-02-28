@@ -11,56 +11,85 @@ import Settings from "./Settings";
 import AddVehicleForm from "./AddVehicleForm";
 import EditVehicleForm from "./EditVehicleForm";
 import RemoveVehicleModal from "./RemoveVehicleModal";
+import navIcon1 from "../../assets/dashboardImgs/dashNavs/nav1.svg";
+import navIcon2 from "../../assets/dashboardImgs/dashNavs/nav2.svg";
+import navIcon3 from "../../assets/dashboardImgs/dashNavs/nav3.svg";
+import navIcon4 from "../../assets/dashboardImgs/dashNavs/nav4.svg";
+import logoutIcon from "../../assets/dashboardImgs/dashNavs/logout.svg";
 
 const DASHNAVS = [
-  { id: 1, name: "Dashboard" },
-  { id: 2, name: "Vehicles" },
-  { id: 3, name: "Service History" },
-  { id: 4, name: "Settings" },
+  { id: 1, name: "Dashboard", img: navIcon1, path: "/dashboard", dot: false },
+  {
+    id: 2,
+    name: "Vehicles",
+    img: navIcon2,
+    path: "/dashboard/vehicles",
+    dot: false,
+  },
+  {
+    id: 3,
+    name: "Service History",
+    img: navIcon3,
+    path: "/dashboard/service-history",
+    dot: true,
+  },
+  {
+    id: 4,
+    name: "Settings",
+    img: navIcon4,
+    path: "/dashboard/settings",
+    dot: false,
+  },
 ];
 
 function DashNav({ currentPath }) {
-  const getNavPath = (name) => {
-    const pathMap = {
-      Dashboard: "/dashboard",
-      Vehicles: "/dashboard/vehicles",
-      "Service History": "/dashboard/service-history",
-      Settings: "/dashboard/settings",
-    };
-    return pathMap[name] || "/dashboard";
-  };
-
   return (
-    <div className="w-75 bg-white h-screen flex flex-col justify-between py-6 border-r fixed z-1">
-      <div className="flex flex-col gap-10">
+    <div className="w-70 bg-white h-screen flex flex-col justify-between py-6 border-r fixed z-1">
+      <div className="flex flex-col gap-8">
         <div className="pl-6">
           <img src={imageUrls.logo} alt="" />
         </div>
-        <div className="pl-6 flex flex-col gap-10">
-          {DASHNAVS.map((dashNavItem) => {
-            const navPath = getNavPath(dashNavItem.name);
-            const isActive = currentPath === navPath;
+        <div className="flex flex-col gap-1">
+          {DASHNAVS.map((item) => {
+            const isActive = currentPath === item.path;
             return (
               <Link
-                key={dashNavItem.id}
-                to={navPath}
-                className={`text-left cursor-pointer ${isActive ? "font-bold text-blue-600" : ""}`}
+                key={item.id}
+                to={item.path}
+                className={`flex items-center gap-3 py-3 pr-6 cursor-pointer transition-colors ${
+                  isActive
+                    ? "border-l-4 border-(--blue) pl-5 bg-blue-50"
+                    : "pl-6 text-gray-500 hover:bg-gray-50"
+                }`}
               >
-                <p>{dashNavItem.name}</p>
+                <img src={item.img} alt="" className="w-5 h-5 shrink-0" />
+                <span
+                  className={`text-sm font-medium ${
+                    isActive ? "text-(--blue) font-bold" : "text-gray-500"
+                  }`}
+                >
+                  {item.name}
+                </span>
+                {/* {item.dot && (
+                  <span className="ml-auto w-2.5 h-2.5 bg-red-500 rounded-full shrink-0" />
+                )} */}
               </Link>
             );
           })}
         </div>
       </div>
-      <p className="text-(--red) pl-6 cursor-pointer">Log Out</p>
+      <button className="flex items-center gap-3 pl-6 cursor-pointer text-(--red) hover:opacity-70 transition">
+        <img src={logoutIcon} alt="" className="w-5 h-5" />
+        <span className="text-sm font-medium">Log Out</span>
+      </button>
     </div>
   );
 }
 
 function TopDash({ onAddVehicle }) {
   return (
-    <div className="w-full bg-white border-b pl-75 fixed top-0 left-0 z-10">
-      <div className="flex justify-between px-4 py-2">
+    <div className="w-full bg-white border-b pl-70 fixed top-0 left-0 z-10">
+      <div className="flex justify-between  px-8 py-2.5">
         <SearchBar placeholder="search" className="" />
         <div className="flex gap-6 items-center">
           <CTA
@@ -95,7 +124,7 @@ export default function DashboardLayout() {
   const handleVehicleRemoved = (vehicle) => {
     setRemovedRegistrations((prev) => [...prev, vehicle.registrationNumber]);
     setExtraVehicles((prev) =>
-      prev.filter((v) => v.registrationNumber !== vehicle.registrationNumber)
+      prev.filter((v) => v.registrationNumber !== vehicle.registrationNumber),
     );
   };
 
@@ -129,7 +158,13 @@ export default function DashboardLayout() {
     if (path === "/dashboard" || path === "/dashboard/") {
       return <Dashboard />;
     } else if (path === "/dashboard/vehicles") {
-      return <Vehicles extraVehicles={extraVehicles} removedRegistrations={removedRegistrations} onActionClick={handleActionClick} />;
+      return (
+        <Vehicles
+          extraVehicles={extraVehicles}
+          removedRegistrations={removedRegistrations}
+          onActionClick={handleActionClick}
+        />
+      );
     } else if (path === "/dashboard/service-history") {
       return <ServiceHistory />;
     } else if (path === "/dashboard/settings") {
@@ -145,9 +180,9 @@ export default function DashboardLayout() {
       </div>
       <div className="flex-1 min-w-0 overflow-hidden">
         <TopDash onAddVehicle={() => setShowAddVehicle(true)} />
-        <main className="ml-75 p-4 pt-20 min-h-screen flex flex-col">
+        <main className="ml-70 px-8 pb-6 pt-24 min-h-screen flex flex-col">
           <div className="flex flex-col flex-1">
-            <div className="border rounded-2xl p-4 bg-white font-(--body) flex-1">
+            <div className="border rounded-2xl p-6 bg-white font-(--body) flex-1">
               {renderComponent()}
             </div>
           </div>
