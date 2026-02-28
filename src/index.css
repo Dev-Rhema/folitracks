@@ -29,12 +29,28 @@
   src: url("./assets/fonts/Anton-Regular.ttf");
 }
 
+@layer components {
+  .font-title {
+    @apply font-serif;
+    font-family: "title";
+  }
+
+  .font-body {
+    @apply font-sans;
+    font-family: "body";
+  }
+
+  .font-number {
+    @apply font-bold;
+    font-family: "number";
+  }
+}
+
 body {
   background-color: #fffcfc;
   font-family: "body";
   color: #04040d;
 }
-
 
 :root {
   --radius: 0.625rem;

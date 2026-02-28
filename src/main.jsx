@@ -10,7 +10,6 @@ import Terms from "./pages/Terms.jsx";
 import Policy from "./pages/Policy.jsx";
 import Auth from "./pages/Auth.jsx";
 import Login from "./pages/Login.jsx";
-import Dashboard from "./pages/Dashboard.jsx";
 
 const router = createBrowserRouter([
   {
@@ -45,16 +44,35 @@ const router = createBrowserRouter([
         path: "login",
         element: <Login />,
       },
+    ],
+  },
+  {
+    path: "dashboard",
+    element: <DashboardLayout />,
+    children: [
       {
-        path: "dashboard",
-        element: <Dashboard />,
+        index: true,
+        element: <DashboardLayout />,
+      },
+      {
+        path: "vehicles",
+        element: <DashboardLayout />,
+      },
+      {
+        path: "service-history",
+        element: <DashboardLayout />,
+      },
+      {
+        path: "settings",
+        element: <DashboardLayout />,
       },
     ],
   },
 ]);
 
-import { Provider } from 'react-redux';
-import { store } from './redux/store';
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
+import DashboardLayout from "./components/dashboardComponents/DashboardLayout.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

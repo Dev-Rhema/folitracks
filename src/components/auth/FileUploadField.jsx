@@ -58,7 +58,7 @@ export default function FileUploadField({
 
   const renderFileInfo = () => (
     <div className="bg-black text-white p-4 rounded-b inline-flex items-center gap-3 w-full group-hover:bg-gray-900 transition-colors">
-      <FileText size={24} className="flex-shrink-0" />
+      <FileText size={24} className="shrink-0" />
       <div className="text-left">
         <p className="font-medium">{fileInfo.name}</p>
         <p className="text-xs text-gray-300">
@@ -93,7 +93,7 @@ export default function FileUploadField({
                 onClick={handleClick}
                 className="cursor-pointer group bg-black text-white p-4 rounded-lg inline-flex items-center gap-3 hover:bg-gray-900 transition-colors"
               >
-                <FileText size={24} className="flex-shrink-0" />
+                <FileText size={24} className="shrink-0" />
                 <div className="text-left">
                   <p className="font-medium">{fileInfo.name}</p>
                   <p className="text-xs text-gray-300">
@@ -104,7 +104,7 @@ export default function FileUploadField({
             )}
           </div>
         ) : (
-          <div className="min-h-[200px] flex flex-col items-center justify-center">
+          <div className="min-h-50 flex flex-col items-center justify-center">
             <Upload size={32} className="mx-auto mb-2 text-gray-400" />
             <p className="text-xs sm:text-sm">
               <button

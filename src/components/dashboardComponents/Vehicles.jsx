@@ -1,0 +1,139 @@
+import { useState } from "react";
+import Table from "../ui/Table";
+import DashHeader from "./DashHeader";
+import SearchBar from "./SearchBar";
+import { Filter } from "lucide-react";
+import { imageUrls } from "../../config/imageUrls";
+
+// ─── Brand logo mapping ───────────────────────────────────────────────────────
+
+const BRAND_LOGOS = {
+  lexus: imageUrls.lexus,
+  toyota: imageUrls.toyota,
+  ford: imageUrls.ford,
+  mercedes: imageUrls.mercedes,
+  bmw: imageUrls.bmw,
+  hyundai: imageUrls.hyundai,
+  kia: imageUrls.kia,
+};
+
+const getBrandLogo = (vehicleName) => {
+  const lower = vehicleName.toLowerCase();
+  for (const brand of Object.keys(BRAND_LOGOS)) {
+    if (lower.startsWith(brand)) return BRAND_LOGOS[brand];
+  }
+  return null;
+};
+
+// ─── Cell renderers ───────────────────────────────────────────────────────────
+
+const renderVehicleCell = (row) => {
+  const logo = getBrandLogo(row.vehicle);
+  return (
+    <div className="flex items-center gap-3">
+      <div className="w-10 h-10 rounded-full bg-black overflow-hidden flex items-center justify-center shrink-0">
+        <img
+          src={logo}
+          alt={row.vehicle}
+          className="w-full h-full object-contain"
+        />
+      </div>
+      <span>{row.vehicle}</span>
+    </div>
+  );
+};
+
+// ─── Data ─────────────────────────────────────────────────────────────────────
+
+const BASE_VEHICLES = [
+  { vehicle: "Lexus is250 2008", reg: "LGS-142673" },
+  { vehicle: "Toyota Camry 2010", reg: "LGS-238491" },
+  { vehicle: "Ford Explorer 2019", reg: "LGS-374820" },
+  { vehicle: "Mercedes Benz C300 2010", reg: "LGS-491037" },
+  { vehicle: "BMW 320i 2017", reg: "LGS-512864" },
+  { vehicle: "Hyundai Sonata 2010", reg: "LGS-628193" },
+  { vehicle: "Hyundai Elantra 2018", reg: "LGS-734056" },
+  { vehicle: "Kia Sportage 2020", reg: "LGS-845729" },
+  { vehicle: "Lexus RX350 2015", reg: "LGS-951348" },
+  { vehicle: "BMW X5 2020", reg: "LGS-067215" },
+  { vehicle: "Toyota Corolla 2016", reg: "LGS-173842" },
+  { vehicle: "Ford F-150 2018", reg: "LGS-289461" },
+  { vehicle: "Mercedes Benz GLE 2021", reg: "LGS-395078" },
+  { vehicle: "Kia Sorento 2019", reg: "LGS-401937" },
+  { vehicle: "BMW X3 2015", reg: "LGS-517264" },
+  { vehicle: "Hyundai Tucson 2017", reg: "LGS-623891" },
+  { vehicle: "Lexus ES300 2014", reg: "LGS-739408" },
+  { vehicle: "Toyota Highlander 2020", reg: "LGS-845127" },
+  { vehicle: "Ford Escape 2016", reg: "LGS-951740" },
+  { vehicle: "Mercedes Benz GLA 2022", reg: "LGS-067853" },
+];
+
+const VEHICLES_DATA = Array.from({ length: 12 }, (_, i) => {
+  const base = BASE_VEHICLES[i % BASE_VEHICLES.length];
+  return {
+    sn: String(i + 1).padStart(2, "0"),
+    vehicle: base.vehicle,
+    registrationNumber: base.reg,
+    lastServiceDate: "15/06/2025",
+    nextServiceDate: "15/09/2025",
+  };
+});
+
+// ─── Columns ──────────────────────────────────────────────────────────────────
+
+const COLUMNS = [
+  { key: "sn", label: "S/N" },
+  { key: "vehicle", label: "Vehicle", render: renderVehicleCell },
+  { key: "registrationNumber", label: "Registration Number" },
+  { key: "lastServiceDate", label: "Last Service Date" },
+  { key: "nextServiceDate", label: "Next Service Date" },
+];
+
+// ─── Component ────────────────────────────────────────────────────────────────
+
+function Vehicles({ extraVehicles = [], removedRegistrations = [], onActionClick }) {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const displayData = [...extraVehicles, ...VEHICLES_DATA]
+    .filter((v) => !removedRegistrations.includes(v.registrationNumber))
+    .map((v, i) => ({ ...v, sn: String(i + 1).padStart(2, "0") }));
+
+  return (
+    <>
+      <div className="flex flex-col">
+        <DashHeader title="Vehicles" />
+        {/* Search + Filter */}
+        <div className="flex justify-end items-center gap-3">
+          <SearchBar
+            placeholder="Search vehicle by make, year, reg.no....."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-80"
+          />
+          <button className="px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 flex items-center gap-2 text-sm text-gray-600 font-medium cursor-pointer">
+            <Filter size={15} />
+            Filter
+          </button>
+        </div>
+
+        {/* Table */}
+        <Table
+          columns={COLUMNS}
+          data={displayData}
+          rowsPerPage={10}
+          showSearch={false}
+          searchTerm={searchTerm}
+          searchableFields={[
+            "vehicle",
+            "registrationNumber",
+            "lastServiceDate",
+            "nextServiceDate",
+          ]}
+          onActionClick={onActionClick}
+        />
+      </div>
+    </>
+  );
+}
+
+export default Vehicles;
