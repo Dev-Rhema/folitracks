@@ -91,7 +91,11 @@ const COLUMNS = [
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-function Vehicles({ extraVehicles = [], removedRegistrations = [], onActionClick }) {
+function Vehicles({
+  extraVehicles = [],
+  removedRegistrations = [],
+  onActionClick,
+}) {
   const [searchTerm, setSearchTerm] = useState("");
 
   const displayData = [...extraVehicles, ...VEHICLES_DATA]
@@ -103,34 +107,36 @@ function Vehicles({ extraVehicles = [], removedRegistrations = [], onActionClick
       <div className="flex flex-col">
         <DashHeader title="Vehicles" />
         {/* Search + Filter */}
-        <div className="flex justify-end items-center gap-3">
-          <SearchBar
-            placeholder="Search vehicle by make, year, reg.no....."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-80"
-          />
-          <button className="px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 flex items-center gap-2 text-sm text-gray-600 font-medium cursor-pointer">
-            <Filter size={15} />
-            Filter
-          </button>
-        </div>
+        <div className="bg-white p-4 rounded-2xl flex flex-col gap-6 border">
+          <div className="flex justify-end items-center gap-3">
+            <SearchBar
+              placeholder="Search vehicle by make, year, reg.no....."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-80"
+            />
+            <button className="px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 flex items-center gap-2 text-sm text-gray-600 font-medium cursor-pointer">
+              <Filter size={16} />
+              Filter
+            </button>
+          </div>
 
-        {/* Table */}
-        <Table
-          columns={COLUMNS}
-          data={displayData}
-          rowsPerPage={10}
-          showSearch={false}
-          searchTerm={searchTerm}
-          searchableFields={[
-            "vehicle",
-            "registrationNumber",
-            "lastServiceDate",
-            "nextServiceDate",
-          ]}
-          onActionClick={onActionClick}
-        />
+          {/* Table */}
+          <Table
+            columns={COLUMNS}
+            data={displayData}
+            rowsPerPage={10}
+            showSearch={false}
+            searchTerm={searchTerm}
+            searchableFields={[
+              "vehicle",
+              "registrationNumber",
+              "lastServiceDate",
+              "nextServiceDate",
+            ]}
+            onActionClick={onActionClick}
+          />
+        </div>
       </div>
     </>
   );

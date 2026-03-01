@@ -9,6 +9,7 @@ function Table({
   title = "",
   onActionClick,
   showSearch = false,
+  showPagination = true,
   searchPlaceholder = "Search...",
   searchTerm = "",
   onSearchChange,
@@ -108,7 +109,7 @@ function Table({
   };
 
   return (
-    <div className="w-full bg-white">
+    <div className="w-full bg-white rounded-2xl">
       {/* Search Bar */}
       {showSearch && (
         <div className="mb-4 flex gap-4 items-center">
@@ -118,7 +119,7 @@ function Table({
             onChange={(e) => handleSearch(e.target.value)}
             className="flex-1"
           />
-          <button className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 flex items-center gap-2 cursor-pointer">
+          <button className="px-4 py-2 border bg-white rounded-md hover:bg-gray-50  flex items-center gap-2 cursor-pointer">
             <svg
               className="w-5 h-5"
               fill="none"
@@ -138,7 +139,7 @@ function Table({
       )}
 
       {/* Table */}
-      <div className="w-full border rounded-2xl overflow-x-auto mt-4 bg-white">
+      <div className="w-full border rounded-2xl bg-white">
         <table className="w-full min-w-0">
           <thead className="bg-gray-50 border-b">
             <tr>
@@ -207,7 +208,7 @@ function Table({
                             View Details
                           </button>
                           <button
-                            className="w-full text-left px-5 py-3 text-sm text-gray-800 hover:bg-gray-50 border-b border-gray-100 font-body cursor-pointer"
+                            className="w-full text-left px-5 py-3 text-sm text-[gray-800] hover:bg-gray-50 border-b border-gray-100 font-body cursor-pointer"
                             onClick={() => {
                               onActionClick?.(row, "edit");
                               setOpenMenuIndex(null);
@@ -245,7 +246,7 @@ function Table({
       </div>
 
       {/* Pagination */}
-      <div className="mt-4 flex justify-between items-center">
+      {showPagination && <div className="mt-4 flex justify-between items-center">
         <p className="text-sm text-gray-600">
           Showing {startIndex + 1}-
           {Math.min(startIndex + rowsPerPage, filteredData.length)} of{" "}
@@ -291,7 +292,7 @@ function Table({
             <ChevronRight size={16} />
           </button>
         </div>
-      </div>
+      </div>}
     </div>
   );
 }

@@ -539,74 +539,76 @@ function ServiceHistory() {
     <div>
       <DashHeader title="Service History" />
       {/* Header: Tabs left, Search + Filter right */}
-      <div className="flex items-end justify-between border-b">
-        {/* Tabs */}
-        <div className="flex gap-8">
-          {TABS.map((tab) => {
-            const IconComponent = tab.icon;
-            const isActive = activeTab === tab.key;
-            return (
-              <button
-                key={tab.key}
-                onClick={() => {
-                  setActiveTab(tab.key);
-                  setSearchTerm("");
-                }}
-                className={`cursor-pointer relative font-medium flex items-center gap-2 pb-3 transition-colors ${
-                  isActive
-                    ? "text-gray-900"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
-              >
-                {tab.key !== "completed" && (
-                  <span className="absolute -top-1 right-0 w-2 h-2 bg-red-500 rounded-full" />
-                )}
-                <IconComponent size={18} />
-                <span>
-                  {tab.name} ({tab.count})
-                </span>
-                {isActive && (
-                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#3B82F6]" />
-                )}
-              </button>
-            );
-          })}
+      <div className="bg-white p-4 rounded-2xl flex flex-col gap-4 ">
+        <div className="flex items-end justify-between">
+          {/* Tabs */}
+          <div className="flex gap-8">
+            {TABS.map((tab) => {
+              const IconComponent = tab.icon;
+              const isActive = activeTab === tab.key;
+              return (
+                <button
+                  key={tab.key}
+                  onClick={() => {
+                    setActiveTab(tab.key);
+                    setSearchTerm("");
+                  }}
+                  className={`cursor-pointer relative font-medium flex items-center gap-2 pb-3 transition-colors ${
+                    isActive
+                      ? "text-gray-900"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  {tab.key !== "completed" && (
+                    <span className="absolute -top-1 right-0 w-2 h-2 bg-red-500 rounded-full" />
+                  )}
+                  <IconComponent size={18} />
+                  <span>
+                    {tab.name} ({tab.count})
+                  </span>
+                  {isActive && (
+                    <div className="absolute bottom-0 left-0 right-0 h-1 rounded-t-3xl bg-(--blue)" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Search + Filter */}
+          <div className="flex items-center gap-3 pb-3">
+            <SearchBar
+              placeholder="Search service history by service, vehicl..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-72"
+            />
+            <button className="px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 flex items-center gap-2 text-sm text-gray-600 font-medium cursor-pointer">
+              <Filter size={15} />
+              Filter
+            </button>
+          </div>
         </div>
 
-        {/* Search + Filter */}
-        <div className="flex items-center gap-3 pb-3">
-          <SearchBar
-            placeholder="Search service history by service, vehicl..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-72"
-          />
-          <button className="px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 flex items-center gap-2 text-sm text-gray-600 font-medium cursor-pointer">
-            <Filter size={15} />
-            Filter
-          </button>
-        </div>
+        {/* Table */}
+        <Table
+          columns={getTabColumns()}
+          data={getTabData()}
+          rowsPerPage={10}
+          onActionClick={handleActionClick}
+          showSearch={false}
+          searchTerm={searchTerm}
+          searchableFields={[
+            "service",
+            "vehicle",
+            "lastServiceDate",
+            "date",
+            "serviceProvider",
+            "status",
+            "nextServiceSub",
+            "missedServiceSub",
+          ]}
+        />
       </div>
-
-      {/* Table */}
-      <Table
-        columns={getTabColumns()}
-        data={getTabData()}
-        rowsPerPage={10}
-        onActionClick={handleActionClick}
-        showSearch={false}
-        searchTerm={searchTerm}
-        searchableFields={[
-          "service",
-          "vehicle",
-          "lastServiceDate",
-          "date",
-          "serviceProvider",
-          "status",
-          "nextServiceSub",
-          "missedServiceSub",
-        ]}
-      />
     </div>
   );
 }
