@@ -210,7 +210,7 @@ export default function AddVehicleForm({ onClose, onVehicleAdded }) {
         subtitle="Enter the basic information about your car so we can register it to your account."
         onClose={onClose}
       />
-      <div className="grid grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
         <SearchableSelect
           label="Vehicle Make"
           options={VEHICLE_MAKES}
@@ -229,7 +229,7 @@ export default function AddVehicleForm({ onClose, onVehicleAdded }) {
           error={errors.model}
         />
       </div>
-      <div className="grid grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
         <VehicleInput
           label="Year of Manufacture"
           placeholder="2017"
@@ -269,7 +269,7 @@ export default function AddVehicleForm({ onClose, onVehicleAdded }) {
         subtitle="Submit the required documents to confirm you're the rightful owner."
         onClose={onClose}
       />
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <UploadField
           label="Vehicle Registration Document"
           fieldId="regDoc"
@@ -307,7 +307,7 @@ export default function AddVehicleForm({ onClose, onVehicleAdded }) {
         subtitle="Submit the required documents to confirm you're the rightful owner."
         onClose={onClose}
       />
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <UploadField
           label="Business License / Registration Certificate"
           fieldId="businessLicense"

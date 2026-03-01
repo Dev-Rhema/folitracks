@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import DashHeader from "./DashHeader";
 import Table from "../ui/Table";
+import ServiceHistoryCard from "../ui/ServiceHistoryCard";
 import countImg1 from "../../assets/dashboardImgs/dashHome/Desktop/dashCount1.svg";
 import countImg2 from "../../assets/dashboardImgs/dashHome/Desktop/dashCount2.svg";
 import countImg3 from "../../assets/dashboardImgs/dashHome/Desktop/dashCount3.svg";
@@ -109,6 +110,7 @@ const HISTORY_PREVIEW = [
     date: "01/09/2025",
     cost: "₦10,000",
     provider: "Okorometa Ezekiel",
+    status: "Completed",
   },
   {
     sn: "02",
@@ -118,6 +120,7 @@ const HISTORY_PREVIEW = [
     date: "01/09/2025",
     cost: "₦10,000",
     provider: "Okorometa Ezekiel",
+    status: "Completed",
   },
   {
     sn: "03",
@@ -127,6 +130,7 @@ const HISTORY_PREVIEW = [
     date: "01/09/2025",
     cost: "₦10,000",
     provider: "Okorometa Ezekiel",
+    status: "Completed",
   },
   {
     sn: "04",
@@ -136,6 +140,7 @@ const HISTORY_PREVIEW = [
     date: "01/09/2025",
     cost: "₦10,000",
     provider: "Okorometa Ezekiel",
+    status: "Completed",
   },
 ];
 
@@ -205,12 +210,14 @@ export default function Dashboard() {
       />
 
       {/* Count cards */}
-      <div className="py-3 xl:py-6 rounded-2xl flex flex-col gap-3 xl:gap-6">
+      <div className="py-3 xl:py-6 rounded-2xl flex flex-col gap-3 xl:gap-6 max-md:overflow-x-scroll">
         <div className="grid grid-cols-3 gap-3 xl:gap-6">
-          {DASHCOUNT.map((item) => (
+          {DASHCOUNT.map((item, index) => (
             <div
               key={item.id}
-              className="flex items-center gap-2 xl:gap-4 border py-2 px-3 xl:py-4 xl:px-8 rounded-2xl bg-white"
+              className={`flex items-center gap-2 xl:gap-4 border py-2 px-3 xl:py-4 xl:px-8 rounded-2xl bg-white ${
+                index === 3 ? "hidden lg:flex" : ""
+              }`}
             >
               <img
                 src={item.img}
@@ -228,7 +235,7 @@ export default function Dashboard() {
         </div>
 
         {/* My Vehicles + Upcoming Services */}
-        <div className="grid grid-cols-2 gap-3 xl:gap-8 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 xl:gap-8 items-stretch">
           {/* My Vehicles */}
           <div className="flex flex-col">
             <SectionHeader title="My Vehicles" to="/dashboard/vehicles" />
@@ -250,11 +257,13 @@ export default function Dashboard() {
                           className="w-full h-full object-contain"
                         />
                       </div>
-                      <span className="text-sm font-medium text-gray-800">
+                      <span className="text-xs xl:text-sm font-medium text-gray-800 truncate">
                         {v.vehicle}
                       </span>
                     </div>
-                    <span className="text-sm text-gray-500">{v.reg}</span>
+                    <span className="text-xs xl:text-sm text-gray-500 shrink-0">
+                      {v.reg}
+                    </span>
                   </div>
                 );
               })}
@@ -282,7 +291,7 @@ export default function Dashboard() {
                       className="w-7 h-7 xl:w-10 xl:h-10 rounded-full object-cover shrink-0"
                     />
                     <div>
-                      <p className="text-sm font-medium text-gray-800">
+                      <p className="text-xs xl:text-sm font-medium text-gray-800">
                         {item.service}
                       </p>
                       <p className="text-xs text-gray-400">{item.vehicle}</p>
@@ -301,13 +310,36 @@ export default function Dashboard() {
             title="Service History"
             to="/dashboard/service-history"
           />
-          <Table
-            columns={HISTORY_COLUMNS}
-            data={HISTORY_PREVIEW}
-            rowsPerPage={4}
-            showSearch={false}
-            showPagination={false}
-          />
+
+          {/* Mobile cards */}
+          <div className="md:hidden space-y-3">
+            {HISTORY_PREVIEW.map((row, i) => (
+              <ServiceHistoryCard
+                key={i}
+                icon={getServiceIcon(row.service)}
+                title={row.service}
+                status={row.status}
+                rows={[
+                  { label: "Vehicle", value: row.vehicle, subValue: row.reg },
+                  { label: "Date", value: row.date },
+                  { label: "Cost", value: row.cost },
+                  { label: "Service Provider", value: row.provider },
+                ]}
+                onViewDetails={() => {}}
+              />
+            ))}
+          </div>
+
+          {/* Desktop table */}
+          <div className="hidden md:block overflow-x-auto">
+            <Table
+              columns={HISTORY_COLUMNS}
+              data={HISTORY_PREVIEW}
+              rowsPerPage={4}
+              showSearch={false}
+              showPagination={false}
+            />
+          </div>
         </div>
       </div>
     </div>

@@ -140,7 +140,7 @@ function Table({
 
       {/* Table */}
       <div className="w-full border rounded-2xl bg-white overflow-x-auto">
-        <table className="w-full min-w-195">
+        <table className="w-full min-w-150">
           <thead className="bg-gray-50 border-b">
             <tr>
               {columns.map((column) => (

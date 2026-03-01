@@ -3,7 +3,7 @@ import { imageUrls } from "../../config/imageUrls";
 import { Link, useLocation } from "react-router-dom";
 import SearchBar from "./SearchBar";
 import CTA from "../CTA";
-import { Bell } from "lucide-react";
+import { Bell, Menu, X } from "lucide-react";
 import Vehicles from "./Vehicles";
 import Dashboard from "./Dashboard";
 import ServiceHistory from "./ServiceHistory";
@@ -57,9 +57,93 @@ const DASHNAVS = [
   },
 ];
 
+function MobileHeader({ onAddVehicle, onOpenNav }) {
+  return (
+    <div className="md:hidden fixed top-0 left-0 right-0 z-20 bg-white border-b px-4 py-3 flex items-center justify-between">
+      <img src={imageUrls.logo} alt="FoliTracks" className="h-7" />
+      <div className="flex items-center gap-3">
+        <button
+          onClick={onAddVehicle}
+          className="w-9 h-9 bg-(--darkBlue) rounded-xl flex items-center justify-center text-white text-xl leading-none"
+        >
+          +
+        </button>
+        <button className="w-9 h-9 bg-[#EEF1F8] rounded-full flex items-center justify-center">
+          <Bell size={16} />
+        </button>
+        <button
+          onClick={onOpenNav}
+          className="w-9 h-9 flex items-center justify-center"
+        >
+          <Menu size={22} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function MobileNavDrawer({ currentPath, open, onClose }) {
+  return (
+    <>
+      {open && (
+        <div
+          className="md:hidden fixed inset-0 bg-black/40 z-30"
+          onClick={onClose}
+        />
+      )}
+      <div
+        className={`md:hidden fixed top-0 left-0 h-full w-64 bg-white z-40 flex flex-col justify-between py-6 transition-transform duration-300 ${
+          open ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="flex flex-col gap-6">
+          <div className="pl-6 pr-4 flex items-center justify-between">
+            <img src={imageUrls.logo} alt="" className="w-24" />
+            <button onClick={onClose}>
+              <X size={20} />
+            </button>
+          </div>
+          <div className="flex flex-col gap-2">
+            {DASHNAVS.map((item) => {
+              const isActive = currentPath === item.path;
+              return (
+                <Link
+                  key={item.id}
+                  to={item.path}
+                  onClick={onClose}
+                  className={`flex items-center gap-3 py-3 pr-6 cursor-pointer transition-colors ${
+                    isActive
+                      ? "border-l-4 border-(--blue) pl-5 bg-[#E6E6F0]"
+                      : "pl-6 text-gray-500 hover:bg-gray-50"
+                  }`}
+                >
+                  <img
+                    src={isActive ? item.activeImg : item.img}
+                    alt=""
+                    className="w-5 h-5 shrink-0"
+                  />
+                  <span
+                    className={`text-sm ${isActive ? "text-(--blue) font-semibold" : "text-gray-500 font-medium"}`}
+                  >
+                    {item.name}
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+        <button className="flex items-center gap-3 pl-6 cursor-pointer text-(--red) hover:opacity-70 transition">
+          <img src={logoutIcon} alt="" className="w-5 h-5" />
+          <span className="text-sm font-medium">Log Out</span>
+        </button>
+      </div>
+    </>
+  );
+}
+
 function DashNav({ currentPath }) {
   return (
-    <div className="w-44 lg:w-70 bg-white h-screen flex flex-col justify-between py-4 xl:py-6 border-r fixed z-1 text-[13px] xl:text-[16px]">
+    <div className="hidden md:flex w-44 xl:w-70 bg-white h-screen flex-col justify-between py-4 xl:py-6 border-r fixed z-1 text-[13px] xl:text-[16px]">
       <div className="flex flex-col gap-6 xl:gap-8">
         <div className="pl-4 xl:pl-6">
           <img src={imageUrls.logo} alt="" className="w-24 xl:w-auto" />
@@ -109,7 +193,7 @@ function DashNav({ currentPath }) {
 
 function TopDash({ onAddVehicle }) {
   return (
-    <div className="w-full bg-white border-b pl-44 lg:pl-70 fixed top-0 left-0 z-10">
+    <div className="hidden md:block w-full bg-white border-b pl-44 xl:pl-70 fixed top-0 left-0 z-10">
       <div className="flex justify-between px-4 xl:px-8 py-1.5 xl:py-2.5">
         <SearchBar placeholder="search" className="w-28 xl:w-60" />
         <div className="flex gap-3 xl:gap-6 items-center">
@@ -133,6 +217,7 @@ function TopDash({ onAddVehicle }) {
 export default function DashboardLayout() {
   const location = useLocation();
   const [showAddVehicle, setShowAddVehicle] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [viewVehicle, setViewVehicle] = useState(null);
   const [editVehicle, setEditVehicle] = useState(null);
   const [removeVehicle, setRemoveVehicle] = useState(null);
@@ -214,12 +299,21 @@ export default function DashboardLayout() {
 
   return (
     <div className="bg-[#F8FAFC] flex">
+      <MobileHeader
+        onAddVehicle={() => setShowAddVehicle(true)}
+        onOpenNav={() => setMobileNavOpen(true)}
+      />
+      <MobileNavDrawer
+        currentPath={location.pathname}
+        open={mobileNavOpen}
+        onClose={() => setMobileNavOpen(false)}
+      />
       <div className="z-20">
         <DashNav currentPath={location.pathname} />
       </div>
       <div className="flex-1 min-w-0 overflow-hidden">
         <TopDash onAddVehicle={() => setShowAddVehicle(true)} />
-        <main className="ml-44 lg:ml-70 px-3 xl:px-8 pb-3 xl:pb-6 pt-12 xl:pt-18 min-h-screen flex flex-col">
+        <main className="md:ml-44 xl:ml-70 px-3 xl:px-8 pb-3 xl:pb-6 pt-16 md:pt-12 xl:pt-18 min-h-screen flex flex-col">
           <div className="flex flex-col flex-1">
             <div className="rounded-2xl p-2 xl:p-6 font-(--body) flex-1">
               {renderComponent()}

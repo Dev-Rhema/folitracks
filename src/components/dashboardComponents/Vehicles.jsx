@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Table from "../ui/Table";
+import ServiceHistoryCard from "../ui/ServiceHistoryCard";
 import DashHeader from "./DashHeader";
 import SearchBar from "./SearchBar";
 import { Filter } from "lucide-react";
@@ -113,7 +114,7 @@ function Vehicles({
               placeholder="Search vehicle by make, year, reg.no....."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-56 lg:w-80"
+              className="flex-1 lg:w-52"
             />
             <button className="px-3 lg:px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 flex items-center gap-1.5 lg:gap-2 text-sm text-gray-600 font-medium cursor-pointer">
               <Filter size={14} />
@@ -121,21 +122,53 @@ function Vehicles({
             </button>
           </div>
 
-          {/* Table */}
-          <Table
-            columns={COLUMNS}
-            data={displayData}
-            rowsPerPage={10}
-            showSearch={false}
-            searchTerm={searchTerm}
-            searchableFields={[
-              "vehicle",
-              "registrationNumber",
-              "lastServiceDate",
-              "nextServiceDate",
-            ]}
-            onActionClick={onActionClick}
-          />
+          {/* Mobile cards */}
+          <div className="md:hidden space-y-3">
+            {displayData
+              .filter((v) => {
+                if (!searchTerm.trim()) return true;
+                const s = searchTerm.toLowerCase();
+                return (
+                  v.vehicle.toLowerCase().includes(s) ||
+                  v.registrationNumber.toLowerCase().includes(s)
+                );
+              })
+              .map((row, i) => (
+                <ServiceHistoryCard
+                  key={i}
+                  icon={getBrandLogo(row.vehicle) || imageUrls.logo}
+                  iconBg="bg-black"
+                  iconContain
+                  title={row.vehicle}
+                  rows={[
+                    { label: "Registration Number", value: row.registrationNumber },
+                    { label: "Last Service Date", value: row.lastServiceDate },
+                    { label: "Next Service Date", value: row.nextServiceDate },
+                  ]}
+                  onViewDetails={() => onActionClick?.(row, "view")}
+                  onEdit={() => onActionClick?.(row, "edit")}
+                  onRemove={() => onActionClick?.(row, "remove")}
+                />
+              ))}
+          </div>
+
+          {/* Desktop table */}
+          <div className="hidden md:block overflow-x-auto">
+            <Table
+              columns={COLUMNS}
+              data={displayData}
+              rowsPerPage={10}
+              showSearch={false}
+              searchTerm={searchTerm}
+              searchableFields={[
+                "vehicle",
+                "registrationNumber",
+                "lastServiceDate",
+                "nextServiceDate",
+              ]}
+              onActionClick={onActionClick}
+            />
+          </div>
         </div>
       </div>
     </>

@@ -128,7 +128,7 @@ function ViewSettings({ onEdit }) {
 
         {/* Account Details */}
         <SectionTitle>Account Details</SectionTitle>
-        <div className="grid grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
           <div>
             <p className="text-sm text-gray-400 mb-1">Account Type</p>
             <p className="text-sm font-medium text-gray-900">{USER.accountType}</p>
@@ -244,17 +244,17 @@ function EditSettings({ onCancel, onSave }) {
 
         {/* Personal Information */}
         <SectionTitle>Personal Information</SectionTitle>
-        <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           <FieldInput label="Full Name"     value={form.fullName} onChange={update("fullName")} />
           <FieldInput label="Email Address" value={form.email}    onChange={update("email")} />
         </div>
-        <div className="grid grid-cols-2 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
           <FieldInput label="Phone Number" value={form.phone} onChange={update("phone")} />
         </div>
 
         {/* Account Details */}
         <SectionTitle>Account Details</SectionTitle>
-        <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           {/* Account Type */}
           <div className="flex flex-col gap-2">
             <label className="text-sm font-medium text-gray-500">Account Type</label>
@@ -287,7 +287,7 @@ function EditSettings({ onCancel, onSave }) {
 
         {/* Confirm Password — only when password is being changed */}
         {passwordChanged && (
-          <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
             <PasswordInput
               label="Confirm Password"
               value={form.confirmPassword}

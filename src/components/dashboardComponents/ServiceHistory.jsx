@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Table from "../ui/Table";
+import ServiceHistoryCard from "../ui/ServiceHistoryCard";
 import { CheckSquare, Clock, AlertTriangle, Filter } from "lucide-react";
 import SearchBar from "./SearchBar";
 import brakePadImg from "../../assets/dashboardImgs/dashHistory/brakePad.svg";
@@ -52,6 +53,9 @@ const StatusBadge = ({ status }) => (
     {status}
   </span>
 );
+
+const getServiceIcon = (name) =>
+  SERVICE_ICONS.find((s) => s.name === name)?.image || brakePadImg;
 
 const renderServiceCell = (row) => {
   const serviceData = SERVICE_ICONS.find((s) => s.name === row.service) || {
@@ -535,14 +539,48 @@ function ServiceHistory() {
     console.log("Action clicked for:", row);
   };
 
+  const getMobileFilteredData = () => {
+    const data = getTabData();
+    if (!searchTerm.trim()) return data;
+    const s = searchTerm.toLowerCase();
+    return data.filter((row) =>
+      ["service", "vehicle", "lastServiceDate", "date", "serviceProvider", "status", "nextServiceSub", "missedServiceSub"]
+        .some((field) => row[field]?.toLowerCase().includes(s))
+    );
+  };
+
+  const getMobileRows = (row) => {
+    const [vehicleName, vehicleReg] = row.vehicle.split("\n");
+    if (activeTab === "completed") {
+      return [
+        { label: "Vehicle", value: vehicleName, subValue: vehicleReg },
+        { label: "Date", value: row.date },
+        { label: "Cost", value: row.cost },
+        { label: "Service Provider", value: row.serviceProvider },
+      ];
+    }
+    if (activeTab === "upcoming") {
+      return [
+        { label: "Vehicle", value: vehicleName, subValue: vehicleReg },
+        { label: "Last Service Date", value: row.lastServiceDate },
+        { label: "Next Service Date", value: row.nextServiceDate, subValue: row.nextServiceSub },
+      ];
+    }
+    return [
+      { label: "Vehicle", value: vehicleName, subValue: vehicleReg },
+      { label: "Last Service Date", value: row.lastServiceDate },
+      { label: "Missed Service Date", value: row.missedServiceDate, subValue: row.missedServiceSub },
+    ];
+  };
+
   return (
     <div>
       <DashHeader title="Service History" />
       {/* Header: Tabs left, Search + Filter right */}
       <div className="bg-white p-3 lg:p-4 rounded-2xl flex flex-col gap-3 lg:gap-4">
-        <div className="flex items-end justify-between">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-3 lg:gap-0">
           {/* Tabs */}
-          <div className="flex gap-4 lg:gap-8">
+          <div className="flex gap-4 lg:gap-8 border-b lg:border-b-0">
             {TABS.map((tab) => {
               const IconComponent = tab.icon;
               const isActive = activeTab === tab.key;
@@ -575,39 +613,55 @@ function ServiceHistory() {
           </div>
 
           {/* Search + Filter */}
-          <div className="flex items-center gap-2 lg:gap-3 pb-2 lg:pb-3">
+          <div className="flex items-center gap-2 lg:gap-3 lg:pb-3">
             <SearchBar
               placeholder="Search..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-32 lg:w-72"
+              className="flex-1 lg:w-52"
             />
-            <button className="px-2 lg:px-4 py-1.5 lg:py-2 border border-gray-200 rounded-lg hover:bg-gray-50 flex items-center gap-1 lg:gap-2 text-xs lg:text-sm text-gray-600 font-medium cursor-pointer">
-              <Filter size={12} />
-              <span className="hidden sm:inline">Filter</span>
+            <button className="px-3 lg:px-4 py-1.5 lg:py-2 border border-gray-200 rounded-lg hover:bg-gray-50 flex items-center gap-1.5 lg:gap-2 text-xs lg:text-sm text-gray-600 font-medium cursor-pointer shrink-0">
+              <Filter size={14} />
+              Filter
             </button>
           </div>
         </div>
 
-        {/* Table */}
-        <Table
-          columns={getTabColumns()}
-          data={getTabData()}
-          rowsPerPage={10}
-          onActionClick={handleActionClick}
-          showSearch={false}
-          searchTerm={searchTerm}
-          searchableFields={[
-            "service",
-            "vehicle",
-            "lastServiceDate",
-            "date",
-            "serviceProvider",
-            "status",
-            "nextServiceSub",
-            "missedServiceSub",
-          ]}
-        />
+        {/* Mobile cards */}
+        <div className="md:hidden space-y-3">
+          {getMobileFilteredData().map((row, i) => (
+            <ServiceHistoryCard
+              key={i}
+              icon={getServiceIcon(row.service)}
+              title={row.service}
+              status={activeTab === "completed" ? "Completed" : row.status}
+              rows={getMobileRows(row)}
+              onViewDetails={() => handleActionClick(row)}
+            />
+          ))}
+        </div>
+
+        {/* Desktop table */}
+        <div className="hidden md:block overflow-x-auto">
+          <Table
+            columns={getTabColumns()}
+            data={getTabData()}
+            rowsPerPage={10}
+            onActionClick={handleActionClick}
+            showSearch={false}
+            searchTerm={searchTerm}
+            searchableFields={[
+              "service",
+              "vehicle",
+              "lastServiceDate",
+              "date",
+              "serviceProvider",
+              "status",
+              "nextServiceSub",
+              "missedServiceSub",
+            ]}
+          />
+        </div>
       </div>
     </div>
   );

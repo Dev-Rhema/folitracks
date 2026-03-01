@@ -186,7 +186,7 @@ export default function EditVehicleForm({ vehicle, onClose }) {
         subtitle="Edit your car's details to ensure all information stays accurate and up to date."
         onClose={onClose}
       />
-      <div className="grid grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
         <SearchableSelect
           label="Vehicle Type"
           options={VEHICLE_MAKES}
@@ -205,7 +205,7 @@ export default function EditVehicleForm({ vehicle, onClose }) {
           error={errors.model}
         />
       </div>
-      <div className="grid grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
         <VehicleInput
           label="Year of Manufacture"
           placeholder="2017"
@@ -245,7 +245,7 @@ export default function EditVehicleForm({ vehicle, onClose }) {
         subtitle="Upload a valid ownership document to verify any major changes made to this vehicle's record."
         onClose={onClose}
       />
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <UploadField
           label="Vehicle Registration Document"
           fieldId="editRegDoc"
@@ -283,7 +283,7 @@ export default function EditVehicleForm({ vehicle, onClose }) {
         subtitle="Upload a valid ownership document to verify any major changes made to this vehicle's record."
         onClose={onClose}
       />
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <UploadField
           label="Business License / Registration Certificate"
           fieldId="editBusinessLicense"
