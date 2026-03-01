@@ -58,11 +58,11 @@ const renderServiceCell = (row) => {
     image: brakePadImg,
   };
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2 lg:gap-3">
       <img
         src={serviceData.image}
         alt={row.service}
-        className="w-10 h-10 rounded-full object-cover shrink-0"
+        className="w-7 h-7 rounded-full object-cover shrink-0"
       />
       <span>{row.service}</span>
     </div>
@@ -539,10 +539,10 @@ function ServiceHistory() {
     <div>
       <DashHeader title="Service History" />
       {/* Header: Tabs left, Search + Filter right */}
-      <div className="bg-white p-4 rounded-2xl flex flex-col gap-4 ">
+      <div className="bg-white p-3 lg:p-4 rounded-2xl flex flex-col gap-3 lg:gap-4">
         <div className="flex items-end justify-between">
           {/* Tabs */}
-          <div className="flex gap-8">
+          <div className="flex gap-4 lg:gap-8">
             {TABS.map((tab) => {
               const IconComponent = tab.icon;
               const isActive = activeTab === tab.key;
@@ -553,7 +553,7 @@ function ServiceHistory() {
                     setActiveTab(tab.key);
                     setSearchTerm("");
                   }}
-                  className={`cursor-pointer relative font-medium flex items-center gap-2 pb-3 transition-colors ${
+                  className={`cursor-pointer relative font-medium flex items-center gap-1 lg:gap-2 pb-2 lg:pb-3 text-xs lg:text-base transition-colors ${
                     isActive
                       ? "text-gray-900"
                       : "text-gray-500 hover:text-gray-700"
@@ -562,7 +562,7 @@ function ServiceHistory() {
                   {tab.key !== "completed" && (
                     <span className="absolute -top-1 right-0 w-2 h-2 bg-red-500 rounded-full" />
                   )}
-                  <IconComponent size={18} />
+                  <IconComponent size={16} />
                   <span>
                     {tab.name} ({tab.count})
                   </span>
@@ -575,16 +575,16 @@ function ServiceHistory() {
           </div>
 
           {/* Search + Filter */}
-          <div className="flex items-center gap-3 pb-3">
+          <div className="flex items-center gap-2 lg:gap-3 pb-2 lg:pb-3">
             <SearchBar
-              placeholder="Search service history by service, vehicl..."
+              placeholder="Search..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-72"
+              className="w-32 lg:w-72"
             />
-            <button className="px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 flex items-center gap-2 text-sm text-gray-600 font-medium cursor-pointer">
-              <Filter size={15} />
-              Filter
+            <button className="px-2 lg:px-4 py-1.5 lg:py-2 border border-gray-200 rounded-lg hover:bg-gray-50 flex items-center gap-1 lg:gap-2 text-xs lg:text-sm text-gray-600 font-medium cursor-pointer">
+              <Filter size={12} />
+              <span className="hidden sm:inline">Filter</span>
             </button>
           </div>
         </div>

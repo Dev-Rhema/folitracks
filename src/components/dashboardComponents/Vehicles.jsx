@@ -30,8 +30,8 @@ const getBrandLogo = (vehicleName) => {
 const renderVehicleCell = (row) => {
   const logo = getBrandLogo(row.vehicle);
   return (
-    <div className="flex items-center gap-3">
-      <div className="w-10 h-10 rounded-full bg-black overflow-hidden flex items-center justify-center shrink-0">
+    <div className="flex items-center gap-2 lg:gap-3">
+      <div className="w-7 h-7 lg:w-10 lg:h-10 rounded-full bg-black overflow-hidden flex items-center justify-center shrink-0">
         <img
           src={logo}
           alt={row.vehicle}
@@ -107,16 +107,16 @@ function Vehicles({
       <div className="flex flex-col">
         <DashHeader title="Vehicles" />
         {/* Search + Filter */}
-        <div className="bg-white p-4 rounded-2xl flex flex-col gap-6 border">
-          <div className="flex justify-end items-center gap-3">
+        <div className="bg-white p-3 lg:p-4 rounded-2xl flex flex-col gap-4 lg:gap-6 border">
+          <div className="flex justify-end items-center gap-2 lg:gap-3">
             <SearchBar
               placeholder="Search vehicle by make, year, reg.no....."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-80"
+              className="w-56 lg:w-80"
             />
-            <button className="px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 flex items-center gap-2 text-sm text-gray-600 font-medium cursor-pointer">
-              <Filter size={16} />
+            <button className="px-3 lg:px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 flex items-center gap-1.5 lg:gap-2 text-sm text-gray-600 font-medium cursor-pointer">
+              <Filter size={14} />
               Filter
             </button>
           </div>

@@ -23,36 +23,70 @@ import navIcon4Active from "../../assets/dashboardImgs/dashNavs/active/nav4.svg"
 import logoutIcon from "../../assets/dashboardImgs/dashNavs/logout.svg";
 
 const DASHNAVS = [
-  { id: 1, name: "Dashboard", img: navIcon1, activeImg: navIcon1Active, path: "/dashboard", dot: false },
-  { id: 2, name: "Vehicles", img: navIcon2, activeImg: navIcon2Active, path: "/dashboard/vehicles", dot: false },
-  { id: 3, name: "Service History", img: navIcon3, activeImg: navIcon3Active, path: "/dashboard/service-history", dot: true },
-  { id: 4, name: "Settings", img: navIcon4, activeImg: navIcon4Active, path: "/dashboard/settings", dot: false },
+  {
+    id: 1,
+    name: "Dashboard",
+    img: navIcon1,
+    activeImg: navIcon1Active,
+    path: "/dashboard",
+    dot: false,
+  },
+  {
+    id: 2,
+    name: "Vehicles",
+    img: navIcon2,
+    activeImg: navIcon2Active,
+    path: "/dashboard/vehicles",
+    dot: false,
+  },
+  {
+    id: 3,
+    name: "Service History",
+    img: navIcon3,
+    activeImg: navIcon3Active,
+    path: "/dashboard/service-history",
+    dot: true,
+  },
+  {
+    id: 4,
+    name: "Settings",
+    img: navIcon4,
+    activeImg: navIcon4Active,
+    path: "/dashboard/settings",
+    dot: false,
+  },
 ];
 
 function DashNav({ currentPath }) {
   return (
-    <div className="w-56 lg:w-70 bg-white h-screen flex flex-col justify-between py-6 border-r fixed z-1 text-[14px] lg:text-[16px]">
-      <div className="flex flex-col gap-8">
-        <div className="pl-4 lg:pl-6">
-          <img src={imageUrls.logo} alt="" />
+    <div className="w-44 lg:w-70 bg-white h-screen flex flex-col justify-between py-4 xl:py-6 border-r fixed z-1 text-[13px] xl:text-[16px]">
+      <div className="flex flex-col gap-6 xl:gap-8">
+        <div className="pl-4 xl:pl-6">
+          <img src={imageUrls.logo} alt="" className="w-24 xl:w-auto" />
         </div>
-        <div className="flex flex-col gap-3 ">
+        <div className="flex flex-col gap-2 xl:gap-3">
           {DASHNAVS.map((item) => {
             const isActive = currentPath === item.path;
             return (
               <Link
                 key={item.id}
                 to={item.path}
-                className={`flex  items-center gap-3 py-2 lg:py-3 pr-4 lg:pr-6 cursor-pointer transition-colors ${
+                className={`flex  items-center gap-3 py-2 xl:py-3 pr-4 xl:pr-6 cursor-pointer transition-colors ${
                   isActive
-                    ? "border-l-4 border-(--blue)  pl-4 lg:pl-5 bg-[#E6E6F0]"
-                    : "pl-4 lg:pl-6 text-gray-500 hover:bg-gray-50"
+                    ? "border-l-4 border-(--blue)  pl-4 xl:pl-5 bg-[#E6E6F0]"
+                    : "pl-4 xl:pl-6 text-gray-500 hover:bg-gray-50"
                 }`}
               >
-                <img src={isActive ? item.activeImg : item.img} alt="" className="w-5 h-5 shrink-0" />
+                <img
+                  src={isActive ? item.activeImg : item.img}
+                  alt=""
+                  className="w-5 h-5 shrink-0"
+                />
                 <span
-                  className={`text-[14px] lg:text-[16px] ${
-                    isActive ? "text-(--blue) font-semibold" : "text-gray-500 font-medium"
+                  className={`text-[13px] xl:text-[16px] ${
+                    isActive
+                      ? "text-(--blue) font-semibold"
+                      : "text-gray-500 font-medium"
                   }`}
                 >
                   {item.name}
@@ -75,20 +109,20 @@ function DashNav({ currentPath }) {
 
 function TopDash({ onAddVehicle }) {
   return (
-    <div className="w-full bg-white border-b pl-70 fixed top-0 left-0 z-10">
-      <div className="flex justify-between  px-8 py-2.5">
-        <SearchBar placeholder="search" className="" />
-        <div className="flex gap-6 items-center">
+    <div className="w-full bg-white border-b pl-44 lg:pl-70 fixed top-0 left-0 z-10">
+      <div className="flex justify-between px-4 xl:px-8 py-1.5 xl:py-2.5">
+        <SearchBar placeholder="search" className="w-28 xl:w-60" />
+        <div className="flex gap-3 xl:gap-6 items-center">
           <CTA
             name="+ &nbsp; Add Vehicle"
             color="blue"
             onClick={onAddVehicle}
           />
-          <div className="bg-[#EEF1F8] w-12 h-12 flex items-center justify-center text-center rounded-full cursor-pointer">
-            <Bell />
+          <div className="bg-[#EEF1F8] w-8 h-8 xl:w-12 xl:h-12 flex items-center justify-center text-center rounded-full cursor-pointer">
+            <Bell size={16} />
           </div>
-          <span className="w-12 h-12 flex items-center justify-center text-center bg-(--darkBlue) rounded-full">
-            <p className="text-xl text-white">CE</p>
+          <span className="w-8 h-8 xl:w-12 xl:h-12 flex items-center justify-center text-center bg-(--darkBlue) rounded-full">
+            <p className="text-sm xl:text-xl text-white">CE</p>
           </span>
         </div>
       </div>
@@ -185,9 +219,9 @@ export default function DashboardLayout() {
       </div>
       <div className="flex-1 min-w-0 overflow-hidden">
         <TopDash onAddVehicle={() => setShowAddVehicle(true)} />
-        <main className="ml-70 px-8 pb-6 pt-18 min-h-screen flex flex-col">
+        <main className="ml-44 lg:ml-70 px-3 xl:px-8 pb-3 xl:pb-6 pt-12 xl:pt-18 min-h-screen flex flex-col">
           <div className="flex flex-col flex-1">
-            <div className=" rounded-2xl p-6  font-(--body) flex-1">
+            <div className="rounded-2xl p-2 xl:p-6 font-(--body) flex-1">
               {renderComponent()}
             </div>
           </div>

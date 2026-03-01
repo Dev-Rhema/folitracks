@@ -3,7 +3,7 @@ import React from "react";
 function SearchBar({ placeholder = "", value = "", onChange, className = "" }) {
   return (
     <div
-      className={`flex items-center gap-2 bg-[#F1F5F9] border border-[#CBD5E1] rounded-md px-4 py-1.5 ${className}`}
+      className={`flex items-center gap-2 bg-[#F1F5F9] border border-[#CBD5E1] rounded-md px-3 py-1 lg:px-4 lg:py-1.5 ${className}`}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -24,7 +24,7 @@ function SearchBar({ placeholder = "", value = "", onChange, className = "" }) {
         {...(onChange ? { value } : { defaultValue: value })}
         onChange={onChange}
         placeholder={placeholder}
-        className="bg-transparent outline-none text-md text-[#A5A5A5]placeholder-[#A5A5A5] w-full"
+        className="bg-transparent outline-none text-sm lg:text-md text-[#A5A5A5] placeholder-[#A5A5A5] w-full"
       />
     </div>
   );

@@ -74,7 +74,7 @@ const STATUS_STYLES = {
 
 const StatusBadge = ({ status }) => (
   <span
-    className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap ${
+    className={`px-2 py-0.5 xl:px-4 xl:py-1.5 rounded-full text-xs xl:text-sm font-medium whitespace-nowrap ${
       STATUS_STYLES[status] || "bg-gray-100 text-gray-600"
     }`}
   >
@@ -151,8 +151,8 @@ const DASHCOUNT = [
 
 function SectionHeader({ title, to }) {
   return (
-    <div className="flex justify-between items-center mb-4">
-      <h2 className="text-lg font-bold text-gray-900">{title}</h2>
+    <div className="flex justify-between items-center mb-2 xl:mb-4">
+      <h2 className="text-sm xl:text-lg font-bold text-gray-900">{title}</h2>
       <Link
         to={to}
         className="text-sm text-blue-500 hover:underline font-medium"
@@ -167,19 +167,21 @@ function SectionHeader({ title, to }) {
 
 // Render functions for table cells
 const renderServiceCell = (row) => (
-  <div className="flex items-center gap-3">
+  <div className="flex items-center gap-2 xl:gap-3">
     <img
       src={getServiceIcon(row.service)}
       alt={row.service}
-      className="w-9 h-9 rounded-full object-cover shrink-0"
+      className="w-6 h-6 xl:w-9 xl:h-9 rounded-full object-cover shrink-0"
     />
-    <span className="text-sm text-gray-800">{row.service}</span>
+    <span className="text-xs xl:text-sm text-gray-800">{row.service}</span>
   </div>
 );
 
 const renderVehicleCell = (row) => (
   <div>
-    <p className="text-sm font-medium text-gray-800">{row.vehicle}</p>
+    <p className="text-xs xl:text-sm font-medium text-gray-800">
+      {row.vehicle}
+    </p>
     <p className="text-xs text-gray-400">{row.reg}</p>
   </div>
 );
@@ -203,39 +205,45 @@ export default function Dashboard() {
       />
 
       {/* Count cards */}
-      <div className="py-6 rounded-2xl flex flex-col gap-6">
-        <div className="grid grid-cols-3 gap-6">
+      <div className="py-3 xl:py-6 rounded-2xl flex flex-col gap-3 xl:gap-6">
+        <div className="grid grid-cols-3 gap-3 xl:gap-6">
           {DASHCOUNT.map((item) => (
             <div
               key={item.id}
-              className="flex items-center gap-4 border py-4 px-8 rounded-2xl bg-white"
+              className="flex items-center gap-2 xl:gap-4 border py-2 px-3 xl:py-4 xl:px-8 rounded-2xl bg-white"
             >
-              <img src={item.img} alt="" />
+              <img
+                src={item.img}
+                alt=""
+                className="w-7 h-7 xl:w-auto xl:h-auto"
+              />
               <div className="flex flex-col">
-                <p className="text-sm text-gray-600">{item.name}</p>
-                <p className="text-3xl font-bold text-gray-900">{item.num}</p>
+                <p className="text-xs xl:text-sm text-gray-600">{item.name}</p>
+                <p className="text-xl xl:text-3xl font-bold text-gray-900">
+                  {item.num}
+                </p>
               </div>
             </div>
           ))}
         </div>
 
         {/* My Vehicles + Upcoming Services */}
-        <div className="grid grid-cols-2 gap-8">
+        <div className="grid grid-cols-2 gap-3 xl:gap-8 items-stretch">
           {/* My Vehicles */}
-          <div className="">
+          <div className="flex flex-col">
             <SectionHeader title="My Vehicles" to="/dashboard/vehicles" />
-            <div className="bg-white border rounded-2xl p-5 ">
+            <div className="bg-white border rounded-2xl p-2 xl:p-5 flex-1">
               {MY_VEHICLES_PREVIEW.map((v, i) => {
                 const logo = getBrandLogo(v.vehicle);
                 return (
                   <div
                     key={i}
-                    className={`flex items-center justify-between py-3 ${
+                    className={`flex items-center justify-between py-1.5 xl:py-3 ${
                       i < MY_VEHICLES_PREVIEW.length - 1 ? "border-b" : ""
                     }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-black overflow-hidden flex items-center justify-center shrink-0">
+                    <div className="flex items-center gap-2 xl:gap-3">
+                      <div className="w-7 h-7 xl:w-10 xl:h-10 rounded-full bg-black overflow-hidden flex items-center justify-center shrink-0">
                         <img
                           src={logo}
                           alt={v.vehicle}
@@ -254,24 +262,24 @@ export default function Dashboard() {
           </div>
 
           {/* Upcoming Services */}
-          <div className="">
+          <div className="flex flex-col">
             <SectionHeader
               title="Upcoming Services "
               to="/dashboard/service-history"
             />
-            <div className="bg-white border rounded-2xl p-5 ">
+            <div className="bg-white border rounded-2xl p-2 xl:p-5 flex-1">
               {UPCOMING_PREVIEW.map((item, i) => (
                 <div
                   key={i}
-                  className={`flex items-center justify-between py-3 ${
+                  className={`flex items-center justify-between py-1.5 xl:py-3 ${
                     i < UPCOMING_PREVIEW.length - 1 ? "border-b" : ""
                   }`}
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 xl:gap-3">
                     <img
                       src={getServiceIcon(item.service)}
                       alt={item.service}
-                      className="w-10 h-10 rounded-full object-cover shrink-0"
+                      className="w-7 h-7 xl:w-10 xl:h-10 rounded-full object-cover shrink-0"
                     />
                     <div>
                       <p className="text-sm font-medium text-gray-800">

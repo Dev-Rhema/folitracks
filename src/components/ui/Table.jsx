@@ -139,19 +139,19 @@ function Table({
       )}
 
       {/* Table */}
-      <div className="w-full border rounded-2xl bg-white">
-        <table className="w-full min-w-0">
+      <div className="w-full border rounded-2xl bg-white overflow-x-auto">
+        <table className="w-full min-w-195">
           <thead className="bg-gray-50 border-b">
             <tr>
               {columns.map((column) => (
                 <th
                   key={column.key}
-                  className="px-4 py-3 text-left text-sm font-semibold text-[#3B82F6] font-title"
+                  className="px-3 py-2 xl:px-4 xl:py-3 text-left text-xs xl:text-sm font-semibold text-[#3B82F6] font-title"
                 >
                   {column.label}
                 </th>
               ))}
-              <th className="px-4 py-3 text-right text-sm font-semibold text-[#3B82F6] font-title">
+              <th className="px-3 py-2 xl:px-4 xl:py-3 text-right text-xs xl:text-sm font-semibold text-[#3B82F6] font-title">
                 Action
               </th>
             </tr>
@@ -166,12 +166,12 @@ function Table({
                   {columns.map((column) => (
                     <td
                       key={column.key}
-                      className="px-4 py-2.5 text-sm font-body"
+                      className="px-3 py-2 xl:px-4 xl:py-2.5 text-xs xl:text-sm font-body"
                     >
                       {column.render ? column.render(row) : row[column.key]}
                     </td>
                   ))}
-                  <td className="px-4 py-2.5 text-sm text-right font-body">
+                  <td className="px-3 py-2 xl:px-4 xl:py-2.5 text-xs xl:text-sm text-right font-body">
                     <div className="relative inline-block">
                       <button
                         className="p-1 hover:bg-gray-200 rounded-full transition inline-flex items-center justify-center cursor-pointer"
