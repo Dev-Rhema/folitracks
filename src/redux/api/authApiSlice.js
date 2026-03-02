@@ -10,6 +10,30 @@ const authApiSlice = generalApiSlice.injectEndpoints({
       })
     }),
 
+    loginByQrUpload: builder.mutation({
+      query: (body) => ({
+        url: "/auth/upload-qr",
+        method: "POST",
+        body,
+      })
+    }),
+
+    sendLoginOTP: builder.mutation({
+      query: (body) => ({
+        url: "/auth/send-login-otp",
+        method: "POST",
+        body,
+      })
+    }),
+
+    verifyLoginOTP: builder.mutation({
+      query: (body) => ({
+        url: "/auth/verify-login-otp",
+        method: "POST",
+        body,
+      })
+    }),
+
     registerUser: builder.mutation({
       query: (body) => ({
         url: "/user/register",
@@ -36,4 +60,4 @@ const authApiSlice = generalApiSlice.injectEndpoints({
   overrideExisting: false
 });
 
-export const { useLoginWithEmailMutation, useRegisterUserMutation, useVerifyUserEmailMutation, useGetUserQRQuery } = authApiSlice;
+export const { useLoginWithEmailMutation, useRegisterUserMutation, useVerifyUserEmailMutation, useGetUserQRQuery, useLoginByQrUploadMutation, useSendLoginOTPMutation, useVerifyLoginOTPMutation } = authApiSlice;

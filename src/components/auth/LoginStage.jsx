@@ -8,11 +8,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../../validation/authSchema";
 import AuthLayout from "./AuthLayout";
-import { useLoginWithEmailMutation } from "../../redux/api/authApiSlice";
+import { useLoginWithEmailMutation, useLoginByQrUploadMutation } from "../../redux/api/authApiSlice";
 import usePost from "../../hooks/usePost";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setUserInfo } from "../../redux/slices/appSlice";
+import { setUserInfo, setOtpPending } from "../../redux/slices/appSlice";
+import { convertToBase64 } from "../../utils/imageUtils";
 
 export default function LoginStage({ onContinue, onSignup }) {
   const [activeTab, setActiveTab] = useState("scan");
@@ -34,6 +35,7 @@ export default function LoginStage({ onContinue, onSignup }) {
   const [showPassword, setShowPassword] = useState(false);
 
   const {postData: loginWithEmail, isLoading: isLoggingIn} = usePost(useLoginWithEmailMutation)
+  const {postData: loginByQrUpload, isLoading: isLoggingInByQrUpload} = usePost(useLoginByQrUploadMutation)
 
   const onSubmit = async (data) => {
    const res = await loginWithEmail(data)
@@ -48,10 +50,24 @@ export default function LoginStage({ onContinue, onSignup }) {
     onContinue({ method: "scan" });
   };
 
-  const handleUploadQR = (e) => {
+  const handleUploadQR = async (e) => {
     const file = e.target.files?.[0];
-    if (file) {
-      onContinue({ method: "upload", file });
+    if (!file) return;
+
+    try {
+      const base64String = await convertToBase64(file);
+      const res = await loginByQrUpload({ qrcode: base64String });
+
+      if (res.status === 200 || res.status == true) {
+        dispatch(setOtpPending({ 
+          isOtpPending: true, 
+          loginMethod: "qr",
+          otpEmail: res?.data?.email || res?.email
+        }));
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      console.error("Error uploading QR code:", error);
     }
   };
 
@@ -114,6 +130,7 @@ export default function LoginStage({ onContinue, onSignup }) {
                 </p>
               </label>
             </div>
+
             <div className="pt-4 w-full">
             <CTA
               name="Upload File"

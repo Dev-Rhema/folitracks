@@ -4,6 +4,8 @@ import { Link, useLocation } from "react-router-dom";
 import SearchBar from "./SearchBar";
 import CTA from "../CTA";
 import { Bell, Menu, X } from "lucide-react";
+import { useSelector } from "react-redux";
+import LoginOTPModal from "../auth/LoginOTPModal";
 import Vehicles from "./Vehicles";
 import Dashboard from "./Dashboard";
 import ServiceHistory from "./ServiceHistory";
@@ -195,7 +197,8 @@ function TopDash({ onAddVehicle }) {
   return (
     <div className="hidden md:block w-full bg-white border-b pl-44 xl:pl-70 fixed top-0 left-0 z-10">
       <div className="flex justify-between px-4 xl:px-8 py-1.5 xl:py-2.5">
-        <SearchBar placeholder="search" className="w-28 xl:w-60" />
+        <SearchBar placeholder="search" className="max-w-[400px] w-full" />
+
         <div className="flex gap-3 xl:gap-6 items-center">
           <CTA
             name="+ &nbsp; Add Vehicle"
@@ -214,8 +217,21 @@ function TopDash({ onAddVehicle }) {
   );
 }
 
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 export default function DashboardLayout() {
+  const { isOtpPending, loginMethod, userInfo } = useSelector((state) => state.app);
   const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // If user is not logged in AND there's no pending OTP flow, redirect to login
+    if (!userInfo && !isOtpPending) {
+      navigate("/");
+    }
+  }, [userInfo, isOtpPending, navigate]);
+
   const [showAddVehicle, setShowAddVehicle] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [viewVehicle, setViewVehicle] = useState(null);
@@ -297,6 +313,21 @@ export default function DashboardLayout() {
     return <Dashboard />;
   };
 
+  if (isOtpPending && loginMethod === "qr") {
+    return (
+      <div className="min-h-screen bg-[#F8FAFC]">
+        <LoginOTPModal />
+        {/* Render a blurred skeleton or empty dashboard to look professional but hide data */}
+        <div className="opacity-20 pointer-events-none blur-sm">
+           <DashNav currentPath={location.pathname} />
+           <div className="flex-1 min-w-0">
+             <TopDash onAddVehicle={() => {}} />
+           </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-[#F8FAFC] flex">
       <MobileHeader
@@ -308,14 +339,16 @@ export default function DashboardLayout() {
         open={mobileNavOpen}
         onClose={() => setMobileNavOpen(false)}
       />
+      
       <div className="z-20">
         <DashNav currentPath={location.pathname} />
       </div>
+
       <div className="flex-1 min-w-0 overflow-hidden">
         <TopDash onAddVehicle={() => setShowAddVehicle(true)} />
         <main className="md:ml-44 xl:ml-70 px-3 xl:px-8 pb-3 xl:pb-6 pt-16 md:pt-12 xl:pt-18 min-h-screen flex flex-col">
           <div className="flex flex-col flex-1">
-            <div className="rounded-2xl p-2 xl:p-6 font-(--body) flex-1">
+            <div className="rounded-2xl p-2 pt-4 font-(--body) flex-1">
               {renderComponent()}
             </div>
           </div>

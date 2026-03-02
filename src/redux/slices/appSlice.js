@@ -1,21 +1,37 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const getInitialUserInfo = () => {
+const getInitialState = () => {
   if (typeof window !== "undefined") {
-    const saved = localStorage.getItem("userInfo");
+    const savedUser = localStorage.getItem("userInfo");
+    const isOtpPending = localStorage.getItem("isOtpPending") === "true";
+    const loginMethod = localStorage.getItem("loginMethod");
+    const otpEmail = localStorage.getItem("otpEmail");
+    
+    let userInfo = null;
     try {
-      return saved ? JSON.parse(saved) : null;
+      userInfo = savedUser ? JSON.parse(savedUser) : null;
     } catch (e) {
-      return null;
+      console.error("Error parsing userInfo from localStorage", e);
     }
+
+    return {
+      app_loading: false,
+      userInfo,
+      isOtpPending,
+      loginMethod,
+      otpEmail,
+    };
   }
-  return null;
+  return {
+    app_loading: false,
+    userInfo: null,
+    isOtpPending: false,
+    loginMethod: null,
+    otpEmail: null,
+  };
 };
 
-const initialState = {
-  app_loading: false,
-  userInfo: getInitialUserInfo(),
-};
+const initialState = getInitialState();
 
 const appSlice = createSlice({
   name: "app",
@@ -30,10 +46,35 @@ const appSlice = createSlice({
       localStorage.setItem("userInfo", JSON.stringify(state.userInfo));
     },
 
+    setOtpPending: (state, action) => {
+      state.isOtpPending = action.payload.isOtpPending;
+      state.loginMethod = action.payload.loginMethod;
+      state.otpEmail = action.payload.otpEmail || null;
+      
+      localStorage.setItem("isOtpPending", action.payload.isOtpPending);
+      if (action.payload.loginMethod) {
+        localStorage.setItem("loginMethod", action.payload.loginMethod);
+      } else {
+        localStorage.removeItem("loginMethod");
+      }
+      
+      if (action.payload.otpEmail) {
+        localStorage.setItem("otpEmail", action.payload.otpEmail);
+      } else {
+        localStorage.removeItem("otpEmail");
+      }
+    },
+
     logOut: (state) => {
       state.userInfo = null;
+      state.isOtpPending = false;
+      state.loginMethod = null;
+      state.otpEmail = null;
       if (typeof window !== "undefined") {
         localStorage.removeItem("userInfo");
+        localStorage.removeItem("isOtpPending");
+        localStorage.removeItem("loginMethod");
+        localStorage.removeItem("otpEmail");
       }
       // redirect to login page
       window.location.href = "/";
@@ -50,4 +91,5 @@ export const {
   storeDashboardData,
   storeAnalyticsData,
   setSessionExpiring,
+  setOtpPending,
 } = appSlice.actions;
