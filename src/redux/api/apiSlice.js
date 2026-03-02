@@ -10,7 +10,7 @@ export const appApiHeader = {
 };
 
 export const getBaseUrl = () =>
-  "https://54.158.185.26";
+  "http://54.158.185.26";
 
 // Base query setup
 const rawBaseQuery = fetchBaseQuery({
