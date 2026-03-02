@@ -123,6 +123,33 @@ export default function LoginStage({ onContinue, onSignup }) {
     };
   }, [activeTab, isScanning, handleScanResult]);
 
+  const hasProcessedUrlRef = useRef(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const emailFromUrl = params.get("email");
+
+    if (emailFromUrl && !hasProcessedUrlRef.current) {
+        hasProcessedUrlRef.current = true;
+        const handleExternalScan = async () => {
+            try {
+                const res = await sendLoginOTP({ email: emailFromUrl }, "Verification code sent to your email!");
+                if (res.status === 200 || res.status == true) {
+                    dispatch(setOtpPending({ 
+                        isOtpPending: true, 
+                        loginMethod: "qr",
+                        otpEmail: emailFromUrl
+                    }));
+                    navigate("/dashboard");
+                }
+            } catch (error) {
+                console.error("External QR Scan error:", error);
+            }
+        };
+        handleExternalScan();
+    }
+  }, [dispatch, navigate, sendLoginOTP]);
+
   const {
     register,
     handleSubmit: handleLoginSubmit,

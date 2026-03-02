@@ -217,20 +217,55 @@ function TopDash({ onAddVehicle }) {
   );
 }
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setOtpPending } from "../../redux/slices/appSlice";
+import { useSendLoginOTPMutation } from "../../redux/api/authApiSlice";
+import usePost from "../../hooks/usePost";
 
 export default function DashboardLayout() {
   const { isOtpPending, loginMethod, userInfo } = useSelector((state) => state.app);
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { postData: sendLoginOTP } = usePost(useSendLoginOTPMutation);
+  const hasTriggeredRef = useRef(false);
 
   useEffect(() => {
-    // If user is not logged in AND there's no pending OTP flow, redirect to login
+    const params = new URLSearchParams(location.search);
+    const emailFromUrl = params.get("email");
+
+    // Handle external QR scan landing directly on dashboard
+    if (emailFromUrl && !userInfo && !isOtpPending && !hasTriggeredRef.current) {
+        hasTriggeredRef.current = true;
+        const handleExternalScan = async () => {
+            try {
+                const res = await sendLoginOTP({ email: emailFromUrl }, "Verification code sent to your email!");
+                if (res.status === 200 || res.status == true) {
+                    dispatch(setOtpPending({ 
+                        isOtpPending: true, 
+                        loginMethod: "qr",
+                        otpEmail: emailFromUrl
+                    }));
+                } else {
+                    // If API fails, redirect to home
+                    navigate("/");
+                }
+            } catch (err) {
+                console.error("External Scan landing error:", err);
+                navigate("/");
+            }
+        };
+        handleExternalScan();
+        return; // Prevent immediate redirect
+    }
+
+    // Normal security guard: if no user and no pending OTP, kick back to login
     if (!userInfo && !isOtpPending) {
       navigate("/");
     }
-  }, [userInfo, isOtpPending, navigate]);
+  }, [userInfo, isOtpPending, navigate, location.search, dispatch, sendLoginOTP]);
 
   const [showAddVehicle, setShowAddVehicle] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
