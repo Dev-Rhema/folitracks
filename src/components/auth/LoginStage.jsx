@@ -66,7 +66,6 @@ export default function LoginStage({ onContinue, onSignup }) {
 
     const startScanner = async () => {
       try {
-        // Ensure div is rendered and we are in scan mode
         if (activeTab !== "scan" || !isScanning) return;
 
         // Wait a tick for the DOM
@@ -89,7 +88,9 @@ export default function LoginStage({ onContinue, onSignup }) {
           (decodedText) => {
             handleScanResult(decodedText);
           },
-          () => {} // ignore scan errors
+          (error) => {
+            console.log(error);
+          } // ignore scan errors
         );
       } catch (err) {
         console.error("Unable to start scanner:", err);
