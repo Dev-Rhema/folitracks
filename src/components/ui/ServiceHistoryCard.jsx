@@ -1,24 +1,4 @@
-const STATUS_STYLES = {
-  Completed: "bg-teal-50 text-teal-600",
-  "In Progress": "bg-purple-100 text-purple-600",
-  "Due Today": "bg-orange-100 text-orange-500",
-  "Due Soon": "bg-orange-50 text-orange-500",
-  Scheduled: "bg-teal-50 text-teal-500",
-  Overdue: "bg-red-50 text-red-500",
-};
-
-/**
- * Reusable mobile card for service history, upcoming services, and vehicles.
- *
- * Props:
- *   icon        – img src for the header icon
- *   iconBg      – Tailwind bg class for the icon circle  (default: "bg-teal-50")
- *   iconContain – use object-contain instead of object-cover (default: false)
- *   title       – bold text beside the icon
- *   status      – optional status string; renders a coloured badge when present
- *   rows        – [{ label, value, subValue? }] detail rows
- *   onViewDetails / onEdit / onRemove – optional action callbacks
- */
+import StatusBadge from "./StatusBadge";
 function ServiceHistoryCard({
   icon,
   iconBg = "bg-teal-50",
@@ -48,15 +28,7 @@ function ServiceHistoryCard({
           </div>
           <span className="text-sm font-bold text-gray-900">{title}</span>
         </div>
-        {status && (
-          <span
-            className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${
-              STATUS_STYLES[status] || "bg-gray-100 text-gray-600"
-            }`}
-          >
-            {status}
-          </span>
-        )}
+        {status && <StatusBadge status={status} className="px-3 py-1 text-xs font-semibold" />}
       </div>
 
       {/* Detail rows */}

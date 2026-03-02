@@ -1,50 +1,11 @@
 import { useState, useRef } from "react";
 import ServiceHistoryCard from "../ui/ServiceHistoryCard";
-import {
-  ArrowLeft,
-  Pencil,
-  Trash2,
-  Car,
-  User,
-  Key,
-  QrCode,
-  Download,
-} from "lucide-react";
+import StatusBadge from "../ui/StatusBadge";
+import { ArrowLeft, Pencil, Trash2, Car, User, Key, QrCode, Download } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
-import { imageUrls } from "../../config/imageUrls";
 import FileUploadField from "../auth/FileUploadField";
-import filterChangeImg from "../../assets/dashboardImgs/dashHistory/filterChange.svg";
-import suspensionImg from "../../assets/dashboardImgs/dashHistory/suspension.svg";
-import batteryCheckImg from "../../assets/dashboardImgs/dashHistory/batteryCheck.svg";
-import generalMaintImg from "../../assets/dashboardImgs/dashHistory/generalMaint.svg";
-import brakeInspectionImg from "../../assets/dashboardImgs/dashHistory/brakeInspeciton.svg";
-import engineImg from "../../assets/dashboardImgs/dashHistory/engine.svg";
-import diagnosticScanImg from "../../assets/dashboardImgs/dashHistory/diagnosticScan.svg";
-import oilChangeImg from "../../assets/dashboardImgs/dashHistory/oilChange.svg";
-import acImg from "../../assets/dashboardImgs/dashHistory/ac.svg";
-import exhaustImg from "../../assets/dashboardImgs/dashHistory/exhaust.svg";
-import fluidTopImg from "../../assets/dashboardImgs/dashHistory/fluidTop.svg";
-import wheelAlignmentImg from "../../assets/dashboardImgs/dashHistory/wheel alignment.svg";
-
-// ─── Brand logos ──────────────────────────────────────────────────────────────
-
-const BRAND_LOGOS = {
-  lexus: imageUrls.lexus,
-  toyota: imageUrls.toyota,
-  ford: imageUrls.ford,
-  mercedes: imageUrls.mercedes,
-  bmw: imageUrls.bmw,
-  hyundai: imageUrls.hyundai,
-  kia: imageUrls.kia,
-};
-
-const getBrandLogo = (vehicleName) => {
-  const lower = vehicleName.toLowerCase();
-  for (const brand of Object.keys(BRAND_LOGOS)) {
-    if (lower.startsWith(brand)) return BRAND_LOGOS[brand];
-  }
-  return null;
-};
+import { getBrandLogo } from "../../utils/vehicleUtils";
+import { getServiceIcon } from "../../utils/serviceUtils";
 
 // ─── Parse make / model / year ────────────────────────────────────────────────
 
@@ -79,52 +40,6 @@ const MOCK_VINS = [
 const getVIN = (reg) => MOCK_VINS[parseInt(reg.replace(/\D/g, "") || "0") % MOCK_VINS.length];
 
 // ─── Service icon map ─────────────────────────────────────────────────────────
-
-const SERVICE_ICON_MAP = {
-  "Filter Change": filterChangeImg,
-  "Air Filter": filterChangeImg,
-  "Suspension Check": suspensionImg,
-  "Suspension": suspensionImg,
-  "Battery Change": batteryCheckImg,
-  "Battery Check": batteryCheckImg,
-  "General Maintenance": generalMaintImg,
-  "Brake Inspection": brakeInspectionImg,
-  "Brake Pad": brakeInspectionImg,
-  "Transmission": engineImg,
-  "Engine": engineImg,
-  "Radiator": fluidTopImg,
-  "Electrical/Lighting": diagnosticScanImg,
-  "Body Work": exhaustImg,
-  "Oil Change": oilChangeImg,
-  "AC Services": acImg,
-  "AC Compartment": acImg,
-  "Wheel Alignment": wheelAlignmentImg,
-  "Exhaust System": exhaustImg,
-  "Diagnostic Scan": diagnosticScanImg,
-  "Fluid Top-up": fluidTopImg,
-};
-const getServiceIcon = (name) => SERVICE_ICON_MAP[name] || generalMaintImg;
-
-// ─── Status badge ─────────────────────────────────────────────────────────────
-
-const STATUS_STYLES = {
-  "In Progress":  "bg-purple-100 text-purple-600",
-  "Overdue":      "bg-red-50 text-red-500",
-  "Completed":    "bg-green-50 text-green-600",
-  "Due Soon":     "bg-orange-50 text-orange-500",
-  "Due Today":    "bg-orange-100 text-orange-500",
-  "Scheduled":    "bg-teal-50 text-teal-500",
-};
-
-const StatusBadge = ({ status }) => (
-  <span
-    className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap ${
-      STATUS_STYLES[status] || "bg-gray-100 text-gray-600"
-    }`}
-  >
-    {status}
-  </span>
-);
 
 // ─── Service History data ─────────────────────────────────────────────────────
 

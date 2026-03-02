@@ -4,45 +4,7 @@ import ServiceHistoryCard from "../ui/ServiceHistoryCard";
 import DashHeader from "./DashHeader";
 import SearchBar from "./SearchBar";
 import { Filter } from "lucide-react";
-import { imageUrls } from "../../config/imageUrls";
-
-// ─── Brand logo mapping ───────────────────────────────────────────────────────
-
-const BRAND_LOGOS = {
-  lexus: imageUrls.lexus,
-  toyota: imageUrls.toyota,
-  ford: imageUrls.ford,
-  mercedes: imageUrls.mercedes,
-  bmw: imageUrls.bmw,
-  hyundai: imageUrls.hyundai,
-  kia: imageUrls.kia,
-};
-
-const getBrandLogo = (vehicleName) => {
-  const lower = vehicleName.toLowerCase();
-  for (const brand of Object.keys(BRAND_LOGOS)) {
-    if (lower.startsWith(brand)) return BRAND_LOGOS[brand];
-  }
-  return null;
-};
-
-// ─── Cell renderers ───────────────────────────────────────────────────────────
-
-const renderVehicleCell = (row) => {
-  const logo = getBrandLogo(row.vehicle);
-  return (
-    <div className="flex items-center gap-2 lg:gap-3">
-      <div className="w-7 h-7 lg:w-10 lg:h-10 rounded-full bg-black overflow-hidden flex items-center justify-center shrink-0">
-        <img
-          src={logo}
-          alt={row.vehicle}
-          className="w-full h-full object-contain"
-        />
-      </div>
-      <span>{row.vehicle}</span>
-    </div>
-  );
-};
+import { getBrandLogo } from "../../utils/vehicleUtils";
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -84,7 +46,21 @@ const VEHICLES_DATA = Array.from({ length: 12 }, (_, i) => {
 
 const COLUMNS = [
   { key: "sn", label: "S/N" },
-  { key: "vehicle", label: "Vehicle", render: renderVehicleCell },
+  {
+    key: "vehicle",
+    label: "Vehicle",
+    render: (row) => {
+      const logo = getBrandLogo(row.vehicle);
+      return (
+        <div className="flex items-center gap-2 lg:gap-3">
+          <div className="w-7 h-7 lg:w-10 lg:h-10 rounded-full bg-black overflow-hidden flex items-center justify-center shrink-0">
+            <img src={logo} alt={row.vehicle} className="w-full h-full object-contain" />
+          </div>
+          <span>{row.vehicle}</span>
+        </div>
+      );
+    },
+  },
   { key: "registrationNumber", label: "Registration Number" },
   { key: "lastServiceDate", label: "Last Service Date" },
   { key: "nextServiceDate", label: "Next Service Date" },
@@ -92,86 +68,72 @@ const COLUMNS = [
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-function Vehicles({
-  extraVehicles = [],
-  removedRegistrations = [],
-  onActionClick,
-}) {
+function Vehicles({ extraVehicles = [], removedRegistrations = [], onActionClick }) {
   const [searchTerm, setSearchTerm] = useState("");
 
   const displayData = [...extraVehicles, ...VEHICLES_DATA]
     .filter((v) => !removedRegistrations.includes(v.registrationNumber))
     .map((v, i) => ({ ...v, sn: String(i + 1).padStart(2, "0") }));
 
+  const mobileFiltered = displayData.filter((v) => {
+    if (!searchTerm.trim()) return true;
+    const s = searchTerm.toLowerCase();
+    return v.vehicle.toLowerCase().includes(s) || v.registrationNumber.toLowerCase().includes(s);
+  });
+
   return (
-    <>
-      <div className="flex flex-col">
-        <DashHeader title="Vehicles" />
-        {/* Search + Filter */}
-        <div className="bg-white p-3 lg:p-4 rounded-2xl flex flex-col gap-4 lg:gap-6 border">
-          <div className="flex justify-end items-center gap-2 lg:gap-3">
-            <SearchBar
-              placeholder="Search vehicle by make, year, reg.no....."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="flex-1 lg:w-52"
-            />
-            <button className="px-3 lg:px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 flex items-center gap-1.5 lg:gap-2 text-sm text-gray-600 font-medium cursor-pointer">
-              <Filter size={14} />
-              Filter
-            </button>
-          </div>
+    <div className="flex flex-col">
+      <DashHeader title="Vehicles" />
 
-          {/* Mobile cards */}
-          <div className="md:hidden space-y-3">
-            {displayData
-              .filter((v) => {
-                if (!searchTerm.trim()) return true;
-                const s = searchTerm.toLowerCase();
-                return (
-                  v.vehicle.toLowerCase().includes(s) ||
-                  v.registrationNumber.toLowerCase().includes(s)
-                );
-              })
-              .map((row, i) => (
-                <ServiceHistoryCard
-                  key={i}
-                  icon={getBrandLogo(row.vehicle) || imageUrls.logo}
-                  iconBg="bg-black"
-                  iconContain
-                  title={row.vehicle}
-                  rows={[
-                    { label: "Registration Number", value: row.registrationNumber },
-                    { label: "Last Service Date", value: row.lastServiceDate },
-                    { label: "Next Service Date", value: row.nextServiceDate },
-                  ]}
-                  onViewDetails={() => onActionClick?.(row, "view")}
-                  onEdit={() => onActionClick?.(row, "edit")}
-                  onRemove={() => onActionClick?.(row, "remove")}
-                />
-              ))}
-          </div>
+      <div className="bg-white p-3 lg:p-4 rounded-2xl flex flex-col gap-4 lg:gap-6 border">
+        <div className="flex justify-end items-center gap-2 lg:gap-3">
+          <SearchBar
+            placeholder="Search vehicle by make, year, reg.no....."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="flex-1 lg:w-52"
+          />
+          <button className="px-3 lg:px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 flex items-center gap-1.5 lg:gap-2 text-sm text-gray-600 font-medium cursor-pointer">
+            <Filter size={14} />
+            Filter
+          </button>
+        </div>
 
-          {/* Desktop table */}
-          <div className="hidden md:block overflow-x-auto">
-            <Table
-              columns={COLUMNS}
-              data={displayData}
-              rowsPerPage={10}
-              showSearch={false}
-              searchTerm={searchTerm}
-              searchableFields={[
-                "vehicle",
-                "registrationNumber",
-                "lastServiceDate",
-                "nextServiceDate",
+        {/* Mobile cards */}
+        <div className="md:hidden space-y-3">
+          {mobileFiltered.map((row, i) => (
+            <ServiceHistoryCard
+              key={i}
+              icon={getBrandLogo(row.vehicle)}
+              iconBg="bg-black"
+              iconContain
+              title={row.vehicle}
+              rows={[
+                { label: "Registration Number", value: row.registrationNumber },
+                { label: "Last Service Date", value: row.lastServiceDate },
+                { label: "Next Service Date", value: row.nextServiceDate },
               ]}
-              onActionClick={onActionClick}
+              onViewDetails={() => onActionClick?.(row, "view")}
+              onEdit={() => onActionClick?.(row, "edit")}
+              onRemove={() => onActionClick?.(row, "remove")}
             />
-          </div>
+          ))}
+        </div>
+
+        {/* Desktop table */}
+        <div className="hidden md:block overflow-x-auto">
+          <Table
+            columns={COLUMNS}
+            data={displayData}
+            rowsPerPage={10}
+            showSearch={false}
+            searchTerm={searchTerm}
+            searchableFields={["vehicle", "registrationNumber", "lastServiceDate", "nextServiceDate"]}
+            onActionClick={onActionClick}
+          />
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

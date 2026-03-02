@@ -1,77 +1,18 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Table from "../ui/Table";
 import ServiceHistoryCard from "../ui/ServiceHistoryCard";
+import StatusBadge from "../ui/StatusBadge";
 import { CheckSquare, Clock, AlertTriangle, Filter } from "lucide-react";
 import SearchBar from "./SearchBar";
-import brakePadImg from "../../assets/dashboardImgs/dashHistory/brakePad.svg";
-import suspensionImg from "../../assets/dashboardImgs/dashHistory/suspension.svg";
-import diagnosticScanImg from "../../assets/dashboardImgs/dashHistory/diagnosticScan.svg";
-import engineImg from "../../assets/dashboardImgs/dashHistory/engine.svg";
-import fluidTopImg from "../../assets/dashboardImgs/dashHistory/fluidTop.svg";
-import acImg from "../../assets/dashboardImgs/dashHistory/ac.svg";
-import wheelAlignmentImg from "../../assets/dashboardImgs/dashHistory/wheel alignment.svg";
-import exhaustImg from "../../assets/dashboardImgs/dashHistory/exhaust.svg";
-import oilChangeImg from "../../assets/dashboardImgs/dashHistory/oilChange.svg";
-import filterChangeImg from "../../assets/dashboardImgs/dashHistory/filterChange.svg";
-import batteryCheckImg from "../../assets/dashboardImgs/dashHistory/batteryCheck.svg";
-import generalMaintenance from "../../assets/dashboardImgs/dashHistory/generalMaint.svg";
 import DashHeader from "./DashHeader";
+import { getServiceIcon } from "../../utils/serviceUtils";
 
-const SERVICE_ICONS = [
-  { name: "Brake Pad", image: brakePadImg },
-  { name: "Brake Inspection", image: brakePadImg },
-  { name: "Suspension", image: suspensionImg },
-  { name: "Suspension Check", image: suspensionImg },
-  { name: "Diagnostic Scan", image: diagnosticScanImg },
-  { name: "Engine", image: engineImg },
-  { name: "Fluid Top-up", image: fluidTopImg },
-  { name: "AC Compartment", image: acImg },
-  { name: "AC Services", image: acImg },
-  { name: "General Maintenance", image: generalMaintenance },
-  { name: "Wheel Alignment", image: wheelAlignmentImg },
-  { name: "Exhaust System", image: exhaustImg },
-  { name: "Oil Change", image: oilChangeImg },
-  { name: "Air Filter", image: filterChangeImg },
-  { name: "Filter Change", image: filterChangeImg },
-  { name: "Battery Check", image: batteryCheckImg },
-];
-
-const STATUS_STYLES = {
-  "In Progress": "bg-purple-100 text-purple-600",
-  "Due Today": "bg-orange-100 text-orange-500",
-  "Due Soon": "bg-orange-50 text-orange-500",
-  Scheduled: "bg-teal-50 text-teal-500",
-  Overdue: "bg-red-50 text-red-500",
-};
-
-const StatusBadge = ({ status }) => (
-  <span
-    className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap ${
-      STATUS_STYLES[status] || "bg-gray-100 text-gray-600"
-    }`}
-  >
-    {status}
-  </span>
+const renderServiceCell = (row) => (
+  <div className="flex items-center gap-2 lg:gap-3">
+    <img src={getServiceIcon(row.service)} alt={row.service} className="w-7 h-7 rounded-full object-cover shrink-0" />
+    <span>{row.service}</span>
+  </div>
 );
-
-const getServiceIcon = (name) =>
-  SERVICE_ICONS.find((s) => s.name === name)?.image || brakePadImg;
-
-const renderServiceCell = (row) => {
-  const serviceData = SERVICE_ICONS.find((s) => s.name === row.service) || {
-    image: brakePadImg,
-  };
-  return (
-    <div className="flex items-center gap-2 lg:gap-3">
-      <img
-        src={serviceData.image}
-        alt={row.service}
-        className="w-7 h-7 rounded-full object-cover shrink-0"
-      />
-      <span>{row.service}</span>
-    </div>
-  );
-};
 
 const renderVehicleCell = (row) => {
   const lines = row.vehicle.split("\n");
