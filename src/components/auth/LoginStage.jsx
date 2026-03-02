@@ -15,7 +15,7 @@ import { useDispatch } from "react-redux";
 import { setUserInfo } from "../../redux/slices/appSlice";
 
 export default function LoginStage({ onContinue, onSignup }) {
-  const [activeTab, setActiveTab] = useState("upload");
+  const [activeTab, setActiveTab] = useState("scan");
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
