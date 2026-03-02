@@ -14,8 +14,8 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUserInfo, setOtpPending } from "../../redux/slices/appSlice";
 import { convertToBase64 } from "../../utils/imageUtils";
-import { useEffect, useCallback } from "react";
-import { Html5QrcodeScanner } from "html5-qrcode";
+import { useEffect, useCallback, useRef } from "react";
+import { Html5Qrcode } from "html5-qrcode";
 
 export default function LoginStage({ onContinue, onSignup }) {
   const [activeTab, setActiveTab] = useState("scan");
@@ -24,6 +24,7 @@ export default function LoginStage({ onContinue, onSignup }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [isScanning, setIsScanning] = useState(false);
+  const qrInstanceRef = useRef(null);
 
   const { postData: sendLoginOTP, isLoading: isSendingOTP } = usePost(useSendLoginOTPMutation);
 
@@ -33,6 +34,9 @@ export default function LoginStage({ onContinue, onSignup }) {
       const email = url.searchParams.get("email");
 
       if (email) {
+        if (qrInstanceRef.current) {
+          await qrInstanceRef.current.stop();
+        }
         setIsScanning(false);
         const res = await sendLoginOTP({ email }, "Verification code sent to your email!");
         if (res.status === 200 || res.status == true) {
@@ -50,29 +54,54 @@ export default function LoginStage({ onContinue, onSignup }) {
   }, [sendLoginOTP, dispatch, navigate]);
 
   useEffect(() => {
-    setIsScanning(false);
+    if (activeTab === "scan") {
+      setIsScanning(true);
+    } else {
+      setIsScanning(false);
+    }
   }, [activeTab]);
 
   useEffect(() => {
-    let scanner = null;
-    if (activeTab === "scan" && isScanning) {
-      scanner = new Html5QrcodeScanner("reader", { 
-        fps: 10, 
-        qrbox: { width: 250, height: 250 },
-        rememberLastUsedCamera: true
-      });
+    let isMounted = true;
 
-      scanner.render((decodedText) => {
-        scanner.clear();
-        handleScanResult(decodedText);
-      }, (error) => {
-        console.log(error);
-      });
-    }
+    const startScanner = async () => {
+      try {
+        // Ensure div is rendered and we are in scan mode
+        if (activeTab !== "scan" || !isScanning) return;
+
+        // Wait a tick for the DOM
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        const element = document.getElementById("reader");
+        if (!element || !isMounted) return;
+
+        const html5QrCode = new Html5Qrcode("reader");
+        qrInstanceRef.current = html5QrCode;
+
+        const config = { 
+          fps: 10, 
+          qrbox: { width: 250, height: 250 } 
+        };
+
+        await html5QrCode.start(
+          { facingMode: "environment" },
+          config,
+          (decodedText) => {
+            handleScanResult(decodedText);
+          },
+          () => {} // ignore scan errors
+        );
+      } catch (err) {
+        console.error("Unable to start scanner:", err);
+      }
+    };
+
+    startScanner();
 
     return () => {
-      if (scanner) {
-        scanner.clear().catch(err => console.error("Failed to clear scanner", err));
+      isMounted = false;
+      if (qrInstanceRef.current && qrInstanceRef.current.isScanning) {
+        qrInstanceRef.current.stop().catch(err => console.error("Stop failed", err));
       }
     };
   }, [activeTab, isScanning, handleScanResult]);
@@ -156,7 +185,7 @@ export default function LoginStage({ onContinue, onSignup }) {
         <div className="space-y-8" style={{ fontFamily: "body" }}>
           {isScanning ? (
             <div className="relative">
-              <div id="reader" className="w-full bg-black rounded-xl overflow-hidden shadow-lg border-2 border-blue-100"></div>
+              <div id="reader" className="w-full bg-black rounded-xl overflow-hidden shadow-lg border-2 border-blue-100 min-h-[350px]"></div>
               <p className="text-center mt-4 text-sm text-gray-500 font-medium">
                 Hold your QR code within the focus box...
               </p>
