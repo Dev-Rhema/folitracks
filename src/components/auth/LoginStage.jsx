@@ -54,34 +54,44 @@ export default function LoginStage({ onContinue, onSignup }) {
   }, [sendLoginOTP, dispatch, navigate]);
 
   useEffect(() => {
-    if (activeTab === "scan") {
-      setIsScanning(true);
-    } else {
-      setIsScanning(false);
-    }
+    // Reset scanning state when switching tabs
+    setIsScanning(false);
   }, [activeTab]);
 
   useEffect(() => {
     let isMounted = true;
+    let html5QrCode = null;
 
     const startScanner = async () => {
       try {
         if (activeTab !== "scan" || !isScanning) return;
 
-        // Wait a tick for the DOM
-        await new Promise(resolve => setTimeout(resolve, 100));
+        // Small delay to ensure the #reader div is actually rendered in the DOM
+        await new Promise(resolve => setTimeout(resolve, 300));
         
         const element = document.getElementById("reader");
         if (!element || !isMounted) return;
 
-        const html5QrCode = new Html5Qrcode("reader");
+        // If an instance already exists, stop it first
+        if (qrInstanceRef.current && qrInstanceRef.current.isScanning) {
+          try {
+            await qrInstanceRef.current.stop();
+          } catch (e) {
+            console.warn("Stopping previous scanner failed", e);
+          }
+        }
+
+        html5QrCode = new Html5Qrcode("reader");
         qrInstanceRef.current = html5QrCode;
 
         const config = { 
           fps: 10, 
-          qrbox: { width: 250, height: 250 } 
+          qrbox: { width: 250, height: 250 },
+          aspectRatio: 1.0
         };
 
+        // On mobile, facingMode environment is crucial. 
+        // We use a broader approach to starting to catch permission issues early.
         await html5QrCode.start(
           { facingMode: "environment" },
           config,
@@ -89,20 +99,26 @@ export default function LoginStage({ onContinue, onSignup }) {
             handleScanResult(decodedText);
           },
           (error) => {
-            console.log(error);
-          } // ignore scan errors
+            // Scan errors are normal when no QR is in view, we only log serious failures
+            if (error?.includes("NotFoundException")) return;
+            // console.log(error);
+          } 
         );
       } catch (err) {
         console.error("Unable to start scanner:", err);
+        // If it fails, reset scanning state so user can try again
+        if (isMounted) setIsScanning(false);
       }
     };
 
-    startScanner();
+    if (isScanning) {
+      startScanner();
+    }
 
     return () => {
       isMounted = false;
-      if (qrInstanceRef.current && qrInstanceRef.current.isScanning) {
-        qrInstanceRef.current.stop().catch(err => console.error("Stop failed", err));
+      if (html5QrCode && html5QrCode.isScanning) {
+        html5QrCode.stop().catch(err => console.error("Scanner cleanup failed", err));
       }
     };
   }, [activeTab, isScanning, handleScanResult]);
