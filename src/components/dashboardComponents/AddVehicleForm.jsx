@@ -379,7 +379,7 @@ export default function AddVehicleForm({ onClose, onVehicleAdded }) {
   // ─── Layout ────────────────────────────────────────────────────────────────
 
   return (
-    <div className="flex flex-col gap-5 h-full">
+    <div className="flex flex-col gap-5 flex-1">
       {/* Page-level back header */}
       <button
         onClick={onClose}

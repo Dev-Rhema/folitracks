@@ -24,16 +24,56 @@ const MY_VEHICLES_PREVIEW = [
 ];
 
 const UPCOMING_PREVIEW = [
-  { service: "Suspension Check", vehicle: "Lexus IS250 2008", status: "Due Today" },
+  {
+    service: "Suspension Check",
+    vehicle: "Lexus IS250 2008",
+    status: "Due Today",
+  },
   { service: "Fluid Top-up", vehicle: "Lexus IS250 2008", status: "Due Soon" },
   { service: "Oil Change", vehicle: "Lexus IS250 2008", status: "Scheduled" },
 ];
 
 const HISTORY_PREVIEW = [
-  { sn: "01", service: "Brake Pad", vehicle: "Toyota Corolla 2010", reg: "LGS-6689422", date: "01/09/2025", cost: "₦10,000", provider: "Okorometa Ezekiel", status: "Completed" },
-  { sn: "02", service: "Suspension", vehicle: "Mercedes Benz CLA 2018", reg: "LGS-6689422", date: "01/09/2025", cost: "₦10,000", provider: "Okorometa Ezekiel", status: "Completed" },
-  { sn: "03", service: "Diagnostic Scan", vehicle: "Mercedes Benz GLA 2020", reg: "LGS-6689422", date: "01/09/2025", cost: "₦10,000", provider: "Okorometa Ezekiel", status: "Completed" },
-  { sn: "04", service: "Engine", vehicle: "Mercedes Benz GLE 2020", reg: "LGS-6689422", date: "01/09/2025", cost: "₦10,000", provider: "Okorometa Ezekiel", status: "Completed" },
+  {
+    sn: "01",
+    service: "Brake Pad",
+    vehicle: "Toyota Corolla 2010",
+    reg: "LGS-6689422",
+    date: "01/09/2025",
+    cost: "₦10,000",
+    provider: "Okorometa Ezekiel",
+    status: "Completed",
+  },
+  {
+    sn: "02",
+    service: "Suspension",
+    vehicle: "Mercedes Benz CLA 2018",
+    reg: "LGS-6689422",
+    date: "01/09/2025",
+    cost: "₦10,000",
+    provider: "Okorometa Ezekiel",
+    status: "Completed",
+  },
+  {
+    sn: "03",
+    service: "Diagnostic Scan",
+    vehicle: "Mercedes Benz GLA 2020",
+    reg: "LGS-6689422",
+    date: "01/09/2025",
+    cost: "₦10,000",
+    provider: "Okorometa Ezekiel",
+    status: "Completed",
+  },
+  {
+    sn: "04",
+    service: "Engine",
+    vehicle: "Mercedes Benz GLE 2020",
+    reg: "LGS-6689422",
+    date: "01/09/2025",
+    cost: "₦10,000",
+    provider: "Okorometa Ezekiel",
+    status: "Completed",
+  },
 ];
 
 // ─── Table column renderers ───────────────────────────────────────────────────
@@ -45,7 +85,11 @@ const HISTORY_COLUMNS = [
     label: "Service",
     render: (row) => (
       <div className="flex items-center gap-2 xl:gap-3">
-        <img src={getServiceIcon(row.service)} alt={row.service} className="w-6 h-6 xl:w-9 xl:h-9 rounded-full object-cover shrink-0" />
+        <img
+          src={getServiceIcon(row.service)}
+          alt={row.service}
+          className="w-6 h-6 xl:w-9 xl:h-9 rounded-full object-cover shrink-0"
+        />
         <span className="text-xs xl:text-sm text-gray-800">{row.service}</span>
       </div>
     ),
@@ -55,7 +99,9 @@ const HISTORY_COLUMNS = [
     label: "Vehicle",
     render: (row) => (
       <div>
-        <p className="text-xs xl:text-sm font-medium text-gray-800">{row.vehicle}</p>
+        <p className="text-xs xl:text-sm font-medium text-gray-800">
+          {row.vehicle}
+        </p>
         <p className="text-xs text-gray-400">{row.reg}</p>
       </div>
     ),
@@ -71,7 +117,10 @@ function SectionHeader({ title, to }) {
   return (
     <div className="flex justify-between items-center mb-2 xl:mb-4">
       <h2 className="text-sm xl:text-lg font-bold text-gray-900">{title}</h2>
-      <Link to={to} className="text-sm text-blue-500 hover:underline font-medium">
+      <Link
+        to={to}
+        className="text-sm text-blue-500 hover:underline font-medium"
+      >
         View all
       </Link>
     </div>
@@ -84,7 +133,9 @@ function StatCard({ item }) {
       <img src={item.img} alt="" className="w-7 h-7 xl:w-auto xl:h-auto" />
       <div className="flex flex-col">
         <p className="text-xs xl:text-sm text-gray-600">{item.name}</p>
-        <p className="text-xl xl:text-3xl font-bold text-gray-900">{item.num}</p>
+        <p className="text-xl xl:text-3xl font-bold text-gray-900">
+          {item.num}
+        </p>
       </div>
     </div>
   );
@@ -93,29 +144,50 @@ function StatCard({ item }) {
 function VehicleRow({ vehicle, isLast }) {
   const logo = getBrandLogo(vehicle.vehicle);
   return (
-    <div className={`flex items-center justify-between py-1.5 xl:py-3 ${!isLast ? "border-b" : ""}`}>
+    <div
+      className={`flex items-center justify-between py-1.5 xl:py-3 ${!isLast ? "border-b" : ""}`}
+    >
       <div className="flex items-center gap-2 xl:gap-3">
         <div className="w-7 h-7 xl:w-10 xl:h-10 rounded-full bg-black overflow-hidden flex items-center justify-center shrink-0">
-          <img src={logo} alt={vehicle.vehicle} className="w-full h-full object-contain" />
+          <img
+            src={logo}
+            alt={vehicle.vehicle}
+            className="w-full h-full object-contain"
+          />
         </div>
-        <span className="text-xs xl:text-sm font-medium text-gray-800 truncate">{vehicle.vehicle}</span>
+        <span className="text-xs xl:text-sm font-medium text-gray-800 truncate">
+          {vehicle.vehicle}
+        </span>
       </div>
-      <span className="text-xs xl:text-sm text-gray-500 shrink-0">{vehicle.reg}</span>
+      <span className="text-xs xl:text-sm text-gray-500 shrink-0">
+        {vehicle.reg}
+      </span>
     </div>
   );
 }
 
 function UpcomingRow({ item, isLast }) {
   return (
-    <div className={`flex items-center justify-between py-1.5 xl:py-3 ${!isLast ? "border-b" : ""}`}>
+    <div
+      className={`flex items-center justify-between py-1.5 xl:py-3 ${!isLast ? "border-b" : ""}`}
+    >
       <div className="flex items-center gap-2 xl:gap-3">
-        <img src={getServiceIcon(item.service)} alt={item.service} className="w-7 h-7 xl:w-10 xl:h-10 rounded-full object-cover shrink-0" />
+        <img
+          src={getServiceIcon(item.service)}
+          alt={item.service}
+          className="w-7 h-7 xl:w-10 xl:h-10 rounded-full object-cover shrink-0"
+        />
         <div>
-          <p className="text-xs xl:text-sm font-medium text-gray-800">{item.service}</p>
+          <p className="text-xs xl:text-sm font-medium text-gray-800">
+            {item.service}
+          </p>
           <p className="text-xs text-gray-400">{item.vehicle}</p>
         </div>
       </div>
-      <StatusBadge status={item.status} className="px-2 py-0.5 xl:px-4 xl:py-1.5 text-xs xl:text-sm font-medium" />
+      <StatusBadge
+        status={item.status}
+        className="px-2 py-0.5 xl:px-4 xl:py-1.5 text-xs xl:text-sm font-medium"
+      />
     </div>
   );
 }
@@ -133,7 +205,9 @@ export default function Dashboard() {
       <div className="py-3 xl:py-6 rounded-2xl flex flex-col gap-3 xl:gap-6 max-md:overflow-x-scroll">
         {/* Stat cards */}
         <div className="grid grid-cols-3 gap-3 xl:gap-6">
-          {DASHCOUNT.map((item) => <StatCard key={item.id} item={item} />)}
+          {DASHCOUNT.map((item) => (
+            <StatCard key={item.id} item={item} />
+          ))}
         </div>
 
         {/* My Vehicles + Upcoming Services */}
@@ -142,16 +216,27 @@ export default function Dashboard() {
             <SectionHeader title="My Vehicles" to="/dashboard/vehicles" />
             <div className="bg-white border rounded-2xl p-2 xl:p-5 flex-1">
               {MY_VEHICLES_PREVIEW.map((v, i) => (
-                <VehicleRow key={i} vehicle={v} isLast={i === MY_VEHICLES_PREVIEW.length - 1} />
+                <VehicleRow
+                  key={i}
+                  vehicle={v}
+                  isLast={i === MY_VEHICLES_PREVIEW.length - 1}
+                />
               ))}
             </div>
           </div>
 
           <div className="flex flex-col">
-            <SectionHeader title="Upcoming Services" to="/dashboard/service-history" />
+            <SectionHeader
+              title="Upcoming Services"
+              to="/dashboard/service-history"
+            />
             <div className="bg-white border rounded-2xl p-2 xl:p-5 flex-1">
               {UPCOMING_PREVIEW.map((item, i) => (
-                <UpcomingRow key={i} item={item} isLast={i === UPCOMING_PREVIEW.length - 1} />
+                <UpcomingRow
+                  key={i}
+                  item={item}
+                  isLast={i === UPCOMING_PREVIEW.length - 1}
+                />
               ))}
             </div>
           </div>
@@ -159,7 +244,10 @@ export default function Dashboard() {
 
         {/* Service History */}
         <div>
-          <SectionHeader title="Service History" to="/dashboard/service-history" />
+          <SectionHeader
+            title="Service History"
+            to="/dashboard/service-history"
+          />
 
           <div className="md:hidden space-y-3">
             {HISTORY_PREVIEW.map((row, i) => (
@@ -179,14 +267,17 @@ export default function Dashboard() {
             ))}
           </div>
 
-          <div className="hidden md:block overflow-x-auto">
-            <Table
-              columns={HISTORY_COLUMNS}
-              data={HISTORY_PREVIEW}
-              rowsPerPage={4}
-              showSearch={false}
-              showPagination={false}
-            />
+          <div className="border p-2.5 bg-white rounded-2xl">
+            <div className="hidden md:block overflow-x-auto">
+              <Table
+                columns={HISTORY_COLUMNS}
+                data={HISTORY_PREVIEW}
+                rowsPerPage={4}
+                showSearch={false}
+                showPagination={false}
+                showActions={false}
+              />
+            </div>
           </div>
         </div>
       </div>

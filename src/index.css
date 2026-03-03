@@ -17,6 +17,19 @@
 @font-face {
   font-family: "title";
   src: url("./assets/fonts/Montserrat-Regular.ttf");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "title";
+  src: url("./assets/fonts/Montserrat-Bold.ttf");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "title";
+  src: url("./assets/fonts/Montserrat-Black.ttf");
+  font-weight: 900;
 }
 
 @font-face {

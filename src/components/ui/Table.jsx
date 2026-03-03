@@ -10,6 +10,7 @@ function Table({
   onActionClick,
   showSearch = false,
   showPagination = true,
+  showActions = true,
   searchPlaceholder = "Search...",
   searchTerm = "",
   onSearchChange,
@@ -117,9 +118,9 @@ function Table({
             placeholder={searchPlaceholder}
             value={activeSearchTerm}
             onChange={(e) => handleSearch(e.target.value)}
-            className="flex-1"
+            className="w-55 xl:w-75"
           />
-          <button className="px-4 py-2 border bg-white rounded-md hover:bg-gray-50  flex items-center gap-2 cursor-pointer">
+          <button className="px-4 py-1 lg:py-1.5 border bg-white rounded-md hover:bg-gray-50 flex items-center gap-2 cursor-pointer">
             <svg
               className="w-5 h-5"
               fill="none"
@@ -151,9 +152,11 @@ function Table({
                   {column.label}
                 </th>
               ))}
-              <th className="px-3 py-2 xl:px-4 xl:py-3 text-right text-xs xl:text-sm font-semibold text-[#3B82F6] font-title">
-                Action
-              </th>
+              {showActions && (
+                <th className="px-3 py-2 xl:px-4 xl:py-3 text-right text-xs xl:text-sm font-semibold text-[#3B82F6] font-title">
+                  Action
+                </th>
+              )}
             </tr>
           </thead>
           <tbody className="font-body">
@@ -171,64 +174,66 @@ function Table({
                       {column.render ? column.render(row) : row[column.key]}
                     </td>
                   ))}
-                  <td className="px-3 py-2 xl:px-4 xl:py-2.5 text-xs xl:text-sm text-right font-body">
-                    <div className="relative inline-block">
-                      <button
-                        className="p-1 hover:bg-gray-200 rounded-full transition inline-flex items-center justify-center cursor-pointer"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setOpenMenuIndex(
-                            openMenuIndex === rowIndex ? null : rowIndex,
-                          );
-                        }}
-                      >
-                        <svg
-                          className="w-5 h-5"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
+                  {showActions && (
+                    <td className="px-3 py-2 xl:px-4 xl:py-2.5 text-xs xl:text-sm text-right font-body">
+                      <div className="relative inline-block">
+                        <button
+                          className="p-1 hover:bg-gray-200 rounded-full transition inline-flex items-center justify-center cursor-pointer"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setOpenMenuIndex(
+                              openMenuIndex === rowIndex ? null : rowIndex,
+                            );
+                          }}
                         >
-                          <circle cx="12" cy="5" r="2" />
-                          <circle cx="12" cy="12" r="2" />
-                          <circle cx="12" cy="19" r="2" />
-                        </svg>
-                      </button>
+                          <svg
+                            className="w-5 h-5"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle cx="12" cy="5" r="2" />
+                            <circle cx="12" cy="12" r="2" />
+                            <circle cx="12" cy="19" r="2" />
+                          </svg>
+                        </button>
 
-                      {openMenuIndex === rowIndex && (
-                        <div
-                          className="absolute top-full right-0 z-50 w-44 bg-white border border-gray-200 rounded-xl overflow-hidden"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <button
-                            className="w-full text-left px-5 py-3 text-sm text-gray-800 hover:bg-gray-50 border-b border-gray-100 font-body cursor-pointer"
-                            onClick={() => {
-                              onActionClick?.(row, "view");
-                              setOpenMenuIndex(null);
-                            }}
+                        {openMenuIndex === rowIndex && (
+                          <div
+                            className="absolute top-[calc(100%+4px)] right-0 z-50 w-44 bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm"
+                            onClick={(e) => e.stopPropagation()}
                           >
-                            View Details
-                          </button>
-                          <button
-                            className="w-full text-left px-5 py-3 text-sm text-[gray-800] hover:bg-gray-50 border-b border-gray-100 font-body cursor-pointer"
-                            onClick={() => {
-                              onActionClick?.(row, "edit");
-                              setOpenMenuIndex(null);
-                            }}
-                          >
-                            Edit Details
-                          </button>
-                          <button
-                            className="w-full text-left px-5 py-3 text-sm text-red-500 hover:bg-gray-50 font-body cursor-pointer"
-                            onClick={() => {
-                              onActionClick?.(row, "remove");
-                              setOpenMenuIndex(null);
-                            }}
-                          >
-                            Remove
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </td>
+                            <button
+                              className="w-full text-left px-5 py-3 text-sm text-gray-800 hover:bg-gray-50 border-b border-gray-100 font-body cursor-pointer"
+                              onClick={() => {
+                                onActionClick?.(row, "view");
+                                setOpenMenuIndex(null);
+                              }}
+                            >
+                              View Details
+                            </button>
+                            <button
+                              className="w-full text-left px-5 py-3 text-sm text-[gray-800] hover:bg-gray-50 border-b border-gray-100 font-body cursor-pointer"
+                              onClick={() => {
+                                onActionClick?.(row, "edit");
+                                setOpenMenuIndex(null);
+                              }}
+                            >
+                              Edit Details
+                            </button>
+                            <button
+                              className="w-full text-left px-5 py-3 text-sm text-red-500 hover:bg-gray-50 font-body cursor-pointer"
+                              onClick={() => {
+                                onActionClick?.(row, "remove");
+                                setOpenMenuIndex(null);
+                              }}
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                  )}
                 </tr>
               ))
             ) : (

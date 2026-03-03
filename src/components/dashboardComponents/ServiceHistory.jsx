@@ -2,10 +2,31 @@ import { useState } from "react";
 import Table from "../ui/Table";
 import ServiceHistoryCard from "../ui/ServiceHistoryCard";
 import StatusBadge from "../ui/StatusBadge";
-import { CheckSquare, Clock, AlertTriangle, Filter } from "lucide-react";
+import { CheckSquare, Clock, AlertTriangle } from "lucide-react";
+import FilterDropdown from "../ui/FilterDropdown";
+
 import SearchBar from "./SearchBar";
 import DashHeader from "./DashHeader";
 import { getServiceIcon } from "../../utils/serviceUtils";
+
+const REPAIR_SERVICES   = ["Brake Pad", "Suspension", "Engine", "Wheel Alignment", "Exhaust System", "AC Compartment"];
+const ROUTINE_SERVICES  = ["Diagnostic Scan", "Fluid Top-up", "Oil Change", "AC Services", "Air Filter"];
+
+const COMPLETED_VEHICLE_MAKES = ["Audi", "BMW", "Ford", "Hyundai", "Lexus", "Mercedes Benz", "Toyota"];
+
+const COMPLETED_FILTER_CATEGORIES = [
+  {
+    label: "Service Type",
+    type: "accordion",
+    groups: [
+      { label: "Repairs",         services: REPAIR_SERVICES },
+      { label: "Routine Service", services: ROUTINE_SERVICES },
+    ],
+  },
+  { label: "Vehicle Make", type: "list",       options: COMPLETED_VEHICLE_MAKES },
+  { label: "Date Range",   type: "calendar" },
+  { label: "Price Range",  type: "priceRange" },
+];
 
 const renderServiceCell = (row) => (
   <div className="flex items-center gap-2 lg:gap-3">
@@ -453,16 +474,56 @@ const OVERDUE_COLUMNS = [
 function ServiceHistory() {
   const [activeTab, setActiveTab] = useState("completed");
   const [searchTerm, setSearchTerm] = useState("");
+  const [filterValues, setFilterValues] = useState({});
+
+  const handleFilterChange = (category, value) => {
+    setFilterValues((prev) => ({ ...prev, [category]: value }));
+  };
 
   const getTabData = () => {
+    let data;
     switch (activeTab) {
-      case "upcoming":
-        return UPCOMING_DATA;
-      case "overdue":
-        return OVERDUE_DATA;
-      default:
-        return COMPLETED_DATA;
+      case "upcoming": data = UPCOMING_DATA; break;
+      case "overdue":  data = OVERDUE_DATA;  break;
+      default:         data = COMPLETED_DATA;
     }
+    if (activeTab === "completed") {
+      // Service Type filter (accordion: group or individual service)
+      const svcFilter = filterValues["Service Type"];
+      if (svcFilter) {
+        if (svcFilter.service) {
+          data = data.filter((row) => row.service === svcFilter.service);
+        } else if (svcFilter.group === "Repairs") {
+          data = data.filter((row) => REPAIR_SERVICES.includes(row.service));
+        } else if (svcFilter.group === "Routine Service") {
+          data = data.filter((row) => ROUTINE_SERVICES.includes(row.service));
+        }
+      }
+      // Vehicle Make filter
+      const makeFilter = filterValues["Vehicle Make"];
+      if (makeFilter) {
+        data = data.filter((row) => row.vehicle.toLowerCase().includes(makeFilter.toLowerCase()));
+      }
+      // Date Range filter (row.date is DD/MM/YYYY)
+      const dateFilter = filterValues["Date Range"];
+      if (dateFilter?.start) {
+        data = data.filter((row) => {
+          const [d, m, y] = row.date.split("/");
+          const iso = `${y}-${m}-${d}`;
+          if (dateFilter.end) return iso >= dateFilter.start && iso <= dateFilter.end;
+          return iso === dateFilter.start;
+        });
+      }
+      // Price Range filter (row.cost is like "₦10,000")
+      const priceFilter = filterValues["Price Range"];
+      if (priceFilter) {
+        data = data.filter((row) => {
+          const cost = parseInt(row.cost.replace(/[₦,]/g, ""), 10);
+          return cost >= priceFilter.min && cost <= priceFilter.max;
+        });
+      }
+    }
+    return data;
   };
 
   const getTabColumns = () => {
@@ -559,12 +620,13 @@ function ServiceHistory() {
               placeholder="Search..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="flex-1 lg:w-52"
+              className="w-55 xl:w-75"
             />
-            <button className="px-3 lg:px-4 py-1.5 lg:py-2 border border-gray-200 rounded-lg hover:bg-gray-50 flex items-center gap-1.5 lg:gap-2 text-xs lg:text-sm text-gray-600 font-medium cursor-pointer shrink-0">
-              <Filter size={14} />
-              Filter
-            </button>
+            <FilterDropdown
+              categories={activeTab === "completed" ? COMPLETED_FILTER_CATEGORIES : []}
+              values={filterValues}
+              onChange={handleFilterChange}
+            />
           </div>
         </div>
 

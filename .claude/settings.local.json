@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(npm install qrcode.react --save)",
-      "Bash(npm install vite-plugin-svgr --save-dev)"
+      "Bash(npm install vite-plugin-svgr --save-dev)",
+      "WebFetch(domain:fonts.googleapis.com)",
+      "Bash(curl -L \"https://fonts.gstatic.com/s/montserrat/v31/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCvC70w-.ttf\" -o \"c:/Users/Rhema/Desktop/Folitracks/src/assets/fonts/Montserrat-Black.ttf\")",
+      "Bash(curl -L \"https://fonts.gstatic.com/s/montserrat/v31/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCuM70w-.ttf\" -o \"c:/Users/Rhema/Desktop/Folitracks/src/assets/fonts/Montserrat-Bold.ttf\")"
     ]
   }
 }

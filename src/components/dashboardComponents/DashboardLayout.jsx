@@ -197,7 +197,7 @@ function TopDash({ onAddVehicle }) {
   return (
     <div className="hidden md:block w-full bg-white border-b pl-44 xl:pl-70 fixed top-0 left-0 z-10">
       <div className="flex justify-between px-4 xl:px-8 py-1.5 xl:py-2.5">
-        <SearchBar placeholder="search" className="max-w-[400px] w-full" />
+        <SearchBar placeholder="search" className="w-55 xl:w-75" />
 
         <div className="flex gap-3 xl:gap-6 items-center">
           <CTA
@@ -271,6 +271,12 @@ export default function DashboardLayout() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [viewVehicle, setViewVehicle] = useState(null);
   const [editVehicle, setEditVehicle] = useState(null);
+
+  useEffect(() => {
+    setShowAddVehicle(false);
+    setViewVehicle(null);
+    setEditVehicle(null);
+  }, [location.pathname]);
   const [removeVehicle, setRemoveVehicle] = useState(null);
   const [extraVehicles, setExtraVehicles] = useState([]);
   const [removedRegistrations, setRemovedRegistrations] = useState([]);
@@ -383,7 +389,7 @@ export default function DashboardLayout() {
         <TopDash onAddVehicle={() => setShowAddVehicle(true)} />
         <main className="md:ml-44 xl:ml-70 px-3 xl:px-8 pb-3 xl:pb-6 pt-16 md:pt-12 xl:pt-18 min-h-screen flex flex-col">
           <div className="flex flex-col flex-1">
-            <div className="rounded-2xl p-2 pt-4 font-(--body) flex-1">
+            <div className="rounded-2xl p-2 pt-4 font-(--body) flex-1 flex flex-col">
               {renderComponent()}
             </div>
           </div>

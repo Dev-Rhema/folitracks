@@ -341,7 +341,7 @@ export default function EditVehicleForm({ vehicle, onClose }) {
   // ─── Layout ───────────────────────────────────────────────────────────────
 
   return (
-    <div className="flex flex-col gap-5 h-full">
+    <div className="flex flex-col gap-5 flex-1">
       {/* Page-level back header */}
       <button
         onClick={onClose}

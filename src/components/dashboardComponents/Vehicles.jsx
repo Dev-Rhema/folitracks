@@ -3,8 +3,12 @@ import Table from "../ui/Table";
 import ServiceHistoryCard from "../ui/ServiceHistoryCard";
 import DashHeader from "./DashHeader";
 import SearchBar from "./SearchBar";
-import { Filter } from "lucide-react";
+import FilterDropdown from "../ui/FilterDropdown";
 import { getBrandLogo } from "../../utils/vehicleUtils";
+
+const VEHICLE_TYPE_OPTIONS = [
+  "Toyota", "Lexus", "Mercedes-Benz", "BMW", "Hyundai", "Kia", "Ford",
+];
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -70,12 +74,23 @@ const COLUMNS = [
 
 function Vehicles({ extraVehicles = [], removedRegistrations = [], onActionClick }) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [filterValues, setFilterValues] = useState({});
+
+  const handleFilterChange = (category, value) => {
+    setFilterValues((prev) => ({ ...prev, [category]: value }));
+  };
 
   const displayData = [...extraVehicles, ...VEHICLES_DATA]
     .filter((v) => !removedRegistrations.includes(v.registrationNumber))
     .map((v, i) => ({ ...v, sn: String(i + 1).padStart(2, "0") }));
 
-  const mobileFiltered = displayData.filter((v) => {
+  const filteredData = displayData.filter((v) => {
+    const typeFilter = filterValues["Vehicle Type"];
+    if (typeFilter && !v.vehicle.toLowerCase().includes(typeFilter.toLowerCase())) return false;
+    return true;
+  });
+
+  const mobileFiltered = filteredData.filter((v) => {
     if (!searchTerm.trim()) return true;
     const s = searchTerm.toLowerCase();
     return v.vehicle.toLowerCase().includes(s) || v.registrationNumber.toLowerCase().includes(s);
@@ -91,12 +106,13 @@ function Vehicles({ extraVehicles = [], removedRegistrations = [], onActionClick
             placeholder="Search vehicle by make, year, reg.no....."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="flex-1 lg:w-52"
+            className="w-55 xl:w-75"
           />
-          <button className="px-3 lg:px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 flex items-center gap-1.5 lg:gap-2 text-sm text-gray-600 font-medium cursor-pointer">
-            <Filter size={14} />
-            Filter
-          </button>
+          <FilterDropdown
+            categories={[{ label: "Vehicle Type", options: VEHICLE_TYPE_OPTIONS }]}
+            values={filterValues}
+            onChange={handleFilterChange}
+          />
         </div>
 
         {/* Mobile cards */}
@@ -124,7 +140,7 @@ function Vehicles({ extraVehicles = [], removedRegistrations = [], onActionClick
         <div className="hidden md:block overflow-x-auto">
           <Table
             columns={COLUMNS}
-            data={displayData}
+            data={filteredData}
             rowsPerPage={10}
             showSearch={false}
             searchTerm={searchTerm}
