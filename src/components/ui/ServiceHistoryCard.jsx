@@ -7,10 +7,12 @@ function ServiceHistoryCard({
   status,
   rows = [],
   onViewDetails,
+  onSetReminder,
   onEdit,
   onRemove,
+  onReschedule,
 }) {
-  const hasActions = onViewDetails || onEdit || onRemove;
+  const hasActions = onViewDetails || onSetReminder || onEdit || onRemove || onReschedule;
 
   return (
     <div className="bg-white border rounded-2xl overflow-hidden">
@@ -59,6 +61,22 @@ function ServiceHistoryCard({
               className="w-full border-2 border-(--darkBlue) rounded-xl py-2.5 text-sm font-bold text-(--darkBlue) hover:bg-(--darkBlue) hover:text-white transition-colors cursor-pointer"
             >
               View Details
+            </button>
+          )}
+          {onSetReminder && (
+            <button
+              onClick={onSetReminder}
+              className="w-full border border-gray-200 rounded-xl py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
+            >
+              Set Reminder
+            </button>
+          )}
+          {onReschedule && (
+            <button
+              onClick={onReschedule}
+              className="w-full border border-gray-200 rounded-xl py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
+            >
+              Reschedule
             </button>
           )}
           {onEdit && (

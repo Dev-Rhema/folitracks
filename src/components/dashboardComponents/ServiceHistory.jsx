@@ -2,35 +2,84 @@ import { useState } from "react";
 import Table from "../ui/Table";
 import ServiceHistoryCard from "../ui/ServiceHistoryCard";
 import StatusBadge from "../ui/StatusBadge";
+import ServiceDetailsView from "./ServiceDetailsView";
 import { CheckSquare, Clock, AlertTriangle } from "lucide-react";
 import FilterDropdown from "../ui/FilterDropdown";
+import RescheduleServiceModal from "./RescheduleServiceModal";
+import SetReminderModal from "./SetReminderModal";
 
 import SearchBar from "./SearchBar";
 import DashHeader from "./DashHeader";
 import { getServiceIcon } from "../../utils/serviceUtils";
 
-const REPAIR_SERVICES   = ["Brake Pad", "Suspension", "Engine", "Wheel Alignment", "Exhaust System", "AC Compartment"];
-const ROUTINE_SERVICES  = ["Diagnostic Scan", "Fluid Top-up", "Oil Change", "AC Services", "Air Filter"];
+const REPAIR_SERVICES = [
+  "Brake Pad",
+  "Suspension",
+  "Engine",
+  "Wheel Alignment",
+  "Exhaust System",
+  "AC Compartment",
+];
+const ROUTINE_SERVICES = [
+  "Diagnostic Scan",
+  "Fluid Top-up",
+  "Oil Change",
+  "AC Services",
+  "Air Filter",
+];
 
-const COMPLETED_VEHICLE_MAKES = ["Audi", "BMW", "Ford", "Hyundai", "Lexus", "Mercedes Benz", "Toyota"];
+const COMPLETED_VEHICLE_MAKES = [
+  "Audi",
+  "BMW",
+  "Ford",
+  "Hyundai",
+  "Lexus",
+  "Mercedes Benz",
+  "Toyota",
+];
+
+const UPCOMING_OVERDUE_VEHICLE_MAKES = [
+  "Toyota", "Mercedes Benz", "BMW", "Hyundai", "Lexus", "Ford", "Audi", "Honda", "Kia",
+];
+
+const UPCOMING_STATUSES = ["In Progress", "Due Today", "Due Soon", "Scheduled"];
+
+const SERVICE_TYPE_ACCORDION = {
+  label: "Service Type",
+  type: "accordion",
+  groups: [
+    { label: "Repairs", services: REPAIR_SERVICES },
+    { label: "Routine Service", services: ROUTINE_SERVICES },
+  ],
+};
 
 const COMPLETED_FILTER_CATEGORIES = [
-  {
-    label: "Service Type",
-    type: "accordion",
-    groups: [
-      { label: "Repairs",         services: REPAIR_SERVICES },
-      { label: "Routine Service", services: ROUTINE_SERVICES },
-    ],
-  },
-  { label: "Vehicle Make", type: "list",       options: COMPLETED_VEHICLE_MAKES },
-  { label: "Date Range",   type: "calendar" },
-  { label: "Price Range",  type: "priceRange" },
+  SERVICE_TYPE_ACCORDION,
+  { label: "Vehicle Make", type: "list", options: COMPLETED_VEHICLE_MAKES },
+  { label: "Date Range", type: "calendar" },
+  { label: "Price Range", type: "priceRange" },
+];
+
+const UPCOMING_FILTER_CATEGORIES = [
+  SERVICE_TYPE_ACCORDION,
+  { label: "Vehicle Make", type: "list", options: UPCOMING_OVERDUE_VEHICLE_MAKES },
+  { label: "Status", type: "list", options: UPCOMING_STATUSES },
+  { label: "Date Range", type: "calendar" },
+];
+
+const OVERDUE_FILTER_CATEGORIES = [
+  SERVICE_TYPE_ACCORDION,
+  { label: "Vehicle Make", type: "list", options: UPCOMING_OVERDUE_VEHICLE_MAKES },
+  { label: "Date Range", type: "calendar" },
 ];
 
 const renderServiceCell = (row) => (
   <div className="flex items-center gap-2 lg:gap-3">
-    <img src={getServiceIcon(row.service)} alt={row.service} className="w-7 h-7 rounded-full object-cover shrink-0" />
+    <img
+      src={getServiceIcon(row.service)}
+      alt={row.service}
+      className="w-7 h-7 rounded-full object-cover shrink-0"
+    />
     <span>{row.service}</span>
   </div>
 );
@@ -52,9 +101,11 @@ const COMPLETED_DATA = [
     sn: "01",
     service: "Brake Pad",
     vehicle: "Toyota Corolla 2010\nLGS-6689422",
-    date: "01/09/2025",
+    date: "21/06/2025",
     cost: "₦10,000",
-    serviceProvider: "Okorometa Ezekiel",
+    serviceProvider: "Okorometa Christian",
+    serviceType: "Repair/Replacement Service",
+    note: "Brake pads replaced. Front rotors in good condition.",
   },
   {
     sn: "02",
@@ -63,6 +114,8 @@ const COMPLETED_DATA = [
     date: "01/09/2025",
     cost: "₦10,000",
     serviceProvider: "Okorometa Ezekiel",
+    serviceType: "Repair/Replacement Service",
+    note: "Suspension components inspected and adjusted.",
   },
   {
     sn: "03",
@@ -71,6 +124,8 @@ const COMPLETED_DATA = [
     date: "01/09/2025",
     cost: "₦10,000",
     serviceProvider: "Okorometa Ezekiel",
+    serviceType: "Routine Service",
+    note: "Full diagnostic scan completed. No issues found.",
   },
   {
     sn: "04",
@@ -79,6 +134,8 @@ const COMPLETED_DATA = [
     date: "01/09/2025",
     cost: "₦10,000",
     serviceProvider: "Okorometa Ezekiel",
+    serviceType: "Repair/Replacement Service",
+    note: "Engine service completed successfully.",
   },
   {
     sn: "05",
@@ -87,6 +144,8 @@ const COMPLETED_DATA = [
     date: "01/09/2025",
     cost: "₦10,000",
     serviceProvider: "Okorometa Ezekiel",
+    serviceType: "Routine Service",
+    note: "All fluids topped up to recommended levels.",
   },
   {
     sn: "06",
@@ -95,6 +154,8 @@ const COMPLETED_DATA = [
     date: "01/09/2025",
     cost: "₦10,000",
     serviceProvider: "Okorometa Ezekiel",
+    serviceType: "Repair/Replacement Service",
+    note: "AC system serviced and refrigerant recharged.",
   },
   {
     sn: "07",
@@ -103,6 +164,8 @@ const COMPLETED_DATA = [
     date: "01/09/2025",
     cost: "₦10,000",
     serviceProvider: "Okorometa Ezekiel",
+    serviceType: "Routine Service",
+    note: "AC filter replaced and system cleaned.",
   },
   {
     sn: "08",
@@ -111,6 +174,8 @@ const COMPLETED_DATA = [
     date: "01/09/2025",
     cost: "₦10,000",
     serviceProvider: "Okorometa Ezekiel",
+    serviceType: "Repair/Replacement Service",
+    note: "Wheel alignment adjusted to factory specifications.",
   },
   {
     sn: "09",
@@ -119,6 +184,8 @@ const COMPLETED_DATA = [
     date: "01/09/2025",
     cost: "₦10,000",
     serviceProvider: "Okorometa Ezekiel",
+    serviceType: "Repair/Replacement Service",
+    note: "Exhaust system inspected and repaired.",
   },
   {
     sn: "10",
@@ -127,6 +194,8 @@ const COMPLETED_DATA = [
     date: "01/09/2025",
     cost: "₦10,000",
     serviceProvider: "Okorometa Ezekiel",
+    serviceType: "Routine Service",
+    note: "Premium synthetic oil and new filter installed.",
   },
   {
     sn: "11",
@@ -135,6 +204,8 @@ const COMPLETED_DATA = [
     date: "01/08/2025",
     cost: "₦12,000",
     serviceProvider: "Okorometa Ezekiel",
+    serviceType: "Repair/Replacement Service",
+    note: "Brake pads replaced with OEM parts.",
   },
   {
     sn: "12",
@@ -143,6 +214,8 @@ const COMPLETED_DATA = [
     date: "01/08/2025",
     cost: "₦15,000",
     serviceProvider: "Okorometa Ezekiel",
+    serviceType: "Repair/Replacement Service",
+    note: "Engine overhaul completed.",
   },
 ];
 
@@ -155,6 +228,8 @@ const UPCOMING_DATA = [
     nextServiceDate: null,
     nextServiceSub: "Service in Progress",
     status: "In Progress",
+    cost: "₦8,000",
+    serviceType: "Routine Service",
   },
   {
     sn: "02",
@@ -164,15 +239,19 @@ const UPCOMING_DATA = [
     nextServiceDate: "01/12/2025",
     nextServiceSub: "Service is due today",
     status: "Due Today",
+    cost: "₦5,000",
+    serviceType: "Routine Service",
   },
   {
     sn: "03",
     service: "Diagnostic Scan",
     vehicle: "Mercedes Benz GLA 2020\nLGS-6689422",
-    lastServiceDate: "01/09/2025",
-    nextServiceDate: "01/12/2025",
-    nextServiceSub: "Service is due today",
-    status: "Due Today",
+    lastServiceDate: "21/06/2025",
+    nextServiceDate: "21/09/2015",
+    nextServiceSub: "Next Service in 2 months",
+    status: "Scheduled",
+    cost: "₦10,000",
+    serviceType: "Preventive/Routine Service",
   },
   {
     sn: "04",
@@ -182,6 +261,8 @@ const UPCOMING_DATA = [
     nextServiceDate: "01/12/2025",
     nextServiceSub: "Next Service in 4 days",
     status: "Due Soon",
+    cost: "₦3,000",
+    serviceType: "Routine Service",
   },
   {
     sn: "05",
@@ -191,6 +272,8 @@ const UPCOMING_DATA = [
     nextServiceDate: "01/12/2025",
     nextServiceSub: "Next Service in 4 days",
     status: "Due Soon",
+    cost: "₦2,500",
+    serviceType: "Routine Service",
   },
   {
     sn: "06",
@@ -200,6 +283,8 @@ const UPCOMING_DATA = [
     nextServiceDate: "01/12/2025",
     nextServiceSub: "Next Service in 1 week",
     status: "Due Soon",
+    cost: "₦12,000",
+    serviceType: "Routine Service",
   },
   {
     sn: "07",
@@ -209,6 +294,8 @@ const UPCOMING_DATA = [
     nextServiceDate: "01/12/2025",
     nextServiceSub: "Next Service in 2 weeks",
     status: "Scheduled",
+    cost: "₦7,500",
+    serviceType: "Routine Service",
   },
   {
     sn: "08",
@@ -218,6 +305,8 @@ const UPCOMING_DATA = [
     nextServiceDate: "01/12/2025",
     nextServiceSub: "Next Service in 1 month",
     status: "Scheduled",
+    cost: "₦9,000",
+    serviceType: "Repair/Maintenance Service",
   },
   {
     sn: "09",
@@ -227,6 +316,8 @@ const UPCOMING_DATA = [
     nextServiceDate: "01/12/2025",
     nextServiceSub: "Next Service in 2 months",
     status: "Scheduled",
+    cost: "₦10,500",
+    serviceType: "Routine Service",
   },
   {
     sn: "10",
@@ -236,6 +327,8 @@ const UPCOMING_DATA = [
     nextServiceDate: "01/12/2025",
     nextServiceSub: "Next Service in 3 months",
     status: "Scheduled",
+    cost: "₦6,000",
+    serviceType: "Routine Service",
   },
   {
     sn: "11",
@@ -245,6 +338,8 @@ const UPCOMING_DATA = [
     nextServiceDate: "01/12/2025",
     nextServiceSub: "Next Service in 3 months",
     status: "Scheduled",
+    cost: "₦11,000",
+    serviceType: "Repair/Maintenance Service",
   },
   {
     sn: "12",
@@ -254,6 +349,8 @@ const UPCOMING_DATA = [
     nextServiceDate: "01/12/2025",
     nextServiceSub: "Next Service in 3 months",
     status: "Scheduled",
+    cost: "₦18,000",
+    serviceType: "Repair/Maintenance Service",
   },
   {
     sn: "13",
@@ -263,6 +360,8 @@ const UPCOMING_DATA = [
     nextServiceDate: "01/12/2025",
     nextServiceSub: "Next Service in 3 months",
     status: "Scheduled",
+    cost: "₦14,000",
+    serviceType: "Repair/Maintenance Service",
   },
   {
     sn: "14",
@@ -272,6 +371,8 @@ const UPCOMING_DATA = [
     nextServiceDate: "01/12/2025",
     nextServiceSub: "Next Service in 4 months",
     status: "Scheduled",
+    cost: "₦4,500",
+    serviceType: "Routine Service",
   },
   {
     sn: "15",
@@ -281,6 +382,8 @@ const UPCOMING_DATA = [
     nextServiceDate: "01/12/2025",
     nextServiceSub: "Next Service in 4 months",
     status: "Scheduled",
+    cost: "₦6,500",
+    serviceType: "Routine Service",
   },
 ];
 
@@ -293,6 +396,10 @@ const OVERDUE_DATA = [
     missedServiceDate: "01/12/2025",
     missedServiceSub: "Overdue by 5 days",
     status: "Overdue",
+    cost: "₦8,000",
+    serviceType: "Routine Service",
+    nextServiceDate: "01/12/2025",
+    nextServiceSub: "Overdue by 5 days",
   },
   {
     sn: "02",
@@ -302,6 +409,10 @@ const OVERDUE_DATA = [
     missedServiceDate: "01/12/2025",
     missedServiceSub: "Overdue by 5 days",
     status: "Overdue",
+    cost: "₦5,000",
+    serviceType: "Routine Service",
+    nextServiceDate: "01/12/2025",
+    nextServiceSub: "Overdue by 5 days",
   },
   {
     sn: "03",
@@ -311,6 +422,10 @@ const OVERDUE_DATA = [
     missedServiceDate: "01/12/2025",
     missedServiceSub: "Overdue by 5 days",
     status: "Overdue",
+    cost: "₦6,000",
+    serviceType: "Routine Service",
+    nextServiceDate: "01/12/2025",
+    nextServiceSub: "Overdue by 5 days",
   },
   {
     sn: "04",
@@ -320,6 +435,10 @@ const OVERDUE_DATA = [
     missedServiceDate: "01/12/2025",
     missedServiceSub: "Overdue by 2 weeks",
     status: "Overdue",
+    cost: "₦3,000",
+    serviceType: "Routine Service",
+    nextServiceDate: "01/12/2025",
+    nextServiceSub: "Overdue by 2 weeks",
   },
   {
     sn: "05",
@@ -329,6 +448,10 @@ const OVERDUE_DATA = [
     missedServiceDate: "01/12/2025",
     missedServiceSub: "Overdue by 2 weeks",
     status: "Overdue",
+    cost: "₦2,500",
+    serviceType: "Routine Service",
+    nextServiceDate: "01/12/2025",
+    nextServiceSub: "Overdue by 2 weeks",
   },
   {
     sn: "06",
@@ -338,6 +461,10 @@ const OVERDUE_DATA = [
     missedServiceDate: "01/12/2025",
     missedServiceSub: "Overdue by 2 weeks",
     status: "Overdue",
+    cost: "₦4,500",
+    serviceType: "Routine Service",
+    nextServiceDate: "01/12/2025",
+    nextServiceSub: "Overdue by 2 weeks",
   },
   {
     sn: "07",
@@ -347,6 +474,10 @@ const OVERDUE_DATA = [
     missedServiceDate: "01/12/2025",
     missedServiceSub: "Overdue by 2 weeks",
     status: "Overdue",
+    cost: "₦7,500",
+    serviceType: "Routine Service",
+    nextServiceDate: "01/12/2025",
+    nextServiceSub: "Overdue by 2 weeks",
   },
   {
     sn: "08",
@@ -356,6 +487,10 @@ const OVERDUE_DATA = [
     missedServiceDate: "01/12/2025",
     missedServiceSub: "Overdue by 1 month",
     status: "Overdue",
+    cost: "₦9,000",
+    serviceType: "Repair/Maintenance Service",
+    nextServiceDate: "01/12/2025",
+    nextServiceSub: "Overdue by 1 month",
   },
   {
     sn: "09",
@@ -365,6 +500,10 @@ const OVERDUE_DATA = [
     missedServiceDate: "01/12/2025",
     missedServiceSub: "Overdue by 1 month",
     status: "Overdue",
+    cost: "₦10,500",
+    serviceType: "Routine Service",
+    nextServiceDate: "01/12/2025",
+    nextServiceSub: "Overdue by 1 month",
   },
   {
     sn: "10",
@@ -374,6 +513,10 @@ const OVERDUE_DATA = [
     missedServiceDate: "01/12/2025",
     missedServiceSub: "Overdue by 2 months",
     status: "Overdue",
+    cost: "₦3,500",
+    serviceType: "Routine Service",
+    nextServiceDate: "01/12/2025",
+    nextServiceSub: "Overdue by 2 months",
   },
 ];
 
@@ -475,6 +618,10 @@ function ServiceHistory() {
   const [activeTab, setActiveTab] = useState("completed");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterValues, setFilterValues] = useState({});
+  const [selectedService, setSelectedService] = useState(null);
+  const [selectedVehicle, setSelectedVehicle] = useState(null);
+  const [rescheduleRow, setRescheduleRow] = useState(null);
+  const [setReminderRow, setSetReminderRow] = useState(null);
 
   const handleFilterChange = (category, value) => {
     setFilterValues((prev) => ({ ...prev, [category]: value }));
@@ -483,44 +630,61 @@ function ServiceHistory() {
   const getTabData = () => {
     let data;
     switch (activeTab) {
-      case "upcoming": data = UPCOMING_DATA; break;
-      case "overdue":  data = OVERDUE_DATA;  break;
-      default:         data = COMPLETED_DATA;
+      case "upcoming":
+        data = UPCOMING_DATA;
+        break;
+      case "overdue":
+        data = OVERDUE_DATA;
+        break;
+      default:
+        data = COMPLETED_DATA;
+    }
+    // Service Type filter (shared across tabs)
+    const svcFilter = filterValues["Service Type"];
+    if (svcFilter) {
+      if (svcFilter.service) {
+        data = data.filter((row) => row.service === svcFilter.service);
+      } else if (svcFilter.group === "Repairs") {
+        data = data.filter((row) => REPAIR_SERVICES.includes(row.service));
+      } else if (svcFilter.group === "Routine Service") {
+        data = data.filter((row) => ROUTINE_SERVICES.includes(row.service));
+      }
+    }
+    // Vehicle Make filter (shared across tabs)
+    const makeFilter = filterValues["Vehicle Make"];
+    if (makeFilter) {
+      data = data.filter((row) =>
+        row.vehicle.toLowerCase().includes(makeFilter.toLowerCase()),
+      );
+    }
+    // Date Range filter
+    const dateFilter = filterValues["Date Range"];
+    if (dateFilter?.start) {
+      data = data.filter((row) => {
+        const rawDate =
+          row.date || row.lastServiceDate || row.lastDate || "";
+        const [d, m, y] = rawDate.split("/");
+        const iso = `${y}-${m}-${d}`;
+        if (dateFilter.end)
+          return iso >= dateFilter.start && iso <= dateFilter.end;
+        return iso === dateFilter.start;
+      });
     }
     if (activeTab === "completed") {
-      // Service Type filter (accordion: group or individual service)
-      const svcFilter = filterValues["Service Type"];
-      if (svcFilter) {
-        if (svcFilter.service) {
-          data = data.filter((row) => row.service === svcFilter.service);
-        } else if (svcFilter.group === "Repairs") {
-          data = data.filter((row) => REPAIR_SERVICES.includes(row.service));
-        } else if (svcFilter.group === "Routine Service") {
-          data = data.filter((row) => ROUTINE_SERVICES.includes(row.service));
-        }
-      }
-      // Vehicle Make filter
-      const makeFilter = filterValues["Vehicle Make"];
-      if (makeFilter) {
-        data = data.filter((row) => row.vehicle.toLowerCase().includes(makeFilter.toLowerCase()));
-      }
-      // Date Range filter (row.date is DD/MM/YYYY)
-      const dateFilter = filterValues["Date Range"];
-      if (dateFilter?.start) {
-        data = data.filter((row) => {
-          const [d, m, y] = row.date.split("/");
-          const iso = `${y}-${m}-${d}`;
-          if (dateFilter.end) return iso >= dateFilter.start && iso <= dateFilter.end;
-          return iso === dateFilter.start;
-        });
-      }
-      // Price Range filter (row.cost is like "₦10,000")
+      // Price Range filter (completed only)
       const priceFilter = filterValues["Price Range"];
       if (priceFilter) {
         data = data.filter((row) => {
           const cost = parseInt(row.cost.replace(/[₦,]/g, ""), 10);
           return cost >= priceFilter.min && cost <= priceFilter.max;
         });
+      }
+    }
+    if (activeTab === "upcoming") {
+      // Status filter (upcoming only)
+      const statusFilter = filterValues["Status"];
+      if (statusFilter) {
+        data = data.filter((row) => row.status === statusFilter);
       }
     }
     return data;
@@ -537,8 +701,16 @@ function ServiceHistory() {
     }
   };
 
-  const handleActionClick = (row) => {
-    console.log("Action clicked for:", row);
+  const handleActionClick = (row, action) => {
+    if (action === "view") {
+      const [vehicleName, vehicleReg] = row.vehicle.split("\n");
+      setSelectedVehicle({ vehicle: vehicleName, registrationNumber: vehicleReg });
+      setSelectedService(row);
+    } else if (action === "set_reminder") {
+      setSetReminderRow(row);
+    } else if (action === "reschedule") {
+      setRescheduleRow(row);
+    }
   };
 
   const getMobileFilteredData = () => {
@@ -546,8 +718,16 @@ function ServiceHistory() {
     if (!searchTerm.trim()) return data;
     const s = searchTerm.toLowerCase();
     return data.filter((row) =>
-      ["service", "vehicle", "lastServiceDate", "date", "serviceProvider", "status", "nextServiceSub", "missedServiceSub"]
-        .some((field) => row[field]?.toLowerCase().includes(s))
+      [
+        "service",
+        "vehicle",
+        "lastServiceDate",
+        "date",
+        "serviceProvider",
+        "status",
+        "nextServiceSub",
+        "missedServiceSub",
+      ].some((field) => row[field]?.toLowerCase().includes(s)),
     );
   };
 
@@ -565,107 +745,160 @@ function ServiceHistory() {
       return [
         { label: "Vehicle", value: vehicleName, subValue: vehicleReg },
         { label: "Last Service Date", value: row.lastServiceDate },
-        { label: "Next Service Date", value: row.nextServiceDate, subValue: row.nextServiceSub },
+        {
+          label: "Next Service Date",
+          value: row.nextServiceDate,
+          subValue: row.nextServiceSub,
+        },
       ];
     }
     return [
       { label: "Vehicle", value: vehicleName, subValue: vehicleReg },
       { label: "Last Service Date", value: row.lastServiceDate },
-      { label: "Missed Service Date", value: row.missedServiceDate, subValue: row.missedServiceSub },
+      {
+        label: "Missed Service Date",
+        value: row.missedServiceDate,
+        subValue: row.missedServiceSub,
+      },
     ];
   };
 
   return (
-    <div>
-      <DashHeader title="Service History" />
-      {/* Header: Tabs left, Search + Filter right */}
-      <div className="bg-white p-3 lg:p-4 rounded-2xl flex flex-col gap-3 lg:gap-4">
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-3 lg:gap-0">
-          {/* Tabs */}
-          <div className="flex gap-4 lg:gap-8 border-b lg:border-b-0">
-            {TABS.map((tab) => {
-              const IconComponent = tab.icon;
-              const isActive = activeTab === tab.key;
-              return (
-                <button
-                  key={tab.key}
-                  onClick={() => {
-                    setActiveTab(tab.key);
-                    setSearchTerm("");
-                  }}
-                  className={`cursor-pointer relative font-medium flex items-center gap-1 lg:gap-2 pb-2 lg:pb-3 text-xs lg:text-base transition-colors ${
-                    isActive
-                      ? "text-gray-900"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  {tab.key !== "completed" && (
-                    <span className="absolute -top-1 right-0 w-2 h-2 bg-red-500 rounded-full" />
-                  )}
-                  <IconComponent size={16} />
-                  <span>
-                    {tab.name} ({tab.count})
-                  </span>
-                  {isActive && (
-                    <div className="absolute bottom-0 left-0 right-0 h-1 rounded-t-3xl bg-(--blue)" />
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Search + Filter */}
-          <div className="flex items-center gap-2 lg:gap-3 lg:pb-3">
-            <SearchBar
-              placeholder="Search..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-55 xl:w-75"
-            />
-            <FilterDropdown
-              categories={activeTab === "completed" ? COMPLETED_FILTER_CATEGORIES : []}
-              values={filterValues}
-              onChange={handleFilterChange}
-            />
-          </div>
-        </div>
-
-        {/* Mobile cards */}
-        <div className="md:hidden space-y-3">
-          {getMobileFilteredData().map((row, i) => (
-            <ServiceHistoryCard
-              key={i}
-              icon={getServiceIcon(row.service)}
-              title={row.service}
-              status={activeTab === "completed" ? "Completed" : row.status}
-              rows={getMobileRows(row)}
-              onViewDetails={() => handleActionClick(row)}
-            />
-          ))}
-        </div>
-
-        {/* Desktop table */}
-        <div className="hidden md:block overflow-x-auto">
-          <Table
-            columns={getTabColumns()}
-            data={getTabData()}
-            rowsPerPage={10}
-            onActionClick={handleActionClick}
-            showSearch={false}
-            searchTerm={searchTerm}
-            searchableFields={[
-              "service",
-              "vehicle",
-              "lastServiceDate",
-              "date",
-              "serviceProvider",
-              "status",
-              "nextServiceSub",
-              "missedServiceSub",
-            ]}
+    <div className="flex flex-col flex-1">
+      {selectedService && selectedVehicle ? (
+        <div className="flex-1 flex flex-col">
+          <ServiceDetailsView
+            vehicle={selectedVehicle}
+            service={selectedService}
+            onClose={() => {
+              setSelectedService(null);
+              setSelectedVehicle(null);
+            }}
+            isUpcoming={activeTab === "upcoming"}
+            isOverdue={activeTab === "overdue"}
           />
         </div>
-      </div>
+      ) : (
+        <>
+          <DashHeader title="Service History" />
+          {/* Header: Tabs left, Search + Filter right */}
+          <div className="bg-white p-3 lg:p-4 rounded-2xl flex flex-col gap-3 lg:gap-4">
+            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-3 lg:gap-0">
+              {/* Tabs */}
+              <div className="flex gap-4 lg:gap-8 border-b lg:border-b-0">
+                {TABS.map((tab) => {
+                  const IconComponent = tab.icon;
+                  const isActive = activeTab === tab.key;
+                  return (
+                    <button
+                      key={tab.key}
+                      onClick={() => {
+                        setActiveTab(tab.key);
+                        setSearchTerm("");
+                      }}
+                      className={`cursor-pointer relative font-medium flex items-center gap-1 lg:gap-2 pb-2 lg:pb-3 text-xs lg:text-base transition-colors ${
+                        isActive
+                          ? "text-gray-900"
+                          : "text-gray-500 hover:text-gray-700"
+                      }`}
+                    >
+                      {tab.key !== "completed" && (
+                        <span className="absolute -top-1 right-0 w-2 h-2 bg-red-500 rounded-full" />
+                      )}
+                      <IconComponent size={16} />
+                      <span>
+                        {tab.name} ({tab.count})
+                      </span>
+                      {isActive && (
+                        <div className="absolute bottom-0 left-0 right-0 h-1 rounded-t-3xl bg-(--blue)" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Search + Filter */}
+              <div className="flex items-center gap-2 lg:gap-3 lg:pb-3">
+                <SearchBar
+                  placeholder="Search..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-55 xl:w-75"
+                />
+                <FilterDropdown
+                  categories={
+                    activeTab === "completed"
+                      ? COMPLETED_FILTER_CATEGORIES
+                      : activeTab === "upcoming"
+                        ? UPCOMING_FILTER_CATEGORIES
+                        : OVERDUE_FILTER_CATEGORIES
+                  }
+                  values={filterValues}
+                  onChange={handleFilterChange}
+                />
+              </div>
+            </div>
+
+            {/* Mobile cards */}
+            <div className="md:hidden space-y-3">
+              {getMobileFilteredData().map((row, i) => {
+                const mobileActions = { onViewDetails: () => handleActionClick(row, "view") };
+
+                return (
+                  <ServiceHistoryCard
+                    key={i}
+                    icon={getServiceIcon(row.service)}
+                    title={row.service}
+                    status={
+                      activeTab === "completed" ? "Completed" : row.status
+                    }
+                    rows={getMobileRows(row)}
+                    {...mobileActions}
+                  />
+                );
+              })}
+            </div>
+
+            {/* Desktop table */}
+            <div className="hidden md:block overflow-x-auto">
+              <Table
+                columns={getTabColumns()}
+                data={getTabData()}
+                rowsPerPage={10}
+                onActionClick={handleActionClick}
+                showSearch={false}
+                searchTerm={searchTerm}
+                searchableFields={[
+                  "service",
+                  "vehicle",
+                  "lastServiceDate",
+                  "date",
+                  "serviceProvider",
+                  "status",
+                  "nextServiceSub",
+                  "missedServiceSub",
+                ]}
+                availableActions={
+                  activeTab === "completed"
+                    ? ["view"]
+                    : activeTab === "overdue"
+                      ? ["view", "reschedule"]
+                      : ["view", "set_reminder", "reschedule"]
+                }
+              />
+            </div>
+          </div>
+        </>
+      )}
+
+      <RescheduleServiceModal
+        row={rescheduleRow}
+        onClose={() => setRescheduleRow(null)}
+      />
+      <SetReminderModal
+        row={setReminderRow}
+        onClose={() => setSetReminderRow(null)}
+      />
     </div>
   );
 }

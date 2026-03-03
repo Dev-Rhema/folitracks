@@ -15,6 +15,7 @@ function Table({
   searchTerm = "",
   onSearchChange,
   searchableFields,
+  availableActions = ["view", "edit", "remove"],
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [internalSearchTerm, setInternalSearchTerm] = useState("");
@@ -202,33 +203,61 @@ function Table({
                             className="absolute top-[calc(100%+4px)] right-0 z-50 w-44 bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm"
                             onClick={(e) => e.stopPropagation()}
                           >
-                            <button
-                              className="w-full text-left px-5 py-3 text-sm text-gray-800 hover:bg-gray-50 border-b border-gray-100 font-body cursor-pointer"
-                              onClick={() => {
-                                onActionClick?.(row, "view");
-                                setOpenMenuIndex(null);
-                              }}
-                            >
-                              View Details
-                            </button>
-                            <button
-                              className="w-full text-left px-5 py-3 text-sm text-[gray-800] hover:bg-gray-50 border-b border-gray-100 font-body cursor-pointer"
-                              onClick={() => {
-                                onActionClick?.(row, "edit");
-                                setOpenMenuIndex(null);
-                              }}
-                            >
-                              Edit Details
-                            </button>
-                            <button
-                              className="w-full text-left px-5 py-3 text-sm text-red-500 hover:bg-gray-50 font-body cursor-pointer"
-                              onClick={() => {
-                                onActionClick?.(row, "remove");
-                                setOpenMenuIndex(null);
-                              }}
-                            >
-                              Remove
-                            </button>
+                            {availableActions.includes("view") && (
+                              <button
+                                className="w-full text-left px-5 py-3 text-sm text-gray-800 hover:bg-gray-50 border-b border-gray-100 font-body cursor-pointer"
+                                onClick={() => {
+                                  onActionClick?.(row, "view");
+                                  setOpenMenuIndex(null);
+                                }}
+                              >
+                                View Details
+                              </button>
+                            )}
+                            {availableActions.includes("set_reminder") && (
+                              <button
+                                className="w-full text-left px-5 py-3 text-sm text-gray-800 hover:bg-gray-50 border-b border-gray-100 font-body cursor-pointer"
+                                onClick={() => {
+                                  onActionClick?.(row, "set_reminder");
+                                  setOpenMenuIndex(null);
+                                }}
+                              >
+                                Set Reminder
+                              </button>
+                            )}
+                            {availableActions.includes("reschedule") && (
+                              <button
+                                className="w-full text-left px-5 py-3 text-sm text-gray-800 hover:bg-gray-50 border-b border-gray-100 font-body cursor-pointer"
+                                onClick={() => {
+                                  onActionClick?.(row, "reschedule");
+                                  setOpenMenuIndex(null);
+                                }}
+                              >
+                                Reschedule
+                              </button>
+                            )}
+                            {availableActions.includes("edit") && (
+                              <button
+                                className="w-full text-left px-5 py-3 text-sm text-[gray-800] hover:bg-gray-50 border-b border-gray-100 font-body cursor-pointer"
+                                onClick={() => {
+                                  onActionClick?.(row, "edit");
+                                  setOpenMenuIndex(null);
+                                }}
+                              >
+                                Edit Details
+                              </button>
+                            )}
+                            {availableActions.includes("remove") && (
+                              <button
+                                className="w-full text-left px-5 py-3 text-sm text-red-500 hover:bg-gray-50 font-body cursor-pointer"
+                                onClick={() => {
+                                  onActionClick?.(row, "remove");
+                                  setOpenMenuIndex(null);
+                                }}
+                              >
+                                Remove
+                              </button>
+                            )}
                           </div>
                         )}
                       </div>
@@ -251,53 +280,55 @@ function Table({
       </div>
 
       {/* Pagination */}
-      {showPagination && <div className="mt-4 flex justify-between items-center">
-        <p className="text-sm text-gray-600">
-          Showing {startIndex + 1}-
-          {Math.min(startIndex + rowsPerPage, filteredData.length)} of{" "}
-          {filteredData.length}
-        </p>
-        <div className="flex gap-2 items-center">
-          <button
-            onClick={handlePrevPage}
-            disabled={currentPage === 1}
-            className="w-9 h-9 border border-gray-200 rounded-md disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 flex items-center justify-center cursor-pointer"
-          >
-            <ChevronLeft size={16} />
-          </button>
+      {showPagination && (
+        <div className="mt-4 flex justify-between items-center">
+          <p className="text-sm text-gray-600">
+            Showing {startIndex + 1}-
+            {Math.min(startIndex + rowsPerPage, filteredData.length)} of{" "}
+            {filteredData.length}
+          </p>
+          <div className="flex gap-2 items-center">
+            <button
+              onClick={handlePrevPage}
+              disabled={currentPage === 1}
+              className="w-9 h-9 border border-gray-200 rounded-md disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 flex items-center justify-center cursor-pointer"
+            >
+              <ChevronLeft size={16} />
+            </button>
 
-          {getPageDisplay().map((item, idx) =>
-            item === "..." ? (
-              <span
-                key={`ellipsis-${idx}`}
-                className="px-1 text-gray-400 text-sm"
-              >
-                ...
-              </span>
-            ) : (
-              <button
-                key={item}
-                onClick={() => handlePageClick(item)}
-                className={`w-9 h-9 rounded-md text-sm font-medium transition cursor-pointer ${
-                  currentPage === item
-                    ? "bg-gray-900 text-white"
-                    : "border border-gray-200 hover:bg-gray-50 text-gray-700"
-                }`}
-              >
-                {String(item).padStart(2, "0")}
-              </button>
-            ),
-          )}
+            {getPageDisplay().map((item, idx) =>
+              item === "..." ? (
+                <span
+                  key={`ellipsis-${idx}`}
+                  className="px-1 text-gray-400 text-sm"
+                >
+                  ...
+                </span>
+              ) : (
+                <button
+                  key={item}
+                  onClick={() => handlePageClick(item)}
+                  className={`w-9 h-9 rounded-md text-sm font-medium transition cursor-pointer ${
+                    currentPage === item
+                      ? "bg-gray-900 text-white"
+                      : "border border-gray-200 hover:bg-gray-50 text-gray-700"
+                  }`}
+                >
+                  {String(item).padStart(2, "0")}
+                </button>
+              ),
+            )}
 
-          <button
-            onClick={handleNextPage}
-            disabled={currentPage === totalPages}
-            className="w-9 h-9 bg-gray-900 text-white rounded-md disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-700 flex items-center justify-center cursor-pointer"
-          >
-            <ChevronRight size={16} />
-          </button>
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+              className="w-9 h-9 bg-gray-900 text-white rounded-md disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-700 flex items-center justify-center cursor-pointer"
+            >
+              <ChevronRight size={16} />
+            </button>
+          </div>
         </div>
-      </div>}
+      )}
     </div>
   );
 }

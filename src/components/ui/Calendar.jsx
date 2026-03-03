@@ -15,24 +15,39 @@ function toStr(year, month, day) {
  * Reusable calendar with single-date and date-range selection.
  *
  * Props:
- *   value    – { start: string|null, end: string|null }  (ISO date strings)
- *   onChange – (value) => void  called on every click
- *   onCancel – () => void
- *   onSave   – (value) => void  called when Save is clicked
+ *   singleDate – boolean: if true, value is an ISO string (or null); onChange receives a string
+ *   value      – range mode: { start, end }  |  single mode: string|null
+ *   onChange   – (value) => void  called on every click
+ *   onCancel   – () => void
+ *   onSave     – (value) => void  called when Save is clicked
+ *   className  – override the root width (default "w-72")
  */
-function Calendar({ value = {}, onChange, onCancel, onSave }) {
+function Calendar({ singleDate = false, value, onChange, onCancel, onSave, className = "w-72", showActions = true }) {
   const today = new Date();
-  const initDate = value.start ? new Date(value.start) : today;
+  const todayStr = toStr(today.getFullYear(), today.getMonth(), today.getDate());
+
+  const initDate = singleDate
+    ? (value ? new Date(value) : today)
+    : (value?.start ? new Date(value.start) : today);
 
   const [viewYear, setViewYear]   = useState(initDate.getFullYear());
   const [viewMonth, setViewMonth] = useState(initDate.getMonth());
-  const [local, setLocal]         = useState({ start: value.start ?? null, end: value.end ?? null });
+  const [local, setLocal]         = useState(
+    singleDate ? (value ?? null) : { start: value?.start ?? null, end: value?.end ?? null }
+  );
   const [hoverDay, setHoverDay]   = useState(null);
 
   const handleDayClick = (day) => {
     const clicked = toStr(viewYear, viewMonth, day);
-    let next;
 
+    if (singleDate) {
+      const next = clicked === local ? null : clicked;
+      setLocal(next);
+      onChange?.(next);
+      return;
+    }
+
+    let next;
     if (!local.start || (local.start && local.end)) {
       next = { start: clicked, end: null };
     } else {
@@ -48,19 +63,25 @@ function Calendar({ value = {}, onChange, onCancel, onSave }) {
     onChange?.(next);
   };
 
-  // hoverStr: the ISO date string of the hovered day (used for range preview)
   const hoverStr = hoverDay ? toStr(viewYear, viewMonth, hoverDay) : null;
 
   const getDayState = (day) => {
     const d = toStr(viewYear, viewMonth, day);
+
+    if (singleDate) {
+      if (d === local) return "selected";
+      if (d === todayStr) return "today";
+      return "normal";
+    }
+
     if (d === local.start) return "start";
     if (d === local.end)   return "end";
     if (local.start && local.end && d > local.start && d < local.end) return "range";
-    // Preview range when first date is selected but second hasn't been picked yet
     if (local.start && !local.end && hoverStr) {
       const [lo, hi] = hoverStr >= local.start ? [local.start, hoverStr] : [hoverStr, local.start];
       if (d > lo && d < hi) return "range";
     }
+    if (d === todayStr) return "today";
     return "normal";
   };
 
@@ -77,8 +98,16 @@ function Calendar({ value = {}, onChange, onCancel, onSave }) {
   const daysInMo  = new Date(viewYear, viewMonth + 1, 0).getDate();
   const cells     = [...Array(firstDow).fill(null), ...Array.from({ length: daysInMo }, (_, i) => i + 1)];
 
+  const getDayClassName = (state) => {
+    const base = "w-8 h-8 mx-auto flex items-center justify-center text-xs rounded-lg cursor-pointer transition-colors font-medium";
+    if (state === "selected" || state === "start" || state === "end") return `${base} bg-(--darkBlue) text-white`;
+    if (state === "range") return `${base} bg-[#E8EAF6] text-(--darkBlue)`;
+    if (state === "today") return `${base} bg-blue-50 text-(--darkBlue) hover:bg-blue-100`;
+    return `${base} text-gray-800 hover:bg-gray-100`;
+  };
+
   return (
-    <div className="p-5 w-72 select-none">
+    <div className={`p-5 ${className} select-none`}>
       {/* Month header */}
       <div className="flex items-center justify-between mb-4">
         <span className="text-base font-bold text-gray-900">
@@ -112,13 +141,7 @@ function Calendar({ value = {}, onChange, onCancel, onSave }) {
               onClick={() => handleDayClick(day)}
               onMouseEnter={() => setHoverDay(day)}
               onMouseLeave={() => setHoverDay(null)}
-              className={`w-8 h-8 mx-auto flex items-center justify-center text-xs rounded-lg cursor-pointer transition-colors font-medium ${
-                state === "start" || state === "end"
-                  ? "bg-(--darkBlue) text-white"
-                  : state === "range"
-                  ? "bg-[#E8EAF6] text-(--darkBlue)"
-                  : "text-gray-800 hover:bg-gray-100"
-              }`}
+              className={getDayClassName(state)}
             >
               {day}
             </button>
@@ -127,20 +150,22 @@ function Calendar({ value = {}, onChange, onCancel, onSave }) {
       </div>
 
       {/* Actions */}
-      <div className="flex justify-center gap-3 mt-5">
-        <button
-          onClick={onCancel}
-          className="px-6 py-2 rounded-xl border border-(--darkBlue) text-(--darkBlue) text-sm font-semibold hover:bg-gray-50 cursor-pointer transition-colors"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={() => onSave?.(local)}
-          className="px-6 py-2 rounded-xl bg-(--darkBlue) text-white text-sm font-semibold hover:opacity-90 cursor-pointer transition-opacity"
-        >
-          Save
-        </button>
-      </div>
+      {showActions && (
+        <div className="flex justify-center gap-3 mt-5">
+          <button
+            onClick={onCancel}
+            className="px-6 py-2 rounded-xl border border-(--darkBlue) text-(--darkBlue) text-sm font-semibold hover:bg-gray-50 cursor-pointer transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => onSave?.(local)}
+            className="px-6 py-2 rounded-xl bg-(--darkBlue) text-white text-sm font-semibold hover:opacity-90 cursor-pointer transition-opacity"
+          >
+            Save
+          </button>
+        </div>
+      )}
     </div>
   );
 }

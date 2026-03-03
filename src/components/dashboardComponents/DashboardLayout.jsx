@@ -14,6 +14,7 @@ import AddVehicleForm from "./AddVehicleForm";
 import EditVehicleForm from "./EditVehicleForm";
 import RemoveVehicleModal from "./RemoveVehicleModal";
 import VehicleDetails from "./VehicleDetails";
+import LogoutModal from "./LogoutModal";
 import navIcon1 from "../../assets/dashboardImgs/dashNavs/nav1.svg";
 import navIcon2 from "../../assets/dashboardImgs/dashNavs/nav2.svg";
 import navIcon3 from "../../assets/dashboardImgs/dashNavs/nav3.svg";
@@ -84,7 +85,7 @@ function MobileHeader({ onAddVehicle, onOpenNav }) {
   );
 }
 
-function MobileNavDrawer({ currentPath, open, onClose }) {
+function MobileNavDrawer({ currentPath, open, onClose, onLogout }) {
   return (
     <>
       {open && (
@@ -134,7 +135,7 @@ function MobileNavDrawer({ currentPath, open, onClose }) {
             })}
           </div>
         </div>
-        <button className="flex items-center gap-3 pl-6 cursor-pointer text-(--red) hover:opacity-70 transition">
+        <button onClick={onLogout} className="flex items-center gap-3 pl-6 cursor-pointer text-(--red) hover:opacity-70 transition">
           <img src={logoutIcon} alt="" className="w-5 h-5" />
           <span className="text-sm font-medium">Log Out</span>
         </button>
@@ -143,7 +144,7 @@ function MobileNavDrawer({ currentPath, open, onClose }) {
   );
 }
 
-function DashNav({ currentPath }) {
+function DashNav({ currentPath, onLogout }) {
   return (
     <div className="hidden md:flex w-44 xl:w-70 bg-white h-screen flex-col justify-between py-4 xl:py-6 border-r fixed z-1 text-[13px] xl:text-[16px]">
       <div className="flex flex-col gap-6 xl:gap-8">
@@ -185,7 +186,7 @@ function DashNav({ currentPath }) {
           })}
         </div>
       </div>
-      <button className="flex items-center gap-3 pl-6 cursor-pointer text-(--red) hover:opacity-70 transition">
+      <button onClick={onLogout} className="flex items-center gap-3 pl-6 cursor-pointer text-(--red) hover:opacity-70 transition">
         <img src={logoutIcon} alt="" className="w-5 h-5" />
         <span className="text-sm font-medium">Log Out</span>
       </button>
@@ -220,7 +221,7 @@ function TopDash({ onAddVehicle }) {
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setOtpPending } from "../../redux/slices/appSlice";
+import { setOtpPending, logOut } from "../../redux/slices/appSlice";
 import { useSendLoginOTPMutation } from "../../redux/api/authApiSlice";
 import usePost from "../../hooks/usePost";
 
@@ -269,6 +270,7 @@ export default function DashboardLayout() {
 
   const [showAddVehicle, setShowAddVehicle] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [viewVehicle, setViewVehicle] = useState(null);
   const [editVehicle, setEditVehicle] = useState(null);
 
@@ -379,10 +381,11 @@ export default function DashboardLayout() {
         currentPath={location.pathname}
         open={mobileNavOpen}
         onClose={() => setMobileNavOpen(false)}
+        onLogout={() => { setMobileNavOpen(false); setShowLogoutModal(true); }}
       />
-      
+
       <div className="z-20">
-        <DashNav currentPath={location.pathname} />
+        <DashNav currentPath={location.pathname} onLogout={() => setShowLogoutModal(true)} />
       </div>
 
       <div className="flex-1 min-w-0 overflow-hidden">
@@ -401,6 +404,13 @@ export default function DashboardLayout() {
           vehicle={removeVehicle}
           onConfirm={handleVehicleRemoved}
           onClose={() => setRemoveVehicle(null)}
+        />
+      )}
+
+      {showLogoutModal && (
+        <LogoutModal
+          onCancel={() => setShowLogoutModal(false)}
+          onConfirm={() => { dispatch(logOut()); navigate("/"); }}
         />
       )}
     </div>
