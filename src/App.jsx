@@ -28,7 +28,7 @@ function App() {
         closeOnClick
         rtl={false}
         pauseOnFocusLoss
-        // draggable
+        draggable
         pauseOnHover
       />
     </>
