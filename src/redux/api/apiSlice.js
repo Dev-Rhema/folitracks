@@ -10,7 +10,7 @@ export const appApiHeader = {
 };
 
 export const getBaseUrl = () =>
-  "http://54.158.185.26";
+  "https://api.folitracks.com";
 
 // Base query setup
 const rawBaseQuery = fetchBaseQuery({
