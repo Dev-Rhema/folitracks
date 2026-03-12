@@ -1,9 +1,9 @@
 import { useState } from "react";
-import Table from "../ui/Table";
-import ServiceHistoryCard from "../ui/ServiceHistoryCard";
-import DashHeader from "./DashHeader";
-import SearchBar from "./SearchBar";
-import FilterDropdown from "../ui/FilterDropdown";
+import Table from "../../components/ui/Table";
+import ServiceHistoryCard from "../../components/ui/ServiceHistoryCard";
+import DashHeader from "./components/DashHeader";
+import SearchBar from "./components/SearchBar";
+import FilterDropdown from "../../components/ui/FilterDropdown";
 import { getBrandLogo } from "../../utils/vehicleUtils";
 
 const VEHICLE_TYPE_OPTIONS = [

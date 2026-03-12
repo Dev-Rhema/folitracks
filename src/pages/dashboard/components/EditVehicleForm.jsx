@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { ArrowLeft, ChevronLeft, Lock, CheckCircle } from "lucide-react";
-import SearchableSelect from "../auth/SearchableSelect";
-import FileUploadField from "../auth/FileUploadField";
-import CTA from "../CTA";
+import SearchableSelect from "../../../components/auth/SearchableSelect";
+import FileUploadField from "../../../components/auth/FileUploadField";
+import CTA from "../../../components/CTA";
 
 // ─── Vehicle data (same as AddVehicleForm) ────────────────────────────────────
 

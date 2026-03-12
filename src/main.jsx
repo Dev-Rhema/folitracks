@@ -6,10 +6,11 @@ import App from "./App.jsx";
 import Home from "./pages/Home.jsx";
 import About from "./pages/About.jsx";
 import Services from "./pages/Services.jsx";
-import Terms from "./pages/Terms.jsx";
-import Policy from "./pages/Policy.jsx";
-import Auth from "./pages/Auth.jsx";
-import Login from "./pages/Login.jsx";
+import Terms from "./pages/legal/Terms.jsx";
+import Policy from "./pages/legal/Policy.jsx";
+import Auth from "./pages/auth/Auth.jsx";
+import Login from "./pages/auth/Login.jsx";
+import DashboardLayout from "./pages/dashboard/DashboardLayout.jsx";
 
 const router = createBrowserRouter([
   {
@@ -72,7 +73,6 @@ const router = createBrowserRouter([
 
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
-import DashboardLayout from "./components/dashboardComponents/DashboardLayout.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

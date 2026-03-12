@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { X, CalendarDays, CheckCircle2 } from "lucide-react";
-import Calendar from "../ui/Calendar";
+import Calendar from "../../../components/ui/Calendar";
 
 // Shared overlay + sheet wrapper
 function ModalSheet({ onBackdropClick, children, centered = false }) {

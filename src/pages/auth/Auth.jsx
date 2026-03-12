@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Navbar from "../components/Navbar";
-import SignupStage from "../components/auth/SignupStage";
-import OTPStage from "../components/auth/OTPStage";
-import VehicleRegistrationStage from "../components/auth/VehicleRegistrationStage";
-import VehicleOwnershipStage from "../components/auth/VehicleOwnershipStage";
-import SuccessStage from "../components/auth/SuccessStage";
+import Navbar from "../../components/Navbar";
+import SignupStage from "../../components/auth/SignupStage";
+import OTPStage from "../../components/auth/OTPStage";
+import VehicleRegistrationStage from "../../components/auth/VehicleRegistrationStage";
+import VehicleOwnershipStage from "../../components/auth/VehicleOwnershipStage";
+import SuccessStage from "../../components/auth/SuccessStage";
 
 const URL_STAGES = ["vehicle", "ownership", "success"];
 const ALL_STAGES = ["signup", "otp", "vehicle", "ownership", "success"];

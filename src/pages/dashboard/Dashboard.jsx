@@ -1,13 +1,14 @@
 import { Link } from "react-router-dom";
-import DashHeader from "./DashHeader";
-import Table from "../ui/Table";
-import ServiceHistoryCard from "../ui/ServiceHistoryCard";
-import StatusBadge from "../ui/StatusBadge";
+import DashHeader from "./components/DashHeader";
+import Table from "../../components/ui/Table";
+import ServiceHistoryCard from "../../components/ui/ServiceHistoryCard";
+import StatusBadge from "../../components/ui/StatusBadge";
 import { getBrandLogo } from "../../utils/vehicleUtils";
 import { getServiceIcon } from "../../utils/serviceUtils";
 import countImg1 from "../../assets/dashboardImgs/dashHome/Desktop/dashCount1.svg";
 import countImg2 from "../../assets/dashboardImgs/dashHome/Desktop/dashCount2.svg";
 import countImg3 from "../../assets/dashboardImgs/dashHome/Desktop/dashCount3.svg";
+import { useSelector } from "react-redux";
 
 // ─── Static data ──────────────────────────────────────────────────────────────
 
@@ -192,13 +193,14 @@ function UpcomingRow({ item, isLast }) {
   );
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
-
 export default function Dashboard() {
+
+const userInfo = useSelector((state) => state.app.userInfo);
+
   return (
     <div>
       <DashHeader
-        title="Welcome Cynthia 👋"
+        title={`Welcome ${userInfo?.fullname} 👋`}
         subtitle="Manage your vehicles, track service history, set maintenance reminders all in one place."
       />
 

@@ -1,7 +1,7 @@
 import React from "react";
-import Header from "../components/Header";
-import Container from "../components/Container";
-import { POLICIES, TERMS } from "../components/Data";
+import Header from "../../components/Header";
+import Container from "../../components/Container";
+import { POLICIES, TERMS } from "../../components/Data";
 import { Dice1 } from "lucide-react";
 
 function Policy() {

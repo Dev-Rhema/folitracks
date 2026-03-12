@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
-import ServiceHistoryCard from "../ui/ServiceHistoryCard";
-import StatusBadge from "../ui/StatusBadge";
+import ServiceHistoryCard from "../../../components/ui/ServiceHistoryCard";
+import StatusBadge from "../../../components/ui/StatusBadge";
 import {
   ArrowLeft,
   Pencil,
@@ -12,9 +12,9 @@ import {
   Download,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
-import FileUploadField from "../auth/FileUploadField";
-import { getBrandLogo } from "../../utils/vehicleUtils";
-import { getServiceIcon } from "../../utils/serviceUtils";
+import FileUploadField from "../../../components/auth/FileUploadField";
+import { getBrandLogo } from "../../../utils/vehicleUtils";
+import { getServiceIcon } from "../../../utils/serviceUtils";
 
 // ─── Parse make / model / year ────────────────────────────────────────────────
 

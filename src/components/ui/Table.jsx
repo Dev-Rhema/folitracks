@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import SearchBar from "../dashboardComponents/SearchBar";
+import SearchBar from "../../pages/dashboard/components/SearchBar";
 
 function Table({
   columns,

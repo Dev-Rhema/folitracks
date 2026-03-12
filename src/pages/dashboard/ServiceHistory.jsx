@@ -1,15 +1,15 @@
 import { useState } from "react";
-import Table from "../ui/Table";
-import ServiceHistoryCard from "../ui/ServiceHistoryCard";
-import StatusBadge from "../ui/StatusBadge";
-import ServiceDetailsView from "./ServiceDetailsView";
+import Table from "../../components/ui/Table";
+import ServiceHistoryCard from "../../components/ui/ServiceHistoryCard";
+import StatusBadge from "../../components/ui/StatusBadge";
+import ServiceDetailsView from "./components/ServiceDetailsView";
 import { CheckSquare, Clock, AlertTriangle } from "lucide-react";
-import FilterDropdown from "../ui/FilterDropdown";
-import RescheduleServiceModal from "./RescheduleServiceModal";
-import SetReminderModal from "./SetReminderModal";
+import FilterDropdown from "../../components/ui/FilterDropdown";
+import RescheduleServiceModal from "./components/RescheduleServiceModal";
+import SetReminderModal from "./components/SetReminderModal";
 
-import SearchBar from "./SearchBar";
-import DashHeader from "./DashHeader";
+import SearchBar from "./components/SearchBar";
+import DashHeader from "./components/DashHeader";
 import { getServiceIcon } from "../../utils/serviceUtils";
 
 const REPAIR_SERVICES = [

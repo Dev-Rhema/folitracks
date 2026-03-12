@@ -1,20 +1,18 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { imageUrls } from "../../config/imageUrls";
 import { Link, useLocation } from "react-router-dom";
-import SearchBar from "./SearchBar";
-import CTA from "../CTA";
 import { Bell, Menu, X } from "lucide-react";
 import { useSelector } from "react-redux";
-import LoginOTPModal from "../auth/LoginOTPModal";
+import LoginOTPModal from "../../components/auth/LoginOTPModal";
 import Vehicles from "./Vehicles";
 import Dashboard from "./Dashboard";
 import ServiceHistory from "./ServiceHistory";
 import Settings from "./Settings";
-import AddVehicleForm from "./AddVehicleForm";
-import EditVehicleForm from "./EditVehicleForm";
-import RemoveVehicleModal from "./RemoveVehicleModal";
-import VehicleDetails from "./VehicleDetails";
-import LogoutModal from "./LogoutModal";
+import AddVehicleForm from "./components/AddVehicleForm";
+import EditVehicleForm from "./components/EditVehicleForm";
+import RemoveVehicleModal from "./components/RemoveVehicleModal";
+import VehicleDetails from "./components/VehicleDetails";
+import LogoutModal from "./components/LogoutModal";
 import navIcon1 from "../../assets/dashboardImgs/dashNavs/nav1.svg";
 import navIcon2 from "../../assets/dashboardImgs/dashNavs/nav2.svg";
 import navIcon3 from "../../assets/dashboardImgs/dashNavs/nav3.svg";
@@ -24,6 +22,13 @@ import navIcon2Active from "../../assets/dashboardImgs/dashNavs/active/nav2.svg"
 import navIcon3Active from "../../assets/dashboardImgs/dashNavs/active/nav3.svg";
 import navIcon4Active from "../../assets/dashboardImgs/dashNavs/active/nav4.svg";
 import logoutIcon from "../../assets/dashboardImgs/dashNavs/logout.svg";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setOtpPending, logOut } from "../../redux/slices/appSlice";
+import { useSendLoginOTPMutation } from "../../redux/api/authApiSlice";
+import usePost from "../../hooks/usePost";
+import SearchBar from "./components/SearchBar";
+import CTA from "../../components/CTA";
 
 const DASHNAVS = [
   {
@@ -218,12 +223,6 @@ function TopDash({ onAddVehicle }) {
   );
 }
 
-import { useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { setOtpPending, logOut } from "../../redux/slices/appSlice";
-import { useSendLoginOTPMutation } from "../../redux/api/authApiSlice";
-import usePost from "../../hooks/usePost";
 
 export default function DashboardLayout() {
   const { isOtpPending, loginMethod, userInfo } = useSelector((state) => state.app);

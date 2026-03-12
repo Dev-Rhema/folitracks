@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Pencil, Eye, EyeOff, ArrowLeft, CheckCircle, HelpCircle } from "lucide-react";
-import CTA from "../CTA";
+import CTA from "../../components/CTA";
 
 // ─── Static user data ─────────────────────────────────────────────────────────
 

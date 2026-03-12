@@ -1,8 +1,8 @@
 import { ArrowLeft, Bell, CalendarDays, Wrench } from "lucide-react";
 import { useState } from "react";
-import StatusBadge from "../ui/StatusBadge";
-import { getBrandLogo } from "../../utils/vehicleUtils";
-import { getServiceIcon } from "../../utils/serviceUtils";
+import StatusBadge from "../../../components/ui/StatusBadge";
+import { getBrandLogo } from "../../../utils/vehicleUtils";
+import { getServiceIcon } from "../../../utils/serviceUtils";
 
 // ─── Shared card header ───────────────────────────────────────────────────────
 
