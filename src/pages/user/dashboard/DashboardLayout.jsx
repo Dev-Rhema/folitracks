@@ -3,7 +3,7 @@ import { imageUrls } from "../../../config/imageUrls";
 import { Link, useLocation } from "react-router-dom";
 import { Bell, Menu, X } from "lucide-react";
 import { useSelector } from "react-redux";
-import LoginOTPModal from "../../../components/auth/LoginOTPModal";
+import LoginOTPModal from "../auth/component/LoginOTPModal";
 import Vehicles from "./Vehicles";
 import Dashboard from "./Dashboard";
 import ServiceHistory from "./ServiceHistory";
@@ -391,7 +391,7 @@ export default function DashboardLayout() {
         <TopDash onAddVehicle={() => setShowAddVehicle(true)} />
         <main className="md:ml-44 xl:ml-70 px-3 xl:px-8 pb-3 xl:pb-6 pt-16 md:pt-12 xl:pt-18 min-h-screen flex flex-col">
           <div className="flex flex-col flex-1">
-            <div className="rounded-2xl p-2 pt-4 font-(--body) flex-1 flex flex-col">
+            <div className="rounded-2xl p-2 pt-8 font-(--body) flex-1 flex flex-col">
               {renderComponent()}
             </div>
           </div>

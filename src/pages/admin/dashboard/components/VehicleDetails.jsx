@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { useSelector } from "react-redux";
-import FileUploadField from "../../../../components/auth/FileUploadField";
+import FileUploadField from "../../../../components/FileUploadField";
 import { getBrandLogo } from "../../../../utils/vehicleUtils";
 import { getServiceIcon } from "../../../../utils/serviceUtils";
 import { useGetUserQRQuery } from "../../../../redux/api/authApiSlice";

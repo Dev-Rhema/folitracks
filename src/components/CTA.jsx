@@ -20,7 +20,7 @@ function CTA({
         backgroundColor: isOutline ? "white" : `var(--${color})`,
         color: isOutline ? `var(--${color})` : "var(--white)",
         border: isOutline ? `1px solid var(--${color})` : "none",
-        opacity: isLoading ? 0.5 : 1,
+        opacity: isLoading || disabled ? 0.5 : 1,
       }}
     >
       {isLoading ? "Loading..." : name}

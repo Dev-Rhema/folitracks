@@ -13,6 +13,10 @@ import Login from "./pages/user/auth/Login.jsx";
 import UserDashboardLayout from "./pages/user/dashboard/DashboardLayout.jsx";
 import AdminLogin from "./pages/admin/auth/Login.jsx";
 import AdminDashboardLayout from "./pages/admin/dashboard/DashboardLayout.jsx";
+import AdminResetPassword from "./pages/admin/auth/ResetPassword.jsx";
+import AdminForgotPassword from "./pages/admin/auth/ForgotPassword.jsx";
+import ForgotPassword from "./pages/user/auth/ForgotPassword.jsx";
+import ResetPassword from "./pages/user/auth/ResetPassword.jsx";
 
 const router = createBrowserRouter([
   {
@@ -48,8 +52,24 @@ const router = createBrowserRouter([
         element: <Login />,
       },
       {
+        path: "reset-password",
+        element: <ResetPassword />,
+      },
+      {
+        path: "forgot-password",
+        element: <ForgotPassword />,
+      },
+      {
         path: "admin/login",
         element: <AdminLogin />,
+      },
+      {
+        path: "admin/forgot-password",
+        element: <AdminForgotPassword />,
+      },
+      {
+        path: "admin/reset-password",
+        element: <AdminResetPassword />,
       },
     ],
   },

@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { Check, Circle } from "lucide-react";
-import CTA from "../CTA";
-import FormInputField from "./FormInputField";
-import PasswordInputField from "./PasswordInputField";
+import CTA from "../../../../components/CTA";
+import FormInputField from "../../../../components/FormInputField";
+import PasswordInputField from "../../../../components/PasswordInputField";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signupSchema } from "../../validation/authSchema";
-import { useRegisterUserMutation } from "../../redux/api/authApiSlice";
-import usePost from "../../hooks/usePost";
+import { signupSchema } from "../../../../validation/authSchema";
+import { useRegisterUserMutation } from "../../../../redux/api/authApiSlice";
+import usePost from "../../../../hooks/usePost";
 import { useDispatch } from "react-redux";
-import { setUserInfo } from "../../redux/slices/appSlice";
+import { setUserInfo } from "../../../../redux/slices/appSlice";
 
 export default function SignupStage({ onContinue, onScanQR, defaultValues }) {
   const dispatch = useDispatch();
@@ -30,7 +30,7 @@ export default function SignupStage({ onContinue, onScanQR, defaultValues }) {
   });
 
   const { postData: registerUser, isLoading: isRegistering } = usePost(useRegisterUserMutation);
-  
+
   const password = watch("password", "");
   const [showPassword, setShowPassword] = useState(false);
 
@@ -43,24 +43,24 @@ export default function SignupStage({ onContinue, onScanQR, defaultValues }) {
   };
 
   const onSubmit = async (data) => {
-      const response = await registerUser(data);
+    const response = await registerUser(data);
 
-      if (response) {
-        dispatch(setUserInfo({ fullname: data.fullname }));
-        onContinue(response);
-      }
-    
+    if (response) {
+      dispatch(setUserInfo({ fullname: data.fullname }));
+      onContinue(response);
+    }
+
   };
 
   return (
     <div className="min-h-screen bg-white pt-20 pb-10">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1
+        <h2
           className="text-3xl sm:text-4xl font-bold text-center mb-3"
           style={{ fontFamily: "title" }}
         >
           Welcome to Folitracks
-        </h1>
+        </h2>
         <p
           className="text-center text-sm sm:text-base text-gray-600 mb-8"
           style={{ fontFamily: "body" }}

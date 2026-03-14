@@ -5,9 +5,6 @@ import StatusBadge from "../../../components/ui/StatusBadge";
 import ServiceDetailsView from "./components/ServiceDetailsView";
 import { CheckSquare, Clock, AlertTriangle } from "lucide-react";
 import FilterDropdown from "../../../components/ui/FilterDropdown";
-import RescheduleServiceModal from "./components/RescheduleServiceModal";
-import SetReminderModal from "./components/SetReminderModal";
-
 import SearchBar from "./components/SearchBar";
 import DashHeader from "./components/DashHeader";
 import { getServiceIcon } from "../../../utils/serviceUtils";
@@ -621,7 +618,6 @@ function ServiceHistory() {
   const [selectedService, setSelectedService] = useState(null);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [rescheduleRow, setRescheduleRow] = useState(null);
-  const [setReminderRow, setSetReminderRow] = useState(null);
 
   const handleFilterChange = (category, value) => {
     setFilterValues((prev) => ({ ...prev, [category]: value }));
@@ -706,10 +702,6 @@ function ServiceHistory() {
       const [vehicleName, vehicleReg] = row.vehicle.split("\n");
       setSelectedVehicle({ vehicle: vehicleName, registrationNumber: vehicleReg });
       setSelectedService(row);
-    } else if (action === "set_reminder") {
-      setSetReminderRow(row);
-    } else if (action === "reschedule") {
-      setRescheduleRow(row);
     }
   };
 
@@ -890,15 +882,6 @@ function ServiceHistory() {
           </div>
         </>
       )}
-
-      <RescheduleServiceModal
-        row={rescheduleRow}
-        onClose={() => setRescheduleRow(null)}
-      />
-      <SetReminderModal
-        row={setReminderRow}
-        onClose={() => setSetReminderRow(null)}
-      />
     </div>
   );
 }

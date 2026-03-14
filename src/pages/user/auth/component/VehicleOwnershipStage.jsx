@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Lock } from "lucide-react";
-import CTA from "../CTA";
-import FileUploadField from "./FileUploadField";
-import FormInputField from "./FormInputField";
+import CTA from "../../../../components/CTA";
+import FileUploadField from "../../../../components/FileUploadField";
+import FormInputField from "../../../../components/FormInputField";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { vehicleOwnershipSchema } from "../../validation/authSchema";
-import { useRegisterVehicleMutation } from "../../redux/api/vehicleApiSlice";
-import { useUploadDocumentMutation } from "../../redux/api/documentApiSlice";
-import usePost from "../../hooks/usePost";
+import { vehicleOwnershipSchema } from "../../../../validation/authSchema";
+import { useRegisterVehicleMutation } from "../../../../redux/api/vehicleApiSlice";
+import { useUploadDocumentMutation } from "../../../../redux/api/documentApiSlice";
+import usePost from "../../../../hooks/usePost";
 import { toast } from "react-toastify";
 import { ChevronLeft } from "lucide-react";
 
@@ -79,11 +79,11 @@ export default function VehicleOwnershipStage({
     const file = e.target.files?.[0];
     if (file) {
       setFiles((prev) => ({ ...prev, [fileKey]: file }));
-      
+
       try {
         const formData = new FormData();
         formData.append("files", file);
-        
+
         const response = await uploadDocument(formData, "Document uploaded successfully!");
         if (response) {
           const url = response?.data?.[0]
@@ -103,7 +103,7 @@ export default function VehicleOwnershipStage({
       ? [uploadedUrls.vehicleRegistrationDocument, uploadedUrls.driverLicense]
       : [uploadedUrls.vehicleRegistrationDocument, uploadedUrls.businessLicense];
 
-      console.log("Required URLs:", requiredUrls);
+    console.log("Required URLs:", requiredUrls);
 
     if (!requiredUrls.every(Boolean)) {
       toast.error("Please upload all required documents and wait for them to finish.");
@@ -210,7 +210,7 @@ export default function VehicleOwnershipStage({
                 fileName={files.vehicleRegistrationDocument}
                 onFileChange={(e) => handleFileChange(e, "vehicleRegistrationDocument")}
               />
-              
+
               <FileUploadField
                 label="Driver's License"
                 fieldId="driverLic"
@@ -243,18 +243,18 @@ export default function VehicleOwnershipStage({
             </>
           )}
 
-        {/* Privacy Notice */}
-        <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
-          <p className="text-xs sm:text-sm text-blue-800 flex gap-2">
-            <Lock size={20} className="flex-shrink-0 mt-0.5" />
-            <span>
-              Your privacy is important to us. The documents you upload are only
-              used to confirm your vehicle details and ownership. We do not
-              share your information with third parties. All data is securely
-              stored and protected.
-            </span>
-          </p>
-        </div>
+          {/* Privacy Notice */}
+          <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+            <p className="text-xs sm:text-sm text-blue-800 flex gap-2">
+              <Lock size={20} className="flex-shrink-0 mt-0.5" />
+              <span>
+                Your privacy is important to us. The documents you upload are only
+                used to confirm your vehicle details and ownership. We do not
+                share your information with third parties. All data is securely
+                stored and protected.
+              </span>
+            </p>
+          </div>
 
           {/* Continue Button */}
           <div className="pt-4">

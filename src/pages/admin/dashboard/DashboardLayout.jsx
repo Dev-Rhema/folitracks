@@ -3,14 +3,8 @@ import { imageUrls } from "../../../config/imageUrls";
 import { Link, useLocation } from "react-router-dom";
 import { Bell, Menu, X } from "lucide-react";
 import { useSelector } from "react-redux";
-import LoginOTPModal from "../../../components/auth/LoginOTPModal";
-import Vehicles from "./Vehicles";
 import Dashboard from "./Dashboard";
 import ServiceHistory from "./ServiceHistory";
-import Settings from "./Settings";
-import AddVehicleForm from "./components/AddVehicleForm";
-import EditVehicleForm from "./components/EditVehicleForm";
-import RemoveVehicleModal from "./components/RemoveVehicleModal";
 import VehicleDetails from "./components/VehicleDetails";
 import LogoutModal from "./components/LogoutModal";
 import navIcon1 from "../../../assets/dashboardImgs/dashNavs/nav1.svg";
@@ -36,42 +30,26 @@ const DASHNAVS = [
     name: "Dashboard",
     img: navIcon1,
     activeImg: navIcon1Active,
-    path: "/dashboard",
+    path: "/admin/dashboard",
     dot: false,
   },
   {
     id: 2,
-    name: "Vehicles",
-    img: navIcon2,
-    activeImg: navIcon2Active,
-    path: "/dashboard/vehicles",
-    dot: false,
-  },
-  {
-    id: 3,
     name: "Service History",
     img: navIcon3,
     activeImg: navIcon3Active,
-    path: "/dashboard/service-history",
+    path: "/admin/dashboard/service-history",
     dot: true,
-  },
-  {
-    id: 4,
-    name: "Settings",
-    img: navIcon4,
-    activeImg: navIcon4Active,
-    path: "/dashboard/settings",
-    dot: false,
   },
 ];
 
-function MobileHeader({ onAddVehicle, onOpenNav }) {
+function MobileHeader({ onAddServiceHistory, onOpenNav }) {
   return (
     <div className="md:hidden fixed top-0 left-0 right-0 z-20 bg-white border-b px-4 py-3 flex items-center justify-between">
       <img src={imageUrls.logo} alt="FoliTracks" className="h-7" />
       <div className="flex items-center gap-3">
         <button
-          onClick={onAddVehicle}
+          onClick={onAddServiceHistory}
           className="w-9 h-9 bg-(--darkBlue) rounded-xl flex items-center justify-center text-white text-xl leading-none"
         >
           +
@@ -199,7 +177,7 @@ function DashNav({ currentPath, onLogout }) {
   );
 }
 
-function TopDash({ onAddVehicle }) {
+function TopDash({ onAddServiceHistory }) {
   return (
     <div className="hidden md:block w-full bg-white border-b pl-44 xl:pl-70 fixed top-0 left-0 z-10">
       <div className="flex justify-between px-4 xl:px-8 py-1.5 xl:py-2.5">
@@ -207,9 +185,9 @@ function TopDash({ onAddVehicle }) {
 
         <div className="flex gap-3 xl:gap-6 items-center">
           <CTA
-            name="+ &nbsp; Add Vehicle"
+            name="+ &nbsp; Log Service"
             color="blue"
-            onClick={onAddVehicle}
+            onClick={onAddServiceHistory}
           />
           <div className="bg-[#EEF1F8] w-8 h-8 xl:w-12 xl:h-12 flex items-center justify-center text-center rounded-full cursor-pointer">
             <Bell size={16} />
@@ -278,21 +256,9 @@ export default function DashboardLayout() {
     setViewVehicle(null);
     setEditVehicle(null);
   }, [location.pathname]);
+
   const [removeVehicle, setRemoveVehicle] = useState(null);
-  const [extraVehicles, setExtraVehicles] = useState([]);
-  const [removedRegistrations, setRemovedRegistrations] = useState([]);
 
-  const handleVehicleAdded = (vehicleData) => {
-    setExtraVehicles((prev) => [vehicleData, ...prev]);
-  };
-
-  const handleVehicleRemoved = (vehicle) => {
-    setRemovedRegistrations((prev) => [...prev, vehicle.registrationNumber]);
-    setExtraVehicles((prev) =>
-      prev.filter((v) => v.registrationNumber !== vehicle.registrationNumber),
-    );
-    setViewVehicle(null);
-  };
 
   const handleActionClick = (row, action) => {
     if (action === "view") setViewVehicle(row);
@@ -301,17 +267,6 @@ export default function DashboardLayout() {
   };
 
   const renderComponent = () => {
-    if (showAddVehicle) {
-      return (
-        <AddVehicleForm
-          onClose={() => setShowAddVehicle(false)}
-          onVehicleAdded={(v) => {
-            handleVehicleAdded(v);
-          }}
-        />
-      );
-    }
-
     if (viewVehicle) {
       return (
         <VehicleDetails
@@ -327,48 +282,14 @@ export default function DashboardLayout() {
       );
     }
 
-    if (editVehicle) {
-      return (
-        <EditVehicleForm
-          vehicle={editVehicle}
-          onClose={() => setEditVehicle(null)}
-        />
-      );
-    }
-
     const path = location.pathname;
-    if (path === "/dashboard" || path === "/dashboard/") {
+    if (path === "/admin/dashboard" || path === "/admin/dashboard/") {
       return <Dashboard />;
-    } else if (path === "/dashboard/vehicles") {
-      return (
-        <Vehicles
-          extraVehicles={extraVehicles}
-          removedRegistrations={removedRegistrations}
-          onActionClick={handleActionClick}
-        />
-      );
-    } else if (path === "/dashboard/service-history") {
+    } else if (path === "/admin/dashboard/service-history") {
       return <ServiceHistory />;
-    } else if (path === "/dashboard/settings") {
-      return <Settings />;
     }
     return <Dashboard />;
   };
-
-  if (isOtpPending && loginMethod === "qr") {
-    return (
-      <div className="min-h-screen bg-[#F8FAFC]">
-        <LoginOTPModal />
-        
-        <div className="opacity-20 pointer-events-none blur-sm">
-           <DashNav currentPath={location.pathname} />
-           <div className="flex-1 min-w-0">
-             <TopDash onAddVehicle={() => {}} />
-           </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="bg-[#F8FAFC] flex">
@@ -391,20 +312,12 @@ export default function DashboardLayout() {
         <TopDash onAddVehicle={() => setShowAddVehicle(true)} />
         <main className="md:ml-44 xl:ml-70 px-3 xl:px-8 pb-3 xl:pb-6 pt-16 md:pt-12 xl:pt-18 min-h-screen flex flex-col">
           <div className="flex flex-col flex-1">
-            <div className="rounded-2xl p-2 pt-4 font-(--body) flex-1 flex flex-col">
+            <div className="rounded-2xl p-2 pt-8 font-(--body) flex-1 flex flex-col">
               {renderComponent()}
             </div>
           </div>
         </main>
       </div>
-
-      {removeVehicle && (
-        <RemoveVehicleModal
-          vehicle={removeVehicle}
-          onConfirm={handleVehicleRemoved}
-          onClose={() => setRemoveVehicle(null)}
-        />
-      )}
 
       {showLogoutModal && (
         <LogoutModal

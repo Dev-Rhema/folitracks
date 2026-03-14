@@ -12,7 +12,7 @@ export default function AuthLayout({
       <div className="flex-grow max-w-2xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20">
         {/* Title & Subtitle */}
         <div className="mb-8">
-          <h1
+          <h2
             className={
               titleClassName ||
               "text-3xl sm:text-4xl font-bold mb-3 text-center text-black"
@@ -20,7 +20,7 @@ export default function AuthLayout({
             style={{ fontFamily: "title" }}
           >
             {title}
-          </h1>
+          </h2> 
           <p
             className="text-center text-sm sm:text-base text-gray-600"
             style={{ fontFamily: "body" }}

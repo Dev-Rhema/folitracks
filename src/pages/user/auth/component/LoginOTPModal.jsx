@@ -1,8 +1,8 @@
 import { useState, useRef } from "react";
-import CTA from "../CTA";
-import { useVerifyLoginOTPMutation, useSendLoginOTPMutation } from "../../redux/api/authApiSlice";
-import usePost from "../../hooks/usePost";
-import { setOtpPending, setUserInfo } from "../../redux/slices/appSlice";
+import CTA from "../../../../components/CTA";
+import { useVerifyLoginOTPMutation, useSendLoginOTPMutation } from "../../../../redux/api/authApiSlice";
+import usePost from "../../../../hooks/usePost";
+import { setOtpPending, setUserInfo } from "../../../../redux/slices/appSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function LoginOTPModal() {

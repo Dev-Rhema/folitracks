@@ -13,11 +13,12 @@ export default function FormInputField({
         {label}
         {required && <span className="text-red-500">*</span>}
       </label>
+
       <input
         type={type}
         name={name}
         placeholder={placeholder}
-        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm ${
+        className={`w-full px-4 py-3 border rounded-lg bg-[#f1f5fb] focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm ${
           error ? "border-red-500" : "border-gray-300"
         }`}
         {...props}

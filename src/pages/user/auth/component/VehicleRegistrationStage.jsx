@@ -1,10 +1,10 @@
 import { ChevronLeft } from "lucide-react";
-import CTA from "../CTA";
-import FormInputField from "./FormInputField";
-import SearchableSelect from "./SearchableSelect";
+import CTA from "../../../../components/CTA";
+import FormInputField from "../../../../components/FormInputField";
+import SearchableSelect from "../../../../components/SearchableSelect";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { vehicleSchema } from "../../validation/authSchema";
+import { vehicleSchema } from "../../../../validation/authSchema";
 import { useSelector } from "react-redux";
 
 const VEHICLE_MAKES = [
@@ -151,7 +151,7 @@ export default function VehicleRegistrationStage({ onContinue, onBack, defaultVa
 
           {/* Continue Button */}
           <div className="pt-4">
-              <CTA name="Continue" color="blue" className="w-full"  type="submit"/>
+            <CTA name="Continue" color="blue" className="w-full" type="submit" />
           </div>
         </form>
 

@@ -4,10 +4,9 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
-import SearchableSelect from "../../../../components/auth/SearchableSelect";
-import FileUploadField from "../../../../components/auth/FileUploadField";
+import SearchableSelect from "../../../../components/SearchableSelect";
+import FileUploadField from "../../../../components/FileUploadField";
 import CTA from "../../../../components/CTA";
-
 import { vehicleFullSchema } from "../../../../validation/authSchema";
 import { useGetVehiclesQuery, useRegisterVehicleMutation } from "../../../../redux/api/vehicleApiSlice";
 import { useUploadDocumentMutation } from "../../../../redux/api/documentApiSlice";
@@ -15,7 +14,6 @@ import usePost from "../../../../hooks/usePost";
 import ConfirmAddVehicle from "./ConfirmAddVehicleModal";
 import { useGetUserQRQuery } from "../../../../redux/api/authApiSlice";
 import useDownloadQr from "../../../../hooks/useDownloadQr";
-import useGet from "../../../../hooks/useGet";
 
 
 // ─── Constants ───────────────────────────────────────────────────────────────
