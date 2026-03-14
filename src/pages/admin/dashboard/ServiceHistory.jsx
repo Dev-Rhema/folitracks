@@ -91,8 +91,6 @@ const renderVehicleCell = (row) => {
   );
 };
 
-// ─── Data ────────────────────────────────────────────────────────────────────
-
 const COMPLETED_DATA = [
   {
     sn: "01",
@@ -517,8 +515,6 @@ const OVERDUE_DATA = [
   },
 ];
 
-// ─── Tabs ─────────────────────────────────────────────────────────────────────
-
 const TABS = [
   {
     name: "Completed",
@@ -539,8 +535,6 @@ const TABS = [
     icon: AlertTriangle,
   },
 ];
-
-// ─── Column definitions ───────────────────────────────────────────────────────
 
 const COMPLETED_COLUMNS = [
   { key: "sn", label: "S/N" },
@@ -609,8 +603,6 @@ const OVERDUE_COLUMNS = [
   },
 ];
 
-// ─── Component ────────────────────────────────────────────────────────────────
-
 function ServiceHistory() {
   const [activeTab, setActiveTab] = useState("completed");
   const [searchTerm, setSearchTerm] = useState("");
@@ -635,7 +627,6 @@ function ServiceHistory() {
       default:
         data = COMPLETED_DATA;
     }
-    // Service Type filter (shared across tabs)
     const svcFilter = filterValues["Service Type"];
     if (svcFilter) {
       if (svcFilter.service) {

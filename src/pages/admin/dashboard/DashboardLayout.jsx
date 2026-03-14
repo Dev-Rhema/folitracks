@@ -5,16 +5,11 @@ import { Bell, Menu, X } from "lucide-react";
 import { useSelector } from "react-redux";
 import Dashboard from "./Dashboard";
 import ServiceHistory from "./ServiceHistory";
-import VehicleDetails from "./components/VehicleDetails";
 import LogoutModal from "./components/LogoutModal";
 import navIcon1 from "../../../assets/dashboardImgs/dashNavs/nav1.svg";
-import navIcon2 from "../../../assets/dashboardImgs/dashNavs/nav2.svg";
 import navIcon3 from "../../../assets/dashboardImgs/dashNavs/nav3.svg";
-import navIcon4 from "../../../assets/dashboardImgs/dashNavs/nav4.svg";
 import navIcon1Active from "../../../assets/dashboardImgs/dashNavs/active/nav1.svg";
-import navIcon2Active from "../../../assets/dashboardImgs/dashNavs/active/nav2.svg";
 import navIcon3Active from "../../../assets/dashboardImgs/dashNavs/active/nav3.svg";
-import navIcon4Active from "../../../assets/dashboardImgs/dashNavs/active/nav4.svg";
 import logoutIcon from "../../../assets/dashboardImgs/dashNavs/logout.svg";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -23,6 +18,7 @@ import { useSendLoginOTPMutation } from "../../../redux/api/authApiSlice";
 import usePost from "../../../hooks/usePost";
 import SearchBar from "./components/SearchBar";
 import CTA from "../../../components/CTA";
+import AddLog from "./components/add-log/AddLog";
 
 const DASHNAVS = [
   {
@@ -78,9 +74,8 @@ function MobileNavDrawer({ currentPath, open, onClose, onLogout }) {
         />
       )}
       <div
-        className={`md:hidden fixed top-0 left-0 h-full w-64 bg-white z-40 flex flex-col justify-between py-6 transition-transform duration-300 ${
-          open ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`md:hidden fixed top-0 left-0 h-full w-64 bg-white z-40 flex flex-col justify-between py-6 transition-transform duration-300 ${open ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <div className="flex flex-col gap-6">
           <div className="pl-6 pr-4 flex items-center justify-between">
@@ -97,11 +92,10 @@ function MobileNavDrawer({ currentPath, open, onClose, onLogout }) {
                   key={item.id}
                   to={item.path}
                   onClick={onClose}
-                  className={`flex items-center gap-3 py-3 pr-6 cursor-pointer transition-colors ${
-                    isActive
-                      ? "border-l-4 border-(--blue) pl-5 bg-[#E6E6F0]"
-                      : "pl-6 text-gray-500 hover:bg-gray-50"
-                  }`}
+                  className={`flex items-center gap-3 py-3 pr-6 cursor-pointer transition-colors ${isActive
+                    ? "border-l-4 border-(--blue) pl-5 bg-[#E6E6F0]"
+                    : "pl-6 text-gray-500 hover:bg-gray-50"
+                    }`}
                 >
                   <img
                     src={isActive ? item.activeImg : item.img}
@@ -141,11 +135,10 @@ function DashNav({ currentPath, onLogout }) {
               <Link
                 key={item.id}
                 to={item.path}
-                className={`flex  items-center gap-3 py-2 xl:py-3 pr-4 xl:pr-6 cursor-pointer transition-colors ${
-                  isActive
-                    ? "border-l-4 border-(--blue)  pl-4 xl:pl-5 bg-[#E6E6F0]"
-                    : "pl-4 xl:pl-6 text-gray-500 hover:bg-gray-50"
-                }`}
+                className={`flex  items-center gap-3 py-2 xl:py-3 pr-4 xl:pr-6 cursor-pointer transition-colors ${isActive
+                  ? "border-l-4 border-(--blue)  pl-4 xl:pl-5 bg-[#E6E6F0]"
+                  : "pl-4 xl:pl-6 text-gray-500 hover:bg-gray-50"
+                  }`}
               >
                 <img
                   src={isActive ? item.activeImg : item.img}
@@ -153,17 +146,13 @@ function DashNav({ currentPath, onLogout }) {
                   className="w-5 h-5 shrink-0"
                 />
                 <span
-                  className={`text-[13px] xl:text-[16px] ${
-                    isActive
-                      ? "text-(--blue) font-semibold"
-                      : "text-gray-500 font-medium"
-                  }`}
+                  className={`text-[13px] xl:text-[16px] ${isActive
+                    ? "text-(--blue) font-semibold"
+                    : "text-gray-500 font-medium"
+                    }`}
                 >
                   {item.name}
                 </span>
-                {/* {item.dot && (
-                  <span className="ml-auto w-2.5 h-2.5 bg-red-500 rounded-full shrink-0" />
-                )} */}
               </Link>
             );
           })}
@@ -216,27 +205,27 @@ export default function DashboardLayout() {
 
     // Handle external QR scan landing directly on dashboard
     if (emailFromUrl && !userInfo && !isOtpPending && !hasTriggeredRef.current) {
-        hasTriggeredRef.current = true;
-        const handleExternalScan = async () => {
-            try {
-                const res = await sendLoginOTP({ email: emailFromUrl }, "Verification code sent to your email!");
-                if (res.status === 200 || res.status == true) {
-                    dispatch(setOtpPending({ 
-                        isOtpPending: true, 
-                        loginMethod: "qr",
-                        otpEmail: emailFromUrl
-                    }));
-                } else {
-                    // If API fails, redirect to home
-                    navigate("/");
-                }
-            } catch (err) {
-                console.error("External Scan landing error:", err);
-                navigate("/");
-            }
-        };
-        handleExternalScan();
-        return; // Prevent immediate redirect
+      hasTriggeredRef.current = true;
+      const handleExternalScan = async () => {
+        try {
+          const res = await sendLoginOTP({ email: emailFromUrl }, "Verification code sent to your email!");
+          if (res.status === 200 || res.status == true) {
+            dispatch(setOtpPending({
+              isOtpPending: true,
+              loginMethod: "qr",
+              otpEmail: emailFromUrl
+            }));
+          } else {
+            // If API fails, redirect to home
+            navigate("/");
+          }
+        } catch (err) {
+          console.error("External Scan landing error:", err);
+          navigate("/");
+        }
+      };
+      handleExternalScan();
+      return; // Prevent immediate redirect
     }
 
     // Normal security guard: if no user and no pending OTP, kick back to login
@@ -245,43 +234,26 @@ export default function DashboardLayout() {
     }
   }, [userInfo, isOtpPending, navigate, location.search, dispatch, sendLoginOTP]);
 
-  const [showAddVehicle, setShowAddVehicle] = useState(false);
+  const [showAddLog, setShowAddLog] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [viewVehicle, setViewVehicle] = useState(null);
-  const [editVehicle, setEditVehicle] = useState(null);
-
-  useEffect(() => {
-    setShowAddVehicle(false);
-    setViewVehicle(null);
-    setEditVehicle(null);
-  }, [location.pathname]);
-
-  const [removeVehicle, setRemoveVehicle] = useState(null);
-
 
   const handleActionClick = (row, action) => {
     if (action === "view") setViewVehicle(row);
-    if (action === "edit") setEditVehicle(row);
-    if (action === "remove") setRemoveVehicle(row);
   };
 
   const renderComponent = () => {
-    if (viewVehicle) {
+    if (showAddLog) {
       return (
-        <VehicleDetails
-          vehicle={viewVehicle}
-          onClose={() => setViewVehicle(null)}
-          onEdit={() => {
-            const v = viewVehicle;
-            setViewVehicle(null);
-            setEditVehicle(v);
+        <AddLog
+          onClose={() => setShowAddLog(false)}
+          onLogAdded={(v) => {
+            // handleLogAdded(v);
           }}
-          onRemove={() => setRemoveVehicle(viewVehicle)}
         />
       );
     }
-
     const path = location.pathname;
     if (path === "/admin/dashboard" || path === "/admin/dashboard/") {
       return <Dashboard />;
@@ -291,10 +263,15 @@ export default function DashboardLayout() {
     return <Dashboard />;
   };
 
+  useEffect(() => {
+    setShowAddLog(false);
+    setViewVehicle(null);
+  }, [location.pathname]);
+
   return (
     <div className="bg-[#F8FAFC] flex">
       <MobileHeader
-        onAddVehicle={() => setShowAddVehicle(true)}
+        onAddServiceHistory={() => setShowAddLog(true)}
         onOpenNav={() => setMobileNavOpen(true)}
       />
       <MobileNavDrawer
@@ -309,10 +286,10 @@ export default function DashboardLayout() {
       </div>
 
       <div className="flex-1 min-w-0 overflow-hidden">
-        <TopDash onAddVehicle={() => setShowAddVehicle(true)} />
+        <TopDash onAddServiceHistory={() => setShowAddLog(true)} />
         <main className="md:ml-44 xl:ml-70 px-3 xl:px-8 pb-3 xl:pb-6 pt-16 md:pt-12 xl:pt-18 min-h-screen flex flex-col">
           <div className="flex flex-col flex-1">
-            <div className="rounded-2xl p-2 pt-8 font-(--body) flex-1 flex flex-col">
+            <div className="rounded-2xl pt-8 font-(--body) flex-1 flex flex-col">
               {renderComponent()}
             </div>
           </div>

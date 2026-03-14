@@ -424,6 +424,7 @@ export default function VehicleDetails({ vehicle, onClose, onEdit, onRemove }) {
             </p>
           </div>
         </div>
+
         <div className="flex items-center gap-4 xl:gap-6">
           <button
             onClick={() => onEdit?.(vehicle)}
@@ -442,12 +443,11 @@ export default function VehicleDetails({ vehicle, onClose, onEdit, onRemove }) {
         </div>
       </div>
 
-      {/* Tabbed card */}
       <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden flex-1">
-        {/* Tab bar */}
         <div className="flex border-b px-4 border-gray-100  overflow-x-auto">
           {TABS.map(({ key, label, icon: Icon }) => {
             const active = activeTab === key;
+
             return (
               <button
                 key={key}
