@@ -6,11 +6,18 @@ const vehicleApiSlice = generalApiSlice.injectEndpoints({
       query: (body) => ({
         url: "/vehicle/register",
         method: "POST",
-        body, // body is now a JSON object containing base64 strings for files
+        body,
+      }),
+    }),
+
+    getVehicles: builder.query({
+     query: () => ({
+        url: "/vehicle",
+        method: "GET",
       }),
     }),
   }),
   overrideExisting: false,
 });
 
-export const { useRegisterVehicleMutation } = vehicleApiSlice;
+export const { useRegisterVehicleMutation, useGetVehiclesQuery } = vehicleApiSlice;

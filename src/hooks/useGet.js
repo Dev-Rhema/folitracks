@@ -2,11 +2,7 @@ import { useEffect } from "react";
 import { toast } from "react-toastify";
 
 const useGet = (queryHook, args = null, options = {}) => {
-  if (!queryHook) {
-    throw new Error("queryHook is required for useGet");
-  }
-
-  const { data, error, isLoading, isFetching, refetch } = queryHook(args, options);
+  const { data, error, isLoading, isFetching, isUninitialized, refetch } = queryHook(args, options);
 
   useEffect(() => {
     if (error) {
@@ -20,9 +16,9 @@ const useGet = (queryHook, args = null, options = {}) => {
   }, [error]);
 
   return {
-    data: data?.data,
+    data: data?.data !== undefined ? data.data : data,
     error,
-    loading: isLoading || isFetching,
+    loading: isLoading || isFetching || isUninitialized,
     refetch,
   };
 };

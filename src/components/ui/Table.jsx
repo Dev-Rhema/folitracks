@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import SearchBar from "../../pages/dashboard/components/SearchBar";
+import SearchBar from "../../pages/user/dashboard/components/SearchBar";
 
 function Table({
   columns,
@@ -16,6 +16,7 @@ function Table({
   onSearchChange,
   searchableFields,
   availableActions = ["view", "edit", "remove"],
+  emptyState = null,
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [internalSearchTerm, setInternalSearchTerm] = useState("");
@@ -268,10 +269,10 @@ function Table({
             ) : (
               <tr>
                 <td
-                  colSpan={columns.length + 1}
+                  colSpan={columns.length + (showActions ? 1 : 0)}
                   className="px-4 py-8 text-center text-gray-500 font-body"
                 >
-                  No data found
+                  {emptyState || "No data found"}
                 </td>
               </tr>
             )}

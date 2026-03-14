@@ -25,9 +25,7 @@ export default function SuccessStage({ onContinueDashboard }) {
       subtitle="Your account has been created successfully and your unique QR code has been automatically generated."
     >
       <div className="text-center">
-        {/* <div className="mb-6 flex justify-center">
-          <CheckCircle size={80} className="text-green-500" />
-        </div> */}
+      
 
         <div className="p-4 mb-8 inline-block">
           <div className="w-40 h-40 rounded flex items-center justify-center relative">

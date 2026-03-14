@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import ContactModal from "./components/ContactModal";
+import Navbar from "./pages/landing/components/Navbar";
+import ContactModal from "./pages/landing/components/ContactModal";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 

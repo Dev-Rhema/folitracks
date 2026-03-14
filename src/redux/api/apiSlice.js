@@ -19,10 +19,8 @@ const rawBaseQuery = fetchBaseQuery({
     const state = getState();
     const userInfo = state?.app?.userInfo;
 
-    console.log("User Info:", userInfo);
-    
     const token = userInfo?.authResponse?.accessToken || 
-                  userInfo?.accessToken 
+                  userInfo?.accessToken || userInfo?.token 
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
     }

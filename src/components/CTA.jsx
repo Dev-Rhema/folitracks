@@ -6,6 +6,7 @@ function CTA({
   disabled = false,
   className = "",
   variant = "filled",
+  isLoading = false,
 }) {
   const isOutline = variant === "outline";
 
@@ -19,9 +20,10 @@ function CTA({
         backgroundColor: isOutline ? "white" : `var(--${color})`,
         color: isOutline ? `var(--${color})` : "var(--white)",
         border: isOutline ? `1px solid var(--${color})` : "none",
+        opacity: isLoading ? 0.5 : 1,
       }}
     >
-      {name}
+      {isLoading ? "Loading..." : name}
     </button>
   );
 }

@@ -11,9 +11,9 @@ export const BRAND_LOGOS = {
 };
 
 export const getBrandLogo = (vehicleName) => {
-  const lower = vehicleName.toLowerCase();
-  for (const brand of Object.keys(BRAND_LOGOS)) {
-    if (lower.startsWith(brand)) return BRAND_LOGOS[brand];
+  const lower = vehicleName?.toLowerCase();
+  for (const brand of Object?.keys(BRAND_LOGOS)) {
+    if (lower?.startsWith(brand)) return BRAND_LOGOS[brand];
   }
   return null;
 };

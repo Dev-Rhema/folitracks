@@ -3,14 +3,16 @@ import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import App from "./App.jsx";
-import Home from "./pages/Home.jsx";
-import About from "./pages/About.jsx";
-import Services from "./pages/Services.jsx";
-import Terms from "./pages/legal/Terms.jsx";
-import Policy from "./pages/legal/Policy.jsx";
-import Auth from "./pages/auth/Auth.jsx";
-import Login from "./pages/auth/Login.jsx";
-import DashboardLayout from "./pages/dashboard/DashboardLayout.jsx";
+import Home from "./pages/landing/Home.jsx";
+import About from "./pages/landing/About.jsx";
+import Services from "./pages/landing/Services.jsx";
+import Terms from "./pages/landing/Terms.jsx";
+import Policy from "./pages/landing/Policy.jsx";
+import Auth from "./pages/user/auth/Auth.jsx";
+import Login from "./pages/user/auth/Login.jsx";
+import UserDashboardLayout from "./pages/user/dashboard/DashboardLayout.jsx";
+import AdminLogin from "./pages/admin/auth/Login.jsx";
+import AdminDashboardLayout from "./pages/admin/dashboard/DashboardLayout.jsx";
 
 const router = createBrowserRouter([
   {
@@ -45,27 +47,45 @@ const router = createBrowserRouter([
         path: "login",
         element: <Login />,
       },
+      {
+        path: "admin/login",
+        element: <AdminLogin />,
+      },
     ],
   },
   {
     path: "dashboard",
-    element: <DashboardLayout />,
+    element: <UserDashboardLayout />,
     children: [
       {
         index: true,
-        element: <DashboardLayout />,
+        element: <UserDashboardLayout />,
       },
       {
         path: "vehicles",
-        element: <DashboardLayout />,
+        element: <UserDashboardLayout />,
       },
       {
         path: "service-history",
-        element: <DashboardLayout />,
+        element: <UserDashboardLayout />,
       },
       {
         path: "settings",
-        element: <DashboardLayout />,
+        element: <UserDashboardLayout />,
+      },
+    ],
+  },
+  {
+    path: "admin/dashboard",
+    element: <AdminDashboardLayout />,
+    children: [
+      {
+        index: true,
+        element: <AdminDashboardLayout />,
+      },
+      {
+        path: "service-history",
+        element: <AdminDashboardLayout />,
       },
     ],
   },
