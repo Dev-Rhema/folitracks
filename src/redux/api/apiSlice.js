@@ -35,7 +35,11 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 
   if (result?.error && result.error.status === 401) {
     api.dispatch(logOut());
-    window.location.replace("/login");
+    if (window.location.pathname.includes("/admin")) {
+      window.location.replace("/admin/login");
+    } else {
+      window.location.replace("/login");
+    }
   }
 
   return result;

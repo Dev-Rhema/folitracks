@@ -6,13 +6,15 @@ const usePost = (mutationHook) => {
   const postData = async (body, successMessage = "Operation successful!") => {
     try {
       const result = await trigger(body).unwrap();
+
+      console.log(result);
       
-      if (result) {
-        toast.success(result?.message || successMessage);
-      }
+      toast.success(result?.message || successMessage);
       return result;
     } catch (err) {
       const message = err?.data?.message;
+      console.log(err);
+      console.log(message);
       if (Array.isArray(message)) {
         message.forEach((msg) => toast.error(msg));
       } else {

@@ -272,27 +272,14 @@ export default function DashboardLayout() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [viewVehicle, setViewVehicle] = useState(null);
   const [editVehicle, setEditVehicle] = useState(null);
+  const [removeVehicle, setRemoveVehicle] = useState(null);
 
   useEffect(() => {
     setShowAddVehicle(false);
     setViewVehicle(null);
     setEditVehicle(null);
   }, [location.pathname]);
-  const [removeVehicle, setRemoveVehicle] = useState(null);
-  const [extraVehicles, setExtraVehicles] = useState([]);
-  const [removedRegistrations, setRemovedRegistrations] = useState([]);
 
-  const handleVehicleAdded = (vehicleData) => {
-    setExtraVehicles((prev) => [vehicleData, ...prev]);
-  };
-
-  const handleVehicleRemoved = (vehicle) => {
-    setRemovedRegistrations((prev) => [...prev, vehicle.registrationNumber]);
-    setExtraVehicles((prev) =>
-      prev.filter((v) => v.registrationNumber !== vehicle.registrationNumber),
-    );
-    setViewVehicle(null);
-  };
 
   const handleActionClick = (row, action) => {
     if (action === "view") setViewVehicle(row);
@@ -342,8 +329,6 @@ export default function DashboardLayout() {
     } else if (path === "/dashboard/vehicles") {
       return (
         <Vehicles
-          extraVehicles={extraVehicles}
-          removedRegistrations={removedRegistrations}
           onActionClick={handleActionClick}
         />
       );
@@ -401,7 +386,6 @@ export default function DashboardLayout() {
       {removeVehicle && (
         <RemoveVehicleModal
           vehicle={removeVehicle}
-          onConfirm={handleVehicleRemoved}
           onClose={() => setRemoveVehicle(null)}
         />
       )}
@@ -409,7 +393,7 @@ export default function DashboardLayout() {
       {showLogoutModal && (
         <LogoutModal
           onCancel={() => setShowLogoutModal(false)}
-          onConfirm={() => { dispatch(logOut()); navigate("/"); }}
+          onConfirm={() => { dispatch(logOut()); }}
         />
       )}
     </div>

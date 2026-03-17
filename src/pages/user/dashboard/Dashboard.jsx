@@ -5,9 +5,9 @@ import ServiceHistoryCard from "../../../components/ui/ServiceHistoryCard";
 import StatusBadge from "../../../components/ui/StatusBadge";
 import { getBrandLogo } from "../../../utils/vehicleUtils";
 import { getServiceIcon } from "../../../utils/serviceUtils";
-import countImg1 from "../../../assets/dashboardImgs/dashHome/Desktop/dashCount1.svg";
-import countImg2 from "../../../assets/dashboardImgs/dashHome/Desktop/dashCount2.svg";
-import countImg3 from "../../../assets/dashboardImgs/dashHome/Desktop/dashCount3.svg";
+import countImg1 from "../../../assets/dashboardImgs/dashHome/dashCount1.svg";
+import countImg2 from "../../../assets/dashboardImgs/dashHome/dashCount2.svg";
+import countImg3 from "../../../assets/dashboardImgs/dashHome/dashCount3.svg";
 import { useSelector } from "react-redux";
 import { useGetVehiclesQuery } from "../../../redux/api/vehicleApiSlice";
 import { useGetServiceHistoryQuery } from "../../../redux/api/serviceHistoryApiSlice";
@@ -139,10 +139,6 @@ export default function Dashboard() {
   const { data: vehicles, isLoading: vehiclesLoading } = useGet(useGetVehiclesQuery)
   const { data: serviceHistories, isLoading: loadingServiceHistories } = useGet(useGetServiceHistoryQuery)
 
-  console.log(vehicles)
-  console.log(serviceHistories?.serviceHistory)
-  console.log(loadingServiceHistories)
-
   const DASHCOUNT = [
     { id: 1, name: "Number of Vehicles", num: vehicles?.vehicles?.length, img: countImg1 },
     { id: 2, name: "Upcoming Services", num: 0, img: countImg2 },
@@ -255,7 +251,6 @@ export default function Dashboard() {
                 rowsPerPage={4}
                 showSearch={false}
                 showPagination={false}
-                showActions={false}
               />) : (<>
 
                 <EmptyState

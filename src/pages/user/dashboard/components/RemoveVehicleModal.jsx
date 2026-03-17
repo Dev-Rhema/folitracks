@@ -1,12 +1,20 @@
 import { useState } from "react";
 import { HelpCircle, CheckCircle } from "lucide-react";
+import usePost from "../../../../hooks/usePost";
+import { useDeleteVehicleMutation } from "../../../../redux/api/vehicleApiSlice";
+import CTA from "../../../../components/CTA";
 
-export default function RemoveVehicleModal({ vehicle, onClose, onConfirm }) {
+export default function RemoveVehicleModal({ vehicle, onClose }) {
   const [removed, setRemoved] = useState(false);
+  const { postData: deleteVehicle, isLoading } = usePost(useDeleteVehicleMutation);
 
-  const handleRemove = () => {
-    onConfirm(vehicle);
-    setRemoved(true);
+
+  const handleRemove = async () => {
+    const res = await deleteVehicle(vehicle?._id || vehicle?.id);
+
+    if (res.status === 200) {
+      setRemoved(true);
+    }
   };
 
   return (
@@ -22,12 +30,12 @@ export default function RemoveVehicleModal({ vehicle, onClose, onConfirm }) {
           <p className="text-gray-400 text-sm mb-8">
             {vehicle.vehicle} has been deleted from your account.
           </p>
-          <button
+
+          <CTA
+            text="Close"
             onClick={onClose}
-            className="w-full py-4 bg-(--blue) text-white rounded-xl text-sm font-semibold hover:opacity-90 transition cursor-pointer"
-          >
-            Close
-          </button>
+            color="blue"
+          />
         </div>
       ) : (
         <div className="bg-white rounded-2xl p-8 w-full max-w-md mx-4">
@@ -43,18 +51,20 @@ export default function RemoveVehicleModal({ vehicle, onClose, onConfirm }) {
             undone. Please confirm to continue.
           </p>
           <div className="flex gap-3 justify-end">
-            <button
+            <CTA
+              name="Cancel"
               onClick={onClose}
-              className="px-8 py-3 border-1 border-(--blue) text-(--blue) rounded-md text-sm font-semibold hover:bg-gray-50 transition cursor-pointer"
-            >
-              Cancel
-            </button>
-            <button
+              color="blue"
+              variant="outline"
+            />
+
+            <CTA
+              name="Remove"
               onClick={handleRemove}
-              className="px-8 py-3 bg-red-500 text-white rounded-md text-sm font-semibold hover:bg-red-600 transition cursor-pointer"
-            >
-              Remove
-            </button>
+              color="red"
+              isLoading={isLoading}
+
+            />
           </div>
         </div>
       )}

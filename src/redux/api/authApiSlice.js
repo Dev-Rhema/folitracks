@@ -2,6 +2,28 @@ import { generalApiSlice } from "./apiSlice";
 
 const authApiSlice = generalApiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    adminLogin: builder.mutation({
+      query: (body) => ({
+        url: "/auth/admin/login",
+        method: "POST",
+        body,
+      })
+    }),
+
+    logoutUser: builder.mutation({
+      query: () => ({
+        url: "/auth/user/logout",
+        method: "POST",
+      })
+    }),
+
+    logoutAdmin: builder.mutation({
+      query: () => ({
+        url: "/auth/admin/logout",
+        method: "POST",
+      })
+    }),
+
     loginWithEmail: builder.mutation({
       query: (body) => ({
         url: "/auth/login",
@@ -60,4 +82,4 @@ const authApiSlice = generalApiSlice.injectEndpoints({
   overrideExisting: false
 });
 
-export const { useLoginWithEmailMutation, useRegisterUserMutation, useVerifyUserEmailMutation, useGetUserQRQuery, useLoginByQrUploadMutation, useSendLoginOTPMutation, useVerifyLoginOTPMutation } = authApiSlice;
+export const { useAdminLoginMutation, useLoginWithEmailMutation, useRegisterUserMutation, useVerifyUserEmailMutation, useGetUserQRQuery, useLoginByQrUploadMutation, useSendLoginOTPMutation, useVerifyLoginOTPMutation, useLogoutUserMutation, useLogoutAdminMutation } = authApiSlice;

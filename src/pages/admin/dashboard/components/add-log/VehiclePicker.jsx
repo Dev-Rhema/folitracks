@@ -6,7 +6,7 @@ export default function VehiclePicker({ vehicles = [], value, onChange }) {
   const [query, setQuery] = useState("");
 
   const filtered = vehicles.filter((v) => {
-    const label = `${v.make} ${v.vehicleModel} ${v.yearOfManufacture} ${v.plateNumber} ${v.ownerName || ""}`.toLowerCase();
+    const label = `${v.make} ${v.vehicleModel} ${v.yearOfManufacture} ${v.plateNumber} ${v.fullName || ""}`.toLowerCase();
     return label.includes(query.toLowerCase());
   });
 
@@ -44,7 +44,7 @@ export default function VehiclePicker({ vehicles = [], value, onChange }) {
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+        <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden max-w-[480px]">
           <div className="p-2 border-b border-gray-100">
             <input
               autoFocus

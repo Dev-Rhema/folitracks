@@ -5,7 +5,7 @@ import PasswordInputField from "../../../components/PasswordInputField";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../../../validation/authSchema";
-import { useLoginWithEmailMutation, useSendLoginOTPMutation } from "../../../redux/api/authApiSlice";
+import { useLoginWithEmailMutation, useSendLoginOTPMutation, useAdminLoginMutation } from "../../../redux/api/authApiSlice";
 import usePost from "../../../hooks/usePost";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -15,8 +15,6 @@ import { setUserInfo } from "../../../redux/slices/appSlice";
 export default function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const { postData: sendLoginOTP, isLoading: isSendingOTP } = usePost(useSendLoginOTPMutation);
 
   const {
     register,
@@ -32,13 +30,13 @@ export default function Login() {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const { postData: loginWithEmail, isLoading: isLoggingIn } = usePost(useLoginWithEmailMutation);
+  const { postData: adminLogin, isLoading: isLoggingIn } = usePost(useAdminLoginMutation);
 
   const onSubmit = async (data) => {
-    const res = await loginWithEmail(data);
+    const res = await adminLogin(data);
     if (res.status === 200 || res.status == true) {
       dispatch(setUserInfo(res.data));
-      navigate("/dashboard");
+      navigate("/admin/dashboard");
     }
   };
 

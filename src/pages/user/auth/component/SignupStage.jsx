@@ -198,15 +198,14 @@ export default function SignupStage({ onContinue, onScanQR, defaultValues }) {
             </div>
           </div>
 
-          {/* Continue Button */}
           <div className="pt-4">
-            <button type="submit" className="w-full" disabled={isRegistering}>
-              <CTA
-                name={isRegistering ? "Creating Account..." : "Continue"}
-                color="blue"
-                className="w-full"
-              />
-            </button>
+            <CTA
+              name={isRegistering ? "Creating Account..." : "Continue"}
+              color="blue"
+              className="w-full"
+              type="submit"
+              disabled={isRegistering}
+            />
           </div>
         </form>
 

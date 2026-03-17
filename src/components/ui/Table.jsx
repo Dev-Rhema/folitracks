@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import SearchBar from "../../pages/user/dashboard/components/SearchBar";
 
@@ -7,33 +7,16 @@ function Table({
   data,
   rowsPerPage = 10,
   title = "",
-  onActionClick,
   showSearch = false,
   showPagination = true,
-  showActions = true,
   searchPlaceholder = "Search...",
   searchTerm = "",
   onSearchChange,
   searchableFields,
-  availableActions = ["view", "edit", "remove"],
   emptyState = null,
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [internalSearchTerm, setInternalSearchTerm] = useState("");
-  const [openMenuIndex, setOpenMenuIndex] = useState(null);
-
-  // Close menu on outside click
-  useEffect(() => {
-    if (openMenuIndex === null) return;
-    const close = () => setOpenMenuIndex(null);
-    document.addEventListener("click", close);
-    return () => document.removeEventListener("click", close);
-  }, [openMenuIndex]);
-
-  // Close menu on page change
-  useEffect(() => {
-    setOpenMenuIndex(null);
-  }, [currentPage]);
 
   // Use external or internal search term
   const activeSearchTerm =
@@ -142,23 +125,20 @@ function Table({
       )}
 
       {/* Table */}
-      <div className="w-full border rounded-2xl bg-white overflow-x-auto">
+      <div className="w-full border rounded-2xl bg-white">
         <table className="w-full min-w-150">
           <thead className="bg-gray-50 border-b">
             <tr>
               {columns.map((column) => (
                 <th
                   key={column.key}
-                  className="px-3 py-2 xl:px-4 xl:py-3 text-left text-xs xl:text-sm font-semibold text-[#3B82F6] font-title"
+                  className={`px-3 py-2 xl:px-4 xl:py-3 text-xs xl:text-sm font-semibold text-[#3B82F6] font-title ${
+                    column.className || "text-left"
+                  }`}
                 >
                   {column.label}
                 </th>
               ))}
-              {showActions && (
-                <th className="px-3 py-2 xl:px-4 xl:py-3 text-right text-xs xl:text-sm font-semibold text-[#3B82F6] font-title">
-                  Action
-                </th>
-              )}
             </tr>
           </thead>
           <tbody className="font-body">
@@ -171,105 +151,19 @@ function Table({
                   {columns.map((column) => (
                     <td
                       key={column.key}
-                      className="px-3 py-2 xl:px-4 xl:py-2.5 text-xs xl:text-sm font-body"
+                      className={`px-3 py-2 xl:px-4 xl:py-2.5 text-xs xl:text-sm font-body ${
+                        column.className || ""
+                      }`}
                     >
                       {column.render ? column.render(row) : row[column.key]}
                     </td>
                   ))}
-                  {showActions && (
-                    <td className="px-3 py-2 xl:px-4 xl:py-2.5 text-xs xl:text-sm text-right font-body">
-                      <div className="relative inline-block">
-                        <button
-                          className="p-1 hover:bg-gray-200 rounded-full transition inline-flex items-center justify-center cursor-pointer"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setOpenMenuIndex(
-                              openMenuIndex === rowIndex ? null : rowIndex,
-                            );
-                          }}
-                        >
-                          <svg
-                            className="w-5 h-5"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <circle cx="12" cy="5" r="2" />
-                            <circle cx="12" cy="12" r="2" />
-                            <circle cx="12" cy="19" r="2" />
-                          </svg>
-                        </button>
-
-                        {openMenuIndex === rowIndex && (
-                          <div
-                            className="absolute top-[calc(100%+4px)] right-0 z-50 w-44 bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            {availableActions.includes("view") && (
-                              <button
-                                className="w-full text-left px-5 py-3 text-sm text-gray-800 hover:bg-gray-50 border-b border-gray-100 font-body cursor-pointer"
-                                onClick={() => {
-                                  onActionClick?.(row, "view");
-                                  setOpenMenuIndex(null);
-                                }}
-                              >
-                                View Details
-                              </button>
-                            )}
-                            {availableActions.includes("set_reminder") && (
-                              <button
-                                className="w-full text-left px-5 py-3 text-sm text-gray-800 hover:bg-gray-50 border-b border-gray-100 font-body cursor-pointer"
-                                onClick={() => {
-                                  onActionClick?.(row, "set_reminder");
-                                  setOpenMenuIndex(null);
-                                }}
-                              >
-                                Set Reminder
-                              </button>
-                            )}
-                            {availableActions.includes("reschedule") && (
-                              <button
-                                className="w-full text-left px-5 py-3 text-sm text-gray-800 hover:bg-gray-50 border-b border-gray-100 font-body cursor-pointer"
-                                onClick={() => {
-                                  onActionClick?.(row, "reschedule");
-                                  setOpenMenuIndex(null);
-                                }}
-                              >
-                                Reschedule
-                              </button>
-                            )}
-                            {availableActions.includes("edit") && (
-                              <button
-                                className="w-full text-left px-5 py-3 text-sm text-[gray-800] hover:bg-gray-50 border-b border-gray-100 font-body cursor-pointer"
-                                onClick={() => {
-                                  onActionClick?.(row, "edit");
-                                  setOpenMenuIndex(null);
-                                }}
-                              >
-                                Edit Details
-                              </button>
-                            )}
-                            {availableActions.includes("remove") && (
-                              <button
-                                className="w-full text-left px-5 py-3 text-sm text-red-500 hover:bg-gray-50 font-body cursor-pointer"
-                                onClick={() => {
-                                  onActionClick?.(row, "remove");
-                                  setOpenMenuIndex(null);
-                                }}
-                              >
-                                Remove
-                              </button>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </td>
-                  )}
                 </tr>
               ))
             ) : (
               <tr>
                 <td
-                  colSpan={columns.length + (showActions ? 1 : 0)}
+                  colSpan={columns.length}
                   className="px-4 py-8 text-center text-gray-500 font-body"
                 >
                   {emptyState || "No data found"}

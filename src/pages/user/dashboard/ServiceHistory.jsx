@@ -11,6 +11,7 @@ import SetReminderModal from "./components/SetReminderModal";
 import SearchBar from "./components/SearchBar";
 import DashHeader from "./components/DashHeader";
 import { getServiceIcon } from "../../../utils/serviceUtils";
+import TableActionMenu from "../../../components/ui/TableActionMenu";
 
 const REPAIR_SERVICES = [
   "Brake Pad",
@@ -547,8 +548,25 @@ const TABS = [
 
 const COMPLETED_COLUMNS = [
   { key: "sn", label: "S/N" },
-  { key: "service", label: "Service", render: renderServiceCell },
-  { key: "vehicle", label: "Vehicle", render: renderVehicleCell },
+  { key: "service", label: "Service", render: (row) => (
+    <div className="flex items-center gap-2 lg:gap-3">
+      <img
+        src={getServiceIcon(row.service)}
+        alt={row.service}
+        className="w-7 h-7 rounded-full object-cover shrink-0"
+      />
+      <span>{row.service}</span>
+    </div>
+  ) },
+  { key: "vehicle", label: "Vehicle", render: (row) => {
+    const lines = row.vehicle.split("\n");
+    return (
+      <div>
+        <div className="font-medium text-gray-800 text-sm">{lines[0]}</div>
+        {lines[1] && <div className="text-xs text-gray-400">{lines[1]}</div>}
+      </div>
+    );
+  } },
   { key: "date", label: "Date" },
   { key: "cost", label: "Cost" },
   { key: "serviceProvider", label: "Service Provider" },
@@ -556,8 +574,25 @@ const COMPLETED_COLUMNS = [
 
 const UPCOMING_COLUMNS = [
   { key: "sn", label: "S/N" },
-  { key: "service", label: "Service", render: renderServiceCell },
-  { key: "vehicle", label: "Vehicle", render: renderVehicleCell },
+  { key: "service", label: "Service", render: (row) => (
+    <div className="flex items-center gap-2 lg:gap-3">
+      <img
+        src={getServiceIcon(row.service)}
+        alt={row.service}
+        className="w-7 h-7 rounded-full object-cover shrink-0"
+      />
+      <span>{row.service}</span>
+    </div>
+  ) },
+  { key: "vehicle", label: "Vehicle", render: (row) => {
+    const lines = row.vehicle.split("\n");
+    return (
+      <div>
+        <div className="font-medium text-gray-800 text-sm">{lines[0]}</div>
+        {lines[1] && <div className="text-xs text-gray-400">{lines[1]}</div>}
+      </div>
+    );
+  } },
   { key: "lastServiceDate", label: "Last Service Date" },
   {
     key: "nextServiceDate",
@@ -590,8 +625,25 @@ const UPCOMING_COLUMNS = [
 
 const OVERDUE_COLUMNS = [
   { key: "sn", label: "S/N" },
-  { key: "service", label: "Service", render: renderServiceCell },
-  { key: "vehicle", label: "Vehicle", render: renderVehicleCell },
+  { key: "service", label: "Service", render: (row) => (
+    <div className="flex items-center gap-2 lg:gap-3">
+      <img
+        src={getServiceIcon(row.service)}
+        alt={row.service}
+        className="w-7 h-7 rounded-full object-cover shrink-0"
+      />
+      <span>{row.service}</span>
+    </div>
+  ) },
+  { key: "vehicle", label: "Vehicle", render: (row) => {
+    const lines = row.vehicle.split("\n");
+    return (
+      <div>
+        <div className="font-medium text-gray-800 text-sm">{lines[0]}</div>
+        {lines[1] && <div className="text-xs text-gray-400">{lines[1]}</div>}
+      </div>
+    );
+  } },
   { key: "lastServiceDate", label: "Last Service Date" },
   {
     key: "missedServiceDate",
@@ -691,14 +743,49 @@ function ServiceHistory() {
   };
 
   const getTabColumns = () => {
+    let baseColumns;
     switch (activeTab) {
       case "upcoming":
-        return UPCOMING_COLUMNS;
+        baseColumns = UPCOMING_COLUMNS;
+        break;
       case "overdue":
-        return OVERDUE_COLUMNS;
+        baseColumns = OVERDUE_COLUMNS;
+        break;
       default:
-        return COMPLETED_COLUMNS;
+        baseColumns = COMPLETED_COLUMNS;
     }
+
+    const actionColumn = {
+      key: "actions",
+      label: "Action",
+      className: "text-right",
+      render: (row) => {
+        const actions = [
+          {
+            label: "View Details",
+            onClick: (r) => handleActionClick(r, "view"),
+          },
+        ];
+
+        if (activeTab !== "completed") {
+          actions.push({
+            label: "Reschedule",
+            onClick: (r) => handleActionClick(r, "reschedule"),
+          });
+        }
+
+        if (activeTab === "upcoming") {
+          actions.push({
+            label: "Set Reminder",
+            onClick: (r) => handleActionClick(r, "set_reminder"),
+          });
+        }
+
+        return <TableActionMenu actions={actions} row={row} />;
+      },
+    };
+
+    return [...baseColumns, actionColumn];
   };
 
   const handleActionClick = (row, action) => {
@@ -865,7 +952,6 @@ function ServiceHistory() {
                 columns={getTabColumns()}
                 data={getTabData()}
                 rowsPerPage={10}
-                onActionClick={handleActionClick}
                 showSearch={false}
                 searchTerm={searchTerm}
                 searchableFields={[
@@ -878,13 +964,6 @@ function ServiceHistory() {
                   "nextServiceSub",
                   "missedServiceSub",
                 ]}
-                availableActions={
-                  activeTab === "completed"
-                    ? ["view"]
-                    : activeTab === "overdue"
-                      ? ["view", "reschedule"]
-                      : ["view", "set_reminder", "reschedule"]
-                }
               />
             </div>
           </div>

@@ -76,8 +76,7 @@ const appSlice = createSlice({
         localStorage.removeItem("loginMethod");
         localStorage.removeItem("otpEmail");
       }
-      // redirect to login page
-      window.location.href = "/";
+      window.location.pathname.includes("admin") ? window.location.href = "/admin/login" : window.location.href = "/login";
     },
   },
 });
@@ -86,10 +85,6 @@ export default appSlice.reducer;
 export const {
   setAppLoading,
   setUserInfo,
-  setCredentials,
   logOut,
-  storeDashboardData,
-  storeAnalyticsData,
-  setSessionExpiring,
   setOtpPending,
 } = appSlice.actions;

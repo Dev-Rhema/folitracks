@@ -2,9 +2,16 @@ import { generalApiSlice } from "./apiSlice";
 
 const serviceHistoryApiSlice = generalApiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    addServiceHistory: builder.mutation({
+    adminGetServiceHistory: builder.query({
+     query: () => ({
+        url: "/admin/service-history",
+        method: "GET",
+      }),
+    }), 
+
+    adminAddServiceHistory: builder.mutation({
       query: (body) => ({
-        url: "/service-history",
+        url: "/admin/service-history/create",
         method: "POST",
         body,
       }),
@@ -20,4 +27,4 @@ const serviceHistoryApiSlice = generalApiSlice.injectEndpoints({
   overrideExisting: false,
 });
 
-export const { useAddServiceHistoryMutation, useGetServiceHistoryQuery } = serviceHistoryApiSlice;
+export const { useAdminGetServiceHistoryQuery, useAdminAddServiceHistoryMutation, useGetServiceHistoryQuery } = serviceHistoryApiSlice;

@@ -433,6 +433,7 @@ export default function VehicleDetails({ vehicle, onClose, onEdit, onRemove }) {
             <Pencil size={15} />
             <span className="text-sm font-semibold">Edit Details</span>
           </button>
+          
           <button
             onClick={() => onRemove?.(vehicle)}
             className="flex items-center gap-2 text-(--red) hover:opacity-70 transition cursor-pointer"

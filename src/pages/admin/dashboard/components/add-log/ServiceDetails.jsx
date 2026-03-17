@@ -20,7 +20,7 @@ export default function ServiceDetails({
   onClose,
 }) {
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate style={{ fontFamily: "body" }}>
+    <form onSubmit={handleSubmit(onSubmit)} style={{ fontFamily: "body" }}>
       <div className="flex items-start justify-between mb-4">
         <div>
           <p className="font-semibold text-gray-900">Step 2: Enter Service Details</p>
@@ -71,6 +71,7 @@ export default function ServiceDetails({
             />
           )}
         />
+
         <Controller
           name="service"
           control={control}
@@ -104,20 +105,28 @@ export default function ServiceDetails({
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+
+        <FormInputField
+          label="Service Provider Phone"
+          placeholder="Enter service provider phone number"
+          error={errors.serviceProviderPhone?.message}
+          {...register("serviceProviderPhone")}
+        />
+
         <FormInputField
           label="Cost (Optional)"
           placeholder="Enter service cost"
           error={errors.cost?.message}
           {...register("cost")}
         />
-
-        <FormTextarea
-          label="Note"
-          placeholder="Add details of your last service here..."
-          error={errors.note?.message}
-          {...register("note")}
-        />
       </div>
+
+      <FormTextarea
+        label="Note"
+        placeholder="Add details of your last service here..."
+        error={errors.serviceNotes?.message}
+        {...register("serviceNotes")}
+      />
 
       <div className="flex gap-3 mt-6">
         <CTA name="← Back" variant="outline" color="blue" onClick={onBack} type="button" />

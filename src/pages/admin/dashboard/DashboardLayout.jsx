@@ -247,7 +247,10 @@ export default function DashboardLayout() {
     if (showAddLog) {
       return (
         <AddLog
-          onClose={() => setShowAddLog(false)}
+          onClose={() => {
+            setShowAddLog(false)
+            navigate("/admin/dashboard/service-history")
+          }}
           onLogAdded={(v) => {
             // handleLogAdded(v);
           }}

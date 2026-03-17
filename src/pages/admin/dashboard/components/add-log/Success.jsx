@@ -14,7 +14,7 @@ export default function Step3Success({ submittedData, onClose, onLogAnother }) {
         The service record has been successfully updated and the customer's history is now up to date.
       </p>
 
-      {submittedData?.service && (
+      {/* {submittedData?.service && (
         <div className="flex items-center gap-2 border border-blue-200 bg-blue-50 rounded-lg px-4 py-2.5 mb-8 text-sm text-blue-700">
           <Wrench size={14} className="shrink-0" />
           <span>
@@ -24,7 +24,7 @@ export default function Step3Success({ submittedData, onClose, onLogAnother }) {
             <span className="font-semibold text-blue-800">3 months</span>
           </span>
         </div>
-      )}
+      )} */}
 
       <div className="flex flex-col gap-3 w-full max-w-sm">
         <CTA name="Back to Service History" color="blue" className="w-full" onClick={onClose} />

@@ -2,6 +2,15 @@ import { generalApiSlice } from "./apiSlice";
 
 const vehicleApiSlice = generalApiSlice.injectEndpoints({
   endpoints: (builder) => ({
+
+    adminGetVehicles: builder.query({
+      query: () => ({
+        url: "/admin/vehicle",
+        method: "GET",
+      }),
+    }),
+
+
     registerVehicle: builder.mutation({
       query: (body) => ({
         url: "/vehicle/register",
@@ -10,8 +19,24 @@ const vehicleApiSlice = generalApiSlice.injectEndpoints({
       }),
     }),
 
+    editVehicle: builder.mutation({
+      query: ({ body, id }) => ({
+        url: `/vehicle/${id}`,
+        method: "PUT",
+        body,
+      }),
+    }),
+
+
+    deleteVehicle: builder.mutation({
+      query: (id) => ({
+        url: `/vehicle/${id}`,
+        method: "DELETE",
+      }),
+    }),
+
     getVehicles: builder.query({
-     query: () => ({
+      query: () => ({
         url: "/vehicle",
         method: "GET",
       }),
@@ -20,4 +45,4 @@ const vehicleApiSlice = generalApiSlice.injectEndpoints({
   overrideExisting: false,
 });
 
-export const { useRegisterVehicleMutation, useGetVehiclesQuery } = vehicleApiSlice;
+export const { useRegisterVehicleMutation, useGetVehiclesQuery, useAdminGetVehiclesQuery, useEditVehicleMutation, useDeleteVehicleMutation } = vehicleApiSlice;

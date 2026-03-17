@@ -4,8 +4,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import usePost from "../../../../../hooks/usePost";
 import useGet from "../../../../../hooks/useGet";
-import { useAddServiceHistoryMutation } from "../../../../../redux/api/serviceHistoryApiSlice";
-import { useGetVehiclesQuery } from "../../../../../redux/api/vehicleApiSlice";
+import { useAdminAddServiceHistoryMutation } from "../../../../../redux/api/serviceHistoryApiSlice";
+import { useAdminGetVehiclesQuery } from "../../../../../redux/api/vehicleApiSlice";
 import { step2Schema } from "./constants";
 import ChooseVehicle from "./ChooseVehicle";
 import ServiceDetails from "./ServiceDetails";
@@ -16,47 +16,53 @@ export default function AddLog({ onClose, onLogAdded }) {
   const [selectedVehicleId, setSelectedVehicleId] = useState("");
   const [submittedData, setSubmittedData] = useState(null);
 
-  const { data: vehiclesData, loading: vehiclesLoading } = useGet(useGetVehiclesQuery);
+  const { data: vehiclesData, loading: vehiclesLoading } = useGet(useAdminGetVehiclesQuery);
   const vehicles = Array.isArray(vehiclesData)
     ? vehiclesData
     : vehiclesData?.vehicles || vehiclesData?.data || [];
 
-  const { postData: addServiceHistory, isLoading: isSubmitting } = usePost(useAddServiceHistoryMutation);
+  const { postData: addServiceHistory, isLoading: isSubmitting } = usePost(useAdminAddServiceHistoryMutation);
 
   const { register, handleSubmit, control, reset, formState: { errors } } = useForm({
     resolver: zodResolver(step2Schema),
-    mode: "onTouched",
+    mode: "onChange",
     defaultValues: {
-      serviceType: "", service: "", serviceDate: "",
-      serviceProvider: "", cost: "", note: "",
+      serviceType: "",
+      service: "",
+      serviceDate: "",
+      serviceProvider: "",
+      serviceProviderPhone: "",
+      cost: "",
+      serviceNotes: "",
     },
   });
 
   const selectedVehicle = vehicles.find((v) => (v._id || v.id) === selectedVehicleId);
+
+  console.log(selectedVehicle);
 
   const handleNext = () => {
     if (selectedVehicleId) setStep(2);
   };
 
   const onSubmit = async (data) => {
-    // const payload = {
-    //   vehicleId: selectedVehicleId,
-    //   serviceType: data.serviceType,
-    //   service: data.service,
-    //   serviceDate: data.serviceDate,
-    //   serviceProvider: data.serviceProvider,
-    //   ...(data.cost ? { cost: data.cost } : {}),
-    //   ...(data.note ? { note: data.note } : {}),
-    // };
+    const payload = {
+      vehicle: selectedVehicleId,
+      service: data.service,
+      serviceDate: data.serviceDate,
+      serviceType: data.serviceType,
+      serviceProvider: data.serviceProvider,
+      serviceNotes: data.serviceNotes,
+      cost: Number(data.cost) || 0,
+      serviceProviderPhone: data.serviceProviderPhone,
+    };
 
-    // const response = await addServiceHistory(payload, "Service record added successfully!");
-    // if (response) {
-    //   setSubmittedData({ ...data, vehicle: selectedVehicle });
-    //   onLogAdded?.(response);
-    //   setStep(3);
-    // }
-
-    setStep(3);
+    const response = await addServiceHistory(payload, "Service record added successfully!");
+    if (response) {
+      setSubmittedData({ ...data, vehicle: selectedVehicle });
+      onLogAdded?.(response);
+      setStep(3);
+    }
   };
 
   const handleLogAnother = () => {

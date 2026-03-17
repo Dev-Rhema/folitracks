@@ -45,6 +45,7 @@ export default function Login() {
             loginMethod: "qr",
             otpEmail: email
           }));
+           dispatch(setUserInfo(res.data));
           navigate("/dashboard");
         }
       }
@@ -140,6 +141,7 @@ export default function Login() {
                         loginMethod: "qr",
                         otpEmail: emailFromUrl
                     }));
+                     dispatch(setUserInfo(res.data));
                     navigate("/dashboard");
                 }
             } catch (error) {
@@ -201,6 +203,7 @@ export default function Login() {
           loginMethod: "qr",
           otpEmail: res?.data?.email || res?.email
         }));
+         dispatch(setUserInfo(res.data));
         navigate("/dashboard");
       }
     } catch (error) {

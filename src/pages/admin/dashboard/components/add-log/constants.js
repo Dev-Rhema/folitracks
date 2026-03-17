@@ -34,6 +34,7 @@ export const step2Schema = z.object({
   service: z.string().min(1, "Service is required"),
   serviceDate: z.string().min(1, "Service date is required"),
   serviceProvider: z.string().min(2, "Service provider is required"),
-  cost: z.string().optional(),
-  note: z.string().optional(),
+  serviceProviderPhone: z.string().min(1, "Service provider phone is required"),
+  cost: z.string().optional().or(z.literal("")),
+  serviceNotes: z.string().min(1, "Service note is required"),
 });

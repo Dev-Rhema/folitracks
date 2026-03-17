@@ -34,16 +34,19 @@ export default function AddVehicleForm({ onClose, onVehicleAdded }) {
     driverLicense: false,
     businessLicense: false,
   });
+
   const [files, setFiles] = useState({
     vehicleRegistrationDocument: null,
     driverLicense: null,
     businessLicense: null,
   });
+
   const [uploadedUrls, setUploadedUrls] = useState({
     vehicleRegistrationDocument: null,
     driverLicense: null,
     businessLicense: null,
   });
+
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const { register, handleSubmit, control, watch, setValue, trigger, getValues, formState: { errors } } = useForm({
@@ -64,6 +67,7 @@ export default function AddVehicleForm({ onClose, onVehicleAdded }) {
 
     setFiles((prev) => ({ ...prev, [fileKey]: file }));
     setLoadingFiles((prev) => ({ ...prev, [fileKey]: true }));
+    
     try {
       const formData = new FormData();
       formData.append("files", file);

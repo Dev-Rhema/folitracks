@@ -1,35 +1,52 @@
 import { HelpCircle } from "lucide-react";
+import { useLogoutUserMutation } from "../../../../redux/api/authApiSlice";
+import usePost from "../../../../hooks/usePost";
+import CTA from "../../../../components/CTA";
+import { useDispatch } from "react-redux";
+import { logOut } from "../../../../redux/slices/appSlice";
 
-export default function LogoutModal({ onCancel, onConfirm }) {
+export default function LogoutModal({ onCancel }) {
+  const dispatch = useDispatch();
+  const { postData: logout, isLoading } = usePost(useLogoutUserMutation);
+
+  const handleLogout = async () => {
+    const res = await logout();
+    if (res.status) {
+      dispatch(logOut());
+    }
+    onCancel();
+  };
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/40"
       onClick={onCancel}
     >
-      <div
-        className="bg-white rounded-t-3xl md:rounded-2xl shadow-lg w-full md:max-w-sm md:mx-4 p-8 flex flex-col items-center text-center animate-slide-up md:animate-none"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mb-5">
-          <HelpCircle size={36} className="text-red-500" />
+      <div className="bg-white rounded-2xl p-8 w-full max-w-md mx-4">
+        <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mb-5">
+          <HelpCircle size={26} className="text-red-500" strokeWidth={1.5} />
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-3">Log out?</h2>
-        <p className="text-sm text-gray-500 mb-8">
+        <h2 className="text-xl font-bold text-gray-900 mb-3">
+          Log out?
+        </h2>
+        <p className="text-gray-500 text-sm leading-relaxed mb-8">
           Are you sure you want to log out of your account? Your current session will be closed.
         </p>
-        <div className="flex gap-3 w-full">
-          <button
+        <div className="flex gap-3 justify-end">
+          <CTA
+            name="Cancel"
             onClick={onCancel}
-            className="flex-1 py-3 rounded-xl border-2 border-(--darkBlue) text-sm font-bold text-(--darkBlue) hover:bg-gray-50 transition-colors cursor-pointer"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={onConfirm}
-            className="flex-1 py-3 rounded-xl bg-red-500 text-white text-sm font-bold hover:opacity-90 transition-opacity cursor-pointer"
-          >
-            Log Out
-          </button>
+            color="blue"
+            variant="outline"
+          />
+
+          <CTA
+            name="Logout"
+            onClick={handleLogout}
+            color="red"
+            isLoading={isLoading}
+
+          />
         </div>
       </div>
     </div>
