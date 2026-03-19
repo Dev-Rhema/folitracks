@@ -1,18 +1,18 @@
 import { useState } from "react";
 import { HelpCircle, CheckCircle } from "lucide-react";
 import usePost from "../../../../hooks/usePost";
-import { useDeleteVehicleMutation } from "../../../../redux/api/vehicleApiSlice";
+import { useDeleteVehicleMutation, useGetVehiclesQuery } from "../../../../redux/api/vehicleApiSlice";
 import CTA from "../../../../components/CTA";
 
 export default function RemoveVehicleModal({ vehicle, onClose }) {
   const [removed, setRemoved] = useState(false);
+  const [vehicleRemoved, setVehicleRemoved] = useState(vehicle);
   const { postData: deleteVehicle, isLoading } = usePost(useDeleteVehicleMutation);
-
 
   const handleRemove = async () => {
     const res = await deleteVehicle(vehicle?._id || vehicle?.id);
 
-    if (res.status === 200) {
+    if (res.status == true) {
       setRemoved(true);
     }
   };
@@ -24,17 +24,18 @@ export default function RemoveVehicleModal({ vehicle, onClose }) {
           <div className="w-24 h-24 rounded-full bg-green-50 flex items-center justify-center mb-6">
             <CheckCircle size={48} className="text-green-500" strokeWidth={1.5} />
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-3">
+          <h2 className="text-2xl font-bold text-gray-900 mb-3">
             Vehicle Removed Successfully
           </h2>
           <p className="text-gray-400 text-sm mb-8">
-            {vehicle.vehicle} has been deleted from your account.
+            <span className="text-gray-800">{vehicleRemoved?.make + " " + vehicleRemoved?.vehicleModel + " " + vehicleRemoved?.yearOfManufacture}</span> has been deleted from your account.
           </p>
 
           <CTA
-            text="Close"
+            name="Close"
             onClick={onClose}
             color="blue"
+            className="w-full"
           />
         </div>
       ) : (
@@ -46,7 +47,7 @@ export default function RemoveVehicleModal({ vehicle, onClose }) {
             Remove this Vehicle?
           </h2>
           <p className="text-gray-500 text-sm leading-relaxed mb-8">
-            You're about to remove <strong className="text-gray-800">{vehicle.vehicle}</strong> and
+            You're about to remove <span className="text-gray-800 font-semibold">{vehicle?.make + " " + vehicle?.vehicleModel + " " + vehicle?.yearOfManufacture}</span> and
             all its associated records from your account. This action cannot be
             undone. Please confirm to continue.
           </p>

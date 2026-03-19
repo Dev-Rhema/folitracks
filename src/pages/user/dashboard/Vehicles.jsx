@@ -8,6 +8,7 @@ import { useGetVehiclesQuery } from "../../../redux/api/vehicleApiSlice";
 import useGet from "../../../hooks/useGet";
 import EmptyState from "../../../components/ui/EmptyState";
 import TableActionMenu from "../../../components/ui/TableActionMenu";
+import Loader from "../../../components/ui/Loader";
 
 const VEHICLE_TYPE_OPTIONS = [
   "Toyota", "Lexus", "Mercedes-Benz", "BMW", "Hyundai", "Kia", "Ford", "Honda", "Nissan", "Audi", "Volkswagen"
@@ -16,15 +17,21 @@ const VEHICLE_TYPE_OPTIONS = [
 function Vehicles({ onActionClick }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterValues, setFilterValues] = useState({});
+  const [page, setPage] = useState(1);
+  const rowsPerPage = 10;
 
-  const { data: vehiclesData } = useGet(useGetVehiclesQuery);
+  const { data: vehiclesData, loading: vehiclesLoading } = useGet(useGetVehiclesQuery, { page, limit: rowsPerPage });
 
   const handleFilterChange = (category, value) => {
     setFilterValues((prev) => ({ ...prev, [category]: value }));
   };
 
   const columns = useMemo(() => [
-    { key: "sn", label: "S/N" },
+    { 
+      key: "sn", 
+      label: "S/N",
+      render: (_, index) => String((page - 1) * rowsPerPage + index + 1).padStart(2, "0")
+    },
     {
       key: "vehicle",
       label: "Vehicle",
@@ -70,34 +77,9 @@ function Vehicles({ onActionClick }) {
     },
   ], [onActionClick]);
 
-  // Process data from API
-  const processedData = useMemo(() => {
-    const rawList = vehiclesData?.vehicles || [];
-    return rawList
-      .map((v, i) => ({
-        ...v,
-        sn: String(i + 1).padStart(2, "0"),
-        vehicleName: `${v.make} ${v.vehicleModel} ${v.yearOfManufacture}`,
-        lastServiceDate: v.lastServiceDate || "—",
-        nextServiceDate: v.nextServiceDate || "—",
-      }));
-  }, [vehiclesData]);
-
-  const filteredData = useMemo(() => {
-    return processedData.filter((v) => {
-      const typeFilter = filterValues["Vehicle Type"];
-      if (typeFilter && !v.make.toLowerCase().includes(typeFilter.toLowerCase())) return false;
-
-      if (searchTerm.trim()) {
-        const s = searchTerm.toLowerCase();
-        return (
-          v.vehicleName.toLowerCase().includes(s) ||
-          v.plateNumber.toLowerCase().includes(s)
-        );
-      }
-      return true;
-    });
-  }, [processedData, filterValues, searchTerm]);
+  if(vehiclesLoading) {
+    return <Loader />
+  }
 
   return (
     <div className="flex flex-col">
@@ -122,7 +104,8 @@ function Vehicles({ onActionClick }) {
           </div>
         </div>
 
-        {filteredData.length === 0 ? (
+        {/* {filteredData.length === 0 ? ( */}
+        {vehiclesData?.vehicles.length === 0 ? (
           <EmptyState
             title="No Vehicles Found"
             description={searchTerm ? "No vehicles match your search criteria." : "You haven't added any vehicles to your account yet."}
@@ -130,23 +113,21 @@ function Vehicles({ onActionClick }) {
           />
         ) : (
           <>
-            {/* Mobile cards could be added back here if needed */}
-            
-            {/* Desktop table */}
-            <div className="hidden md:block">
-              <Table
-                columns={columns}
-                data={filteredData}
-                rowsPerPage={10}
-                showSearch={false}
-                emptyState={
-                  <EmptyState
-                    title="No Vehicles Found"
-                    description={searchTerm ? "No vehicles match your search criteria." : "You haven't added any vehicles to your account yet."}
-                  />
-                }
-              />
-            </div>
+            <Table
+              columns={columns}
+              data={vehiclesData?.vehicles || []}
+              rowsPerPage={rowsPerPage}
+              showSearch={false}
+              totalCount={vehiclesData?.totalCount || 0}
+              currentPage={page}
+              onPageChange={setPage}
+              emptyState={
+                <EmptyState
+                  title="No Vehicles Found"
+                  description={searchTerm ? "No vehicles match your search criteria." : "You haven't added any vehicles to your account yet."}
+                />
+              }
+            />
           </>
         )}
       </div>

@@ -88,7 +88,7 @@ export default function Login() {
           </div>
 
           <div className="">
-            <CTA name="Sign In" color="blue" className="w-full" type="submit" disabled={isLoggingIn} />
+            <CTA name="Sign In" color="blue" className="w-full" type="submit" disabled={isLoggingIn} isLoading={isLoggingIn} />
           </div>
         </form>
 

@@ -17,6 +17,14 @@ const serviceHistoryApiSlice = generalApiSlice.injectEndpoints({
       }),
     }),
 
+    // adminChangeServiceStatus: builder.mutation({
+    //   query: (body) => ({
+    //     url: "/admin/service-history/create",
+    //     method: "POST",
+    //     body,
+    //   }),
+    // }),
+
     getServiceHistory: builder.query({
      query: () => ({
         url: "/service-history",

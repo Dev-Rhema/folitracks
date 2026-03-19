@@ -14,9 +14,10 @@ import { useGetServiceHistoryQuery } from "../../../redux/api/serviceHistoryApiS
 import useGet from "../../../hooks/useGet";
 import EmptyState from "../../../components/ui/EmptyState";
 import { capitalizeFirstLetter } from "../../../utils/utils";
+import Loader from "../../../components/ui/Loader";
+
 
 const HISTORY_PREVIEW = [];
-
 
 const HISTORY_COLUMNS = [
   { key: "sn", label: "S/N" },
@@ -51,7 +52,6 @@ const HISTORY_COLUMNS = [
   { key: "provider", label: "Service Provider" },
 ];
 
-
 function SectionHeader({ title, to }) {
   return (
     <div className="flex justify-between items-center mb-2 xl:mb-4">
@@ -80,15 +80,15 @@ function StatCard({ item }) {
   );
 }
 
-function VehicleRow({ vehicle, isLast }) {
+function VehicleRow({ vehicle }) {
   const logo = getBrandLogo(vehicle?.make);
 
   return (
     <div
-      className={`flex items-center justify-between py-1.5 xl:py-3 ${!isLast ? "border-b" : ""}`}
+      className={`flex items-center justify-between p-2 h-[50px] border-b`}
     >
       <div className="flex items-center gap-2 xl:gap-3">
-        <div className="w-7 h-7 rounded-full bg-black overflow-hidden flex items-center justify-center shrink-0">
+        <div className="w-7 h-7 xl:w-9 xl:h-9 rounded-full bg-black overflow-hidden flex items-center justify-center shrink-0">
           <img
             src={logo}
             alt={vehicle.vehicle}
@@ -108,27 +108,28 @@ function VehicleRow({ vehicle, isLast }) {
   );
 }
 
-function UpcomingRow({ item, isLast }) {
+function UpcomingRow({ item }) {
   return (
     <div
-      className={`flex items-center justify-between py-1.5 xl:py-2 ${!isLast ? "border-b" : ""}`}
+      className="flex items-center justify-between p-2 h-[50px] border-b"
     >
       <div className="flex items-center gap-2 xl:gap-3">
         <img
           src={getServiceIcon(item.service)}
           alt={item.service}
-          className="w-7 h-7 xl:w-10 xl:h-10 rounded-full object-cover shrink-0"
+          className="w-7 h-7 xl:w-9 xl:h-9 rounded-full object-cover shrink-0"
         />
+
         <div>
           <p className="text-xs xl:text-sm font-medium text-gray-800">
-            {item.service}
+            {item?.service}
           </p>
-          <p className="text-xs text-gray-400">{item.vehicle}</p>
+          <p className="text-xs text-gray-400">{item?.vehicle?.make} {item?.vehicle?.vehicleModel} {item?.vehicle?.yearOfManufacture}</p>
         </div>
       </div>
+
       <StatusBadge
-        status={item.status}
-        className="px-2 py-0.5 xl:px-4 xl:py-1.5 text-xs xl:text-sm font-medium"
+        status={item.serviceStatus}
       />
     </div>
   );
@@ -136,16 +137,29 @@ function UpcomingRow({ item, isLast }) {
 
 export default function Dashboard() {
   const userInfo = useSelector((state) => state.app.userInfo?.user);
-  const { data: vehicles, isLoading: vehiclesLoading } = useGet(useGetVehiclesQuery)
-  const { data: serviceHistories, isLoading: loadingServiceHistories } = useGet(useGetServiceHistoryQuery)
+  const { data: vehicles, loading: vehiclesLoading } = useGet(useGetVehiclesQuery)
+  const { data: serviceHistories, loading: loadingServiceHistories } = useGet(useGetServiceHistoryQuery)
+
+  const allServices = serviceHistories?.serviceHistory || [];
+
+  const HISTORY_DATA = allServices
+    .filter((s) => s.serviceStatus === "Completed");
+
+  const OVERDUE_DATA = allServices
+    .filter((s) => s.serviceStatus === "Overdue");
+
+  const OTHER_DATA = allServices
+    .filter((s) => s.serviceStatus !== "Completed" && s.serviceStatus !== "Overdue");
 
   const DASHCOUNT = [
-    { id: 1, name: "Number of Vehicles", num: vehicles?.vehicles?.length, img: countImg1 },
-    { id: 2, name: "Upcoming Services", num: 0, img: countImg2 },
-    { id: 3, name: "Overdue Services", num: 0, img: countImg3 },
+    { id: 1, name: "Number of Vehicles", num: vehicles?.totalCount, img: countImg1 },
+    { id: 2, name: "Upcoming Services", num: OTHER_DATA.length, img: countImg2 },
+    { id: 3, name: "Overdue Services", num: OVERDUE_DATA.length, img: countImg3 },
   ];
 
-  const UPCOMING_PREVIEW = [];
+  if (vehiclesLoading || loadingServiceHistories) {
+    return <Loader />
+  }
 
   return (
     <div>
@@ -165,7 +179,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 xl:gap-8 items-stretch">
           <div className="flex flex-col">
             <SectionHeader title="My Vehicles" to="/dashboard/vehicles" />
-            <div className="bg-white border rounded-2xl p-3 flex-1 flex flex-col">
+            <div className="bg-white border rounded-2xl p-2 flex-1 flex flex-col">
               {vehicles?.vehicles?.length > 0 ? (
                 vehicles.vehicles.slice(0, 4).map((v, i) => (
                   <VehicleRow
@@ -188,13 +202,13 @@ export default function Dashboard() {
               title="Upcoming Services"
               to="/dashboard/service-history"
             />
-            <div className="bg-white border rounded-2xl p-2 xl:p-5 flex-1 flex flex-col">
-              {UPCOMING_PREVIEW.length > 0 ? (
-                UPCOMING_PREVIEW.map((item, i) => (
+            
+            <div className="bg-white border rounded-2xl p-2 flex-1 flex flex-col">
+              {OTHER_DATA?.length > 0 ? (
+                OTHER_DATA?.slice(0, 4)?.map((item, i) => (
                   <UpcomingRow
                     key={i}
                     item={item}
-                    isLast={i === UPCOMING_PREVIEW.length - 1}
                   />
                 ))
               ) : (
@@ -242,24 +256,19 @@ export default function Dashboard() {
           </div>
 
           <div className="border p-2.5 bg-white rounded-2xl">
+            {HISTORY_PREVIEW.length > 0 ? (<Table
+              columns={HISTORY_COLUMNS}
+              data={HISTORY_PREVIEW}
+              rowsPerPage={4}
+              showSearch={false}
+              showPagination={false}
+            />) : (<>
 
-
-            <div className="hidden md:block overflow-x-auto">
-              {HISTORY_PREVIEW.length > 0 ? (<Table
-                columns={HISTORY_COLUMNS}
-                data={HISTORY_PREVIEW}
-                rowsPerPage={4}
-                showSearch={false}
-                showPagination={false}
-              />) : (<>
-
-                <EmptyState
-                  title="No Service History Found"
-                  description="Keep track of your car's maintenance by logging your previous or recent services here."
-                />
-              </>)}
-
-            </div>
+              <EmptyState
+                title="No Service History Found"
+                description="Keep track of your car's maintenance by logging your previous or recent services here."
+              />
+            </>)}
           </div>
         </div>
       </div>

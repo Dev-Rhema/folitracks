@@ -416,7 +416,7 @@ function ServiceHistory() {
             </div>
 
             {/* Desktop table */}
-            <div className="hidden md:block overflow-x-auto">
+            <div className="overflow-x-auto">
               <Table
                 columns={getTabColumns()}
                 data={getTabData()}

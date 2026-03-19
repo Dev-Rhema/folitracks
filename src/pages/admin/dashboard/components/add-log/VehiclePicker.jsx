@@ -1,7 +1,8 @@
 import { useState } from "react";
-import {capitalizeFirstLetter} from "../../../../../utils/utils"
+import { capitalizeFirstLetter } from "../../../../../utils/utils"
+import Loader from "../../../../../components/ui/Loader";
 
-export default function VehiclePicker({ vehicles = [], value, onChange }) {
+export default function VehiclePicker({ vehicles = [], value, onChange, onLoadMore, hasMore, isLoading }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
 
@@ -9,6 +10,16 @@ export default function VehiclePicker({ vehicles = [], value, onChange }) {
     const label = `${v.make} ${v.vehicleModel} ${v.yearOfManufacture} ${v.plateNumber} ${v.fullName || ""}`.toLowerCase();
     return label.includes(query.toLowerCase());
   });
+
+  // fetch more after they view last 5 items and there's more data in the api
+  const handleScroll = (e) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+    if (scrollHeight - scrollTop <= clientHeight + 5) {
+      if (!isLoading && hasMore) {
+        onLoadMore?.();
+      }
+    }
+  };
 
   const selected = vehicles.find((v) => v._id === value || v.id === value);
 
@@ -55,7 +66,10 @@ export default function VehiclePicker({ vehicles = [], value, onChange }) {
               className="w-full px-3 py-2 text-sm bg-[#f1f5fb] border border-gray-200 rounded focus:outline-none"
             />
           </div>
-          <ul className="max-h-60 overflow-y-auto divide-y divide-gray-100">
+          <ul
+            onScroll={handleScroll}
+            className="max-h-60 overflow-y-auto divide-y divide-gray-100"
+          >
             {filtered.length > 0 ? (
               filtered.map((v) => {
                 const vid = v._id || v.id;
@@ -80,6 +94,9 @@ export default function VehiclePicker({ vehicles = [], value, onChange }) {
               })
             ) : (
               <li className="px-4 py-3 text-sm text-gray-400 text-center">No vehicles found</li>
+            )}
+            {isLoading && hasMore && (
+              <Loader size="small" />
             )}
           </ul>
         </div>

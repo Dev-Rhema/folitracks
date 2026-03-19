@@ -48,5 +48,6 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 export const generalApiSlice = createApi({
   baseQuery: baseQueryWithReauth,
   reducerPath: "api",
+  tagTypes: ["Vehicle"],
   endpoints: (builder) => ({}),
 });

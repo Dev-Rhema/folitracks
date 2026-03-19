@@ -1,7 +1,7 @@
 import CTA from "../../../../../components/CTA";
 import VehiclePicker from "./VehiclePicker";
 
-export default function Step1ChooseVehicle({ vehicles, vehiclesLoading, selectedVehicleId, onSelect, onNext, onClose }) {
+export default function Step1ChooseVehicle({ vehicles, vehiclesLoading, selectedVehicleId, onSelect, onNext, onClose, onLoadMore, hasMore }) {
   return (
     <div>
       <div className="flex items-start justify-between mb-1">
@@ -24,6 +24,9 @@ export default function Step1ChooseVehicle({ vehicles, vehiclesLoading, selected
           vehicles={vehicles}
           value={selectedVehicleId}
           onChange={onSelect}
+          onLoadMore={onLoadMore}
+          hasMore={hasMore}
+          isLoading={vehiclesLoading}
         />
       </div>
 

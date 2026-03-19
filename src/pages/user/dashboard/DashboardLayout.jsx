@@ -292,9 +292,6 @@ export default function DashboardLayout() {
       return (
         <AddVehicleForm
           onClose={() => setShowAddVehicle(false)}
-          onVehicleAdded={(v) => {
-            handleVehicleAdded(v);
-          }}
         />
       );
     }
@@ -344,7 +341,6 @@ export default function DashboardLayout() {
     return (
       <div className="min-h-screen bg-[#F8FAFC]">
         <LoginOTPModal />
-        {/* Render a blurred skeleton or empty dashboard to look professional but hide data */}
         <div className="opacity-20 pointer-events-none blur-sm">
            <DashNav currentPath={location.pathname} />
            <div className="flex-1 min-w-0">

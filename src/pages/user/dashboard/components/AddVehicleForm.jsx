@@ -17,7 +17,7 @@ import QR from "./add-vehicle/QR";
 
 
 
-export default function AddVehicleForm({ onClose, onVehicleAdded }) {
+export default function AddVehicleForm({ onClose }) {
   const [step, setStep] = useState(1);
   const userInfo = useSelector((state) => state.app.userInfo);
 
@@ -26,7 +26,7 @@ export default function AddVehicleForm({ onClose, onVehicleAdded }) {
   const { data: userQrData, isLoading: isUserQrLoading, refetch: refetchQr } = useGetUserQRQuery(undefined, {
     skip: step !== 4,
   });
-  const { refetch: refetchVehicles } = useGetVehiclesQuery();
+  const { data: vehiclesData, refetch: refetchVehicles } = useGetVehiclesQuery();
   const { downloadImage, downloadPDF } = useDownloadQr();
 
   const [loadingFiles, setLoadingFiles] = useState({
@@ -67,7 +67,7 @@ export default function AddVehicleForm({ onClose, onVehicleAdded }) {
 
     setFiles((prev) => ({ ...prev, [fileKey]: file }));
     setLoadingFiles((prev) => ({ ...prev, [fileKey]: true }));
-    
+
     try {
       const formData = new FormData();
       formData.append("files", file);
@@ -99,35 +99,25 @@ export default function AddVehicleForm({ onClose, onVehicleAdded }) {
       return;
     }
 
-    try {
-      const payload = {
-        make: data.make,
-        vehicleModel: data.vehicleModel,
-        yearOfManufacture: data.yearOfManufacture,
-        plateNumber: data.plateNumber,
-        vin: data.vin,
-        accountType: isIndividual ? "Individual Car Owner" : "Automobile Related Business",
-        ...(isIndividual ? { fullName: data.fullName } : { businessName: data.businessName }),
-        vehicleRegistrationDocument: uploadedUrls.vehicleRegistrationDocument,
-        driverLicense: uploadedUrls.driverLicense,
-        ...(isIndividual ? {} : { businessLicense: uploadedUrls.businessLicense }),
-      };
+    const payload = {
+      make: data.make,
+      vehicleModel: data.vehicleModel,
+      yearOfManufacture: data.yearOfManufacture,
+      plateNumber: data.plateNumber,
+      vin: data.vin,
+      accountType: isIndividual ? "Individual Car Owner" : "Automobile Related Business",
+      ...(isIndividual ? { fullName: data.fullName } : { businessName: data.businessName }),
+      vehicleRegistrationDocument: uploadedUrls.vehicleRegistrationDocument,
+      driverLicense: uploadedUrls.driverLicense,
+      ...(isIndividual ? {} : { businessLicense: uploadedUrls.businessLicense }),
+    };
 
-      const response = await registerVehicle(payload, "Vehicle registered successfully!");
-      if (response) {
-        onVehicleAdded?.({
-          vehicle: `${data.make} ${data.vehicleModel} ${data.yearOfManufacture}`,
-          registrationNumber: data.plateNumber,
-          lastServiceDate: "—",
-          nextServiceDate: "—",
-        });
-        setShowConfirmModal(false);
-        setStep(4);
-        refetchQr();
-        refetchVehicles();
-      }
-    } catch (err) {
-      toast.error(err?.data?.message || err?.message || "Failed to register vehicle.");
+    const response = await registerVehicle(payload, "Vehicle registered successfully!");
+
+    if (response) {
+      setShowConfirmModal(false);
+      setStep(4);
+      refetchQr();
     }
   };
 
@@ -153,7 +143,7 @@ export default function AddVehicleForm({ onClose, onVehicleAdded }) {
             onClose={onClose}
           />
         )}
-        
+
         {step === 2 && (
           <Ownership
             register={register}

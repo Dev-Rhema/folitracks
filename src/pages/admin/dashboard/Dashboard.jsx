@@ -87,7 +87,7 @@ function StatCard({ item }) {
 function Row({ item }) {
   return (
     <div
-      className="flex items-center justify-between p-2 border-b"
+      className="flex items-center justify-between p-2 h-[50px] border-b"
     >
       <div className="flex items-center gap-2 xl:gap-3">
         <img
@@ -127,11 +127,10 @@ export default function Dashboard() {
   const OTHER_DATA = allServices
     .filter((s) => s.serviceStatus !== "Completed" && s.serviceStatus !== "Overdue");
 
-  console.log(OTHER_DATA)
 
   const DASHCOUNT = [
     { id: 1, name: "Total Customers", num: "-", img: countImg4 },
-    { id: 2, name: "Total Vehicles", num: vehicles?.vehicles?.length || 0, img: countImg1 },
+    { id: 2, name: "Total Vehicles", num: vehicles?.totalCount, img: countImg1 },
     { id: 3, name: "Upcoming Services", num: OTHER_DATA.length, img: countImg2 },
     { id: 4, name: "Overdue Services", num: OVERDUE_DATA.length, img: countImg3 },
   ];
@@ -169,9 +168,10 @@ export default function Dashboard() {
               title="Upcoming Services"
               to="/dashboard/service-history"
             />
-            <div className="bg-white border rounded-2xl p-2 xl:p-5 flex-1 flex flex-col">
-              {OTHER_DATA.length > 0 ? (
-                OTHER_DATA.map((item, i) => (
+
+            <div className="bg-white border rounded-2xl p-2 flex-1 flex flex-col">
+              {OTHER_DATA?.length > 0 ? (
+                OTHER_DATA?.slice(0, 4)?.map((item, i) => (
                   <Row
                     key={i}
                     item={item}
@@ -180,7 +180,7 @@ export default function Dashboard() {
               ) : (
                 <EmptyState
                   title="No Upcoming Services Yet"
-                  description="Scheduled services will appear here when a service date is set."
+                  description="Add your previous service history so you can know your next maintenance date."
                 />
               )}
             </div>
@@ -191,7 +191,7 @@ export default function Dashboard() {
               title="Overdue Services"
               to="/dashboard/service-history"
             />
-            <div className="bg-white border rounded-2xl p-2 xl:p-5 flex-1 flex flex-col">
+            <div className="bg-white border rounded-2xl p-2 flex-1 flex flex-col">
               {OVERDUE_DATA.length > 0 ? (
                 OVERDUE_DATA.map((item, i) => (
                   <Row
@@ -211,23 +211,21 @@ export default function Dashboard() {
 
 
         <div className="border p-2.5 bg-white rounded-2xl">
-          <div className="hidden md:block overflow-x-auto">
-            {HISTORY_DATA.length > 0 ? (<Table
-              columns={HISTORY_COLUMNS}
-              data={HISTORY_DATA}
-              rowsPerPage={4}
-              showSearch={false}
-              showPagination={false}
-              showActions={false}
-            />) : (<>
+          {HISTORY_DATA.length > 0 ? (<Table
+            columns={HISTORY_COLUMNS}
+            data={HISTORY_DATA}
+            rowsPerPage={4}
+            showSearch={false}
+            showPagination={false}
+            showActions={false}
+          />) : (<>
 
-              <EmptyState
-                title="No Service History Found"
-                description="Keep track of your car's maintenance by logging your previous or recent services here."
-              />
-            </>)}
+            <EmptyState
+              title="No Service History Found"
+              description="Keep track of your car's maintenance by logging your previous or recent services here."
+            />
+          </>)}
 
-          </div>
         </div>
       </div>
     </div>

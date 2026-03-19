@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,10 +16,30 @@ export default function AddLog({ onClose, onLogAdded }) {
   const [selectedVehicleId, setSelectedVehicleId] = useState("");
   const [submittedData, setSubmittedData] = useState(null);
 
-  const { data: vehiclesData, loading: vehiclesLoading } = useGet(useAdminGetVehiclesQuery);
-  const vehicles = Array.isArray(vehiclesData)
-    ? vehiclesData
-    : vehiclesData?.vehicles || vehiclesData?.data || [];
+  const [page, setPage] = useState(1);
+  const [vehicles, setVehicles] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
+
+  const { data: vehiclesData, loading: vehiclesLoading } = useGet(useAdminGetVehiclesQuery, { page, limit: 10 });
+  
+  useEffect(() => {
+    if (vehiclesData?.vehicles) {
+      setVehicles((prev) => {
+        const newVehicles = vehiclesData.vehicles;
+        // avoid duplicates if same page is refetched
+        const existingIds = new Set(prev.map(v => v._id || v.id));
+        const uniqueNew = newVehicles.filter(v => !existingIds.has(v._id || v.id));
+        return [...prev, ...uniqueNew];
+      });
+      setHasMore(vehiclesData.page < vehiclesData.totalPages);
+    }
+  }, [vehiclesData]);
+
+  const handleLoadMore = () => {
+    if (!vehiclesLoading && hasMore) {
+      setPage((prev) => prev + 1);
+    }
+  };
 
   const { postData: addServiceHistory, isLoading: isSubmitting } = usePost(useAdminAddServiceHistoryMutation);
 
@@ -91,6 +111,8 @@ export default function AddLog({ onClose, onLogAdded }) {
             onSelect={setSelectedVehicleId}
             onNext={handleNext}
             onClose={onClose}
+            onLoadMore={handleLoadMore}
+            hasMore={hasMore}
           />
         )}
 

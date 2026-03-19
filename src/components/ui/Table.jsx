@@ -14,8 +14,13 @@ function Table({
   onSearchChange,
   searchableFields,
   emptyState = null,
+  totalCount,
+  currentPage: externalCurrentPage,
+  onPageChange,
 }) {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [internalCurrentPage, setInternalCurrentPage] = useState(1);
+  const currentPage = externalCurrentPage || internalCurrentPage;
+  const setCurrentPage = onPageChange || setInternalCurrentPage;
   const [internalSearchTerm, setInternalSearchTerm] = useState("");
 
   // Use external or internal search term
@@ -40,9 +45,14 @@ function Table({
   }, [data, activeSearchTerm, searchableFields]);
 
   // Pagination calculations
-  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+  const totalPages = Math.ceil(totalCount / rowsPerPage);
   const startIndex = (currentPage - 1) * rowsPerPage;
-  const paginatedData = filteredData.slice(
+
+  // Detect if data is already paginated by the server
+  const isServerSide = totalCount !== undefined && data.length < totalCount;
+
+  // Only slice data locally if we have the full dataset
+  const paginatedData = isServerSide ? filteredData : filteredData.slice(
     startIndex,
     startIndex + rowsPerPage,
   );
@@ -125,8 +135,8 @@ function Table({
       )}
 
       {/* Table */}
-      <div className="w-full border rounded-2xl bg-white">
-        <table className="w-full min-w-150">
+      <div className="w-full border rounded-2xl bg-white overflow-auto">
+        <table className="w-full">
           <thead className="bg-gray-50 border-b">
             <tr>
               {columns.map((column) => (
@@ -155,7 +165,7 @@ function Table({
                         column.className || ""
                       }`}
                     >
-                      {column.render ? column.render(row) : row[column.key]}
+                      {column.render ? column.render(row, rowIndex) : row[column.key]}
                     </td>
                   ))}
                 </tr>
@@ -179,9 +189,10 @@ function Table({
         <div className="mt-4 flex justify-between items-center">
           <p className="text-sm text-gray-600">
             Showing {startIndex + 1}-
-            {Math.min(startIndex + rowsPerPage, filteredData.length)} of{" "}
-            {filteredData.length}
+            {Math.min(startIndex + paginatedData.length, totalCount || filteredData.length)} of{" "}
+            {totalCount || filteredData.length}
           </p>
+
           <div className="flex gap-2 items-center">
             <button
               onClick={handlePrevPage}

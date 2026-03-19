@@ -7,7 +7,7 @@ const STATUS_STYLES = {
   Completed: "bg-[#E6F7F7] text-[#28A745]",
 };
 
-export default function StatusBadge({ status, className = "px-4 py-1.5 xl:px-4 xl:py-2 text-xs xl:text-sm font-medium" }) {
+export default function StatusBadge({ status, className = "px-4 py-1.5 text-xs xl:text-sm font-medium" }) {
   return (
     <span
       className={`rounded-full whitespace-nowrap ${STATUS_STYLES[status] || "bg-gray-100 text-gray-600"} ${className}`}

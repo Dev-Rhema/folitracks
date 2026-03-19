@@ -4,10 +4,12 @@ const vehicleApiSlice = generalApiSlice.injectEndpoints({
   endpoints: (builder) => ({
 
     adminGetVehicles: builder.query({
-      query: () => ({
+      query: (params) => ({
         url: "/admin/vehicle",
         method: "GET",
+        params,
       }),
+      providesTags: ["Vehicle"],
     }),
 
 
@@ -17,6 +19,7 @@ const vehicleApiSlice = generalApiSlice.injectEndpoints({
         method: "POST",
         body,
       }),
+      invalidatesTags: ["Vehicle"],
     }),
 
     editVehicle: builder.mutation({
@@ -25,6 +28,7 @@ const vehicleApiSlice = generalApiSlice.injectEndpoints({
         method: "PUT",
         body,
       }),
+      invalidatesTags: ["Vehicle"],
     }),
 
 
@@ -33,13 +37,16 @@ const vehicleApiSlice = generalApiSlice.injectEndpoints({
         url: `/vehicle/${id}`,
         method: "DELETE",
       }),
+      invalidatesTags: ["Vehicle"],
     }),
 
     getVehicles: builder.query({
-      query: () => ({
+      query: (params) => ({
         url: "/vehicle",
         method: "GET",
+        params,
       }),
+      providesTags: ["Vehicle"],
     }),
   }),
   overrideExisting: false,

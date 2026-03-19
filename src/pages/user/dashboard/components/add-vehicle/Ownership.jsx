@@ -112,13 +112,13 @@ export default function Ownership({
           <ChevronLeft size={16} />
           Back
         </button>
-        <button type="button" onClick={handleSubmitClick}>
-          <CTA
-            name={isRegistering ? "Submitting..." : "Add Vehicle"}
-            color="blue"
-            disabled={isRegistering || isUploading}
-          />
-        </button>
+
+        <CTA
+          name={isRegistering ? "Submitting..." : "Add Vehicle"}
+          color="blue"
+          disabled={isRegistering || isUploading}
+          onClick={handleSubmitClick}
+        />
       </div>
     </div>
   );
