@@ -3,13 +3,13 @@ import { ArrowLeft, ChevronLeft, Lock, CheckCircle } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import SearchableSelect from "../../../../components/SearchableSelect";
-import FileUploadField from "../../../../components/FileUploadField";
-import CTA from "../../../../components/CTA";
-import usePost from "../../../../hooks/usePost";
-import { useEditVehicleMutation } from "../../../../redux/api/vehicleApiSlice";
-import { useUploadDocumentMutation } from "../../../../redux/api/documentApiSlice";
-import FormInputField from "../../../../components/FormInputField";
+import SearchableSelect from "../../../../../components/SearchableSelect";
+import FileUploadField from "../../../../../components/FileUploadField";
+import CTA from "../../../../../components/CTA";
+import usePost from "../../../../../hooks/usePost";
+import { useEditVehicleMutation } from "../../../../../redux/api/vehicleApiSlice";
+import { useUploadDocumentMutation } from "../../../../../redux/api/documentApiSlice";
+import FormInputField from "../../../../../components/FormInputField";
 
 
 const VEHICLE_MAKES = [
@@ -67,8 +67,6 @@ function StepHeader({ step, title, subtitle, onClose }) {
 
 
 export default function EditVehicleForm({ vehicle, onClose }) {
-  console.log(vehicle);
-
   const [step, setStep] = useState(1);
 
   const { postData: editVehicle, isLoading: isUpdating } = usePost(useEditVehicleMutation);

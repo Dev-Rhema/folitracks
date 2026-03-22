@@ -17,6 +17,7 @@ function Table({
   totalCount,
   currentPage: externalCurrentPage,
   onPageChange,
+  border = true,
 }) {
   const [internalCurrentPage, setInternalCurrentPage] = useState(1);
   const currentPage = externalCurrentPage || internalCurrentPage;
@@ -135,14 +136,14 @@ function Table({
       )}
 
       {/* Table */}
-      <div className="w-full border rounded-2xl bg-white overflow-auto">
+      <div className={`w-full ${border ? "border" : ""} rounded-2xl bg-white overflow-auto`}>
         <table className="w-full">
-          <thead className="bg-gray-50 border-b">
+          <thead className="border-b">
             <tr>
               {columns.map((column) => (
                 <th
                   key={column.key}
-                  className={`px-3 py-2 xl:px-4 xl:py-3 text-xs xl:text-sm font-semibold text-[#3B82F6] font-title ${
+                  className={`px-3 py-2 xl:px-4 xl:py-3 text-xs xl:text-sm font-medium text-[#3d82f6]  ${
                     column.className || "text-left"
                   }`}
                 >
@@ -151,6 +152,7 @@ function Table({
               ))}
             </tr>
           </thead>
+
           <tbody className="font-body">
             {paginatedData.length > 0 ? (
               paginatedData.map((row, rowIndex) => (

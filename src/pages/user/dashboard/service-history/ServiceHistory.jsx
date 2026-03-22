@@ -1,18 +1,18 @@
 import { useState } from "react";
-import Table from "../../../components/ui/Table";
-import ServiceHistoryCard from "../../../components/ui/ServiceHistoryCard";
-import StatusBadge from "../../../components/ui/StatusBadge";
+import Table from "../../../../components/ui/Table";
+import StatusBadge from "../../../../components/ui/StatusBadge";
 import ServiceDetailsView from "./components/ServiceDetailsView";
 import { CheckSquare, Clock, AlertTriangle } from "lucide-react";
-import FilterDropdown from "../../../components/ui/FilterDropdown";
+import FilterDropdown from "../../../../components/ui/FilterDropdown";
 import RescheduleServiceModal from "./components/RescheduleServiceModal";
 import SetReminderModal from "./components/SetReminderModal";
-import SearchBar from "./components/SearchBar";
-import DashHeader from "./components/DashHeader";
-import { getServiceIcon } from "../../../utils/serviceUtils";
-import TableActionMenu from "../../../components/ui/TableActionMenu";
-import useGet from "../../../hooks/useGet";
-import { useGetServiceHistoryQuery } from "../../../redux/api/serviceHistoryApiSlice";
+import SearchBar from "../components/SearchBar";
+import DashHeader from "../components/DashHeader";
+import { getServiceIcon } from "../../../../utils/serviceUtils";
+import TableActionMenu from "../../../../components/ui/TableActionMenu";
+import useGet from "../../../../hooks/useGet";
+import { useGetServiceHistoryQuery } from "../../../../redux/api/serviceHistoryApiSlice";
+import Loader from "../../../../components/ui/Loader";
 
 const REPAIR_SERVICES = [
   "Brake Pad",
@@ -115,11 +115,11 @@ const UPCOMING_COLUMNS = [
   { key: "service", label: "Service", render: renderServiceCell },
   { key: "vehicle", label: "Vehicle", render: renderVehicleCell },
   {
-    key: "lastServiceDate",
+    key: "serviceDate",
     label: "Last Service Date",
     render: (row) => (
       <div className="font-medium text-gray-800 text-sm">
-        {row.lastServiceDate || "N/A"}
+        {row.serviceDate?.split('T')[0] || "N/A"}
       </div>
     ),
   },
@@ -329,6 +329,10 @@ function ServiceHistory() {
     }
   };
 
+  if(loadingServiceHistories) {
+    return <Loader />
+  }
+
   return (
     <div className="flex flex-col flex-1">
       {selectedService && selectedVehicle ? (
@@ -347,14 +351,14 @@ function ServiceHistory() {
       ) : (
         <>
           <DashHeader title="Service History" />
-          {/* Header: Tabs left, Search + Filter right */}
+
           <div className="bg-white p-3 lg:p-4 rounded-2xl flex flex-col gap-3 lg:gap-4">
-            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-3 lg:gap-0">
-              {/* Tabs */}
+            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-3 lg:gap-0 lg:border-b">
               <div className="flex gap-4 lg:gap-8 border-b lg:border-b-0">
                 {TABS.map((tab) => {
                   const IconComponent = tab.icon;
                   const isActive = activeTab === tab.key;
+
                   return (
                     <button
                       key={tab.key}
@@ -367,9 +371,6 @@ function ServiceHistory() {
                         : "text-gray-500 hover:text-gray-700"
                         }`}
                     >
-                      {tab.key !== "completed" && (
-                        <span className="absolute -top-1 right-0 w-2 h-2 bg-red-500 rounded-full" />
-                      )}
                       <IconComponent size={16} />
                       <span>
                         {tab.name} ({tab.count})
@@ -382,8 +383,7 @@ function ServiceHistory() {
                 })}
               </div>
 
-              {/* Search + Filter */}
-              <div className="flex items-center gap-2 lg:gap-3 lg:pb-3">
+              <div className="flex items-center gap-2 lg:gap-3 lg:pb-3 ml-auto">
                 <SearchBar
                   placeholder="Search..."
                   value={searchTerm}
@@ -420,6 +420,7 @@ function ServiceHistory() {
                 "nextServiceSub",
                 "missedServiceSub",
               ]}
+              totalCount={serviceHistories?.totalCount || 0}
             />
           </div>
         </>

@@ -4,14 +4,14 @@ import { Link, useLocation } from "react-router-dom";
 import { Bell, Menu, X } from "lucide-react";
 import { useSelector } from "react-redux";
 import LoginOTPModal from "../auth/component/LoginOTPModal";
-import Vehicles from "./Vehicles";
+import Vehicles from "./vehicles/Vehicles";
 import Dashboard from "./Dashboard";
-import ServiceHistory from "./ServiceHistory";
-import Settings from "./Settings";
-import AddVehicleForm from "./components/AddVehicleForm";
-import EditVehicleForm from "./components/EditVehicleForm";
-import RemoveVehicleModal from "./components/RemoveVehicleModal";
-import VehicleDetails from "./components/VehicleDetails";
+import ServiceHistory from "./service-history/ServiceHistory";
+import Settings from "./settings/Settings";
+import AddVehicleForm from "./vehicles/components/AddVehicleForm";
+import EditVehicleForm from "./vehicles/components/EditVehicleForm";
+import RemoveVehicleModal from "./vehicles/components/RemoveVehicleModal";
+import VehicleDetails from "./vehicles/components/VehicleDetails";
 import LogoutModal from "./components/LogoutModal";
 import navIcon1 from "../../../assets/dashboardImgs/dashNavs/nav1.svg";
 import navIcon2 from "../../../assets/dashboardImgs/dashNavs/nav2.svg";
@@ -100,9 +100,8 @@ function MobileNavDrawer({ currentPath, open, onClose, onLogout }) {
         />
       )}
       <div
-        className={`md:hidden fixed top-0 left-0 h-full w-64 bg-white z-40 flex flex-col justify-between py-6 transition-transform duration-300 ${
-          open ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`md:hidden fixed top-0 left-0 h-full w-64 bg-white z-40 flex flex-col justify-between py-6 transition-transform duration-300 ${open ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <div className="flex flex-col gap-6">
           <div className="pl-6 pr-4 flex items-center justify-between">
@@ -119,11 +118,10 @@ function MobileNavDrawer({ currentPath, open, onClose, onLogout }) {
                   key={item.id}
                   to={item.path}
                   onClick={onClose}
-                  className={`flex items-center gap-3 py-3 pr-6 cursor-pointer transition-colors ${
-                    isActive
+                  className={`flex items-center gap-3 py-3 pr-6 cursor-pointer transition-colors ${isActive
                       ? "border-l-4 border-(--blue) pl-5 bg-[#E6E6F0]"
                       : "pl-6 text-gray-500 hover:bg-gray-50"
-                  }`}
+                    }`}
                 >
                   <img
                     src={isActive ? item.activeImg : item.img}
@@ -163,11 +161,10 @@ function DashNav({ currentPath, onLogout }) {
               <Link
                 key={item.id}
                 to={item.path}
-                className={`flex  items-center gap-3 py-2 xl:py-3 pr-4 xl:pr-6 cursor-pointer transition-colors ${
-                  isActive
+                className={`flex  items-center gap-3 py-2 xl:py-3 pr-4 xl:pr-6 cursor-pointer transition-colors ${isActive
                     ? "border-l-4 border-(--blue)  pl-4 xl:pl-5 bg-[#E6E6F0]"
                     : "pl-4 xl:pl-6 text-gray-500 hover:bg-gray-50"
-                }`}
+                  }`}
               >
                 <img
                   src={isActive ? item.activeImg : item.img}
@@ -175,11 +172,10 @@ function DashNav({ currentPath, onLogout }) {
                   className="w-5 h-5 shrink-0"
                 />
                 <span
-                  className={`text-[13px] xl:text-[16px] ${
-                    isActive
+                  className={`text-[13px] xl:text-[16px] ${isActive
                       ? "text-(--blue) font-semibold"
                       : "text-gray-500 font-medium"
-                  }`}
+                    }`}
                 >
                   {item.name}
                 </span>
@@ -238,27 +234,27 @@ export default function DashboardLayout() {
 
     // Handle external QR scan landing directly on dashboard
     if (emailFromUrl && !userInfo && !isOtpPending && !hasTriggeredRef.current) {
-        hasTriggeredRef.current = true;
-        const handleExternalScan = async () => {
-            try {
-                const res = await sendLoginOTP({ email: emailFromUrl }, "Verification code sent to your email!");
-                if (res.status === 200 || res.status == true) {
-                    dispatch(setOtpPending({ 
-                        isOtpPending: true, 
-                        loginMethod: "qr",
-                        otpEmail: emailFromUrl
-                    }));
-                } else {
-                    // If API fails, redirect to home
-                    navigate("/");
-                }
-            } catch (err) {
-                console.error("External Scan landing error:", err);
-                navigate("/");
-            }
-        };
-        handleExternalScan();
-        return; // Prevent immediate redirect
+      hasTriggeredRef.current = true;
+      const handleExternalScan = async () => {
+        try {
+          const res = await sendLoginOTP({ email: emailFromUrl }, "Verification code sent to your email!");
+          if (res.status === 200 || res.status == true) {
+            dispatch(setOtpPending({
+              isOtpPending: true,
+              loginMethod: "qr",
+              otpEmail: emailFromUrl
+            }));
+          } else {
+            // If API fails, redirect to home
+            navigate("/");
+          }
+        } catch (err) {
+          console.error("External Scan landing error:", err);
+          navigate("/");
+        }
+      };
+      handleExternalScan();
+      return; // Prevent immediate redirect
     }
 
     // Normal security guard: if no user and no pending OTP, kick back to login
@@ -342,10 +338,10 @@ export default function DashboardLayout() {
       <div className="min-h-screen bg-[#F8FAFC]">
         <LoginOTPModal />
         <div className="opacity-20 pointer-events-none blur-sm">
-           <DashNav currentPath={location.pathname} />
-           <div className="flex-1 min-w-0">
-             <TopDash onAddVehicle={() => {}} />
-           </div>
+          <DashNav currentPath={location.pathname} />
+          <div className="flex-1 min-w-0">
+            <TopDash onAddVehicle={() => { }} />
+          </div>
         </div>
       </div>
     );
@@ -382,7 +378,10 @@ export default function DashboardLayout() {
       {removeVehicle && (
         <RemoveVehicleModal
           vehicle={removeVehicle}
-          onClose={() => setRemoveVehicle(null)}
+          onClose={() => {
+            setRemoveVehicle(null)
+            setViewVehicle(null)
+          }}
         />
       )}
 

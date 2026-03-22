@@ -1,6 +1,5 @@
 import { useState, useRef } from "react";
-import ServiceHistoryCard from "../../../../components/ui/ServiceHistoryCard";
-import StatusBadge from "../../../../components/ui/StatusBadge";
+import StatusBadge from "../../../../../components/ui/StatusBadge";
 import {
   ArrowLeft,
   Pencil,
@@ -13,106 +12,16 @@ import {
   Loader2,
 } from "lucide-react";
 import { useSelector } from "react-redux";
-import FileUploadField from "../../../../components/FileUploadField";
-import { getBrandLogo } from "../../../../utils/vehicleUtils";
-import { getServiceIcon } from "../../../../utils/serviceUtils";
-import { useGetUserQRQuery } from "../../../../redux/api/authApiSlice";
-import useGet from "../../../../hooks/useGet";
-import useDownloadQr from "../../../../hooks/useDownloadQr";
-import EmptyState from "../../../../components/ui/EmptyState";
-
-// const SERVICE_HISTORY_DATA = [
-//   {
-//     service: "Filter Change",
-//     serviceType: "Routine Services",
-//     lastDate: "31/09/2025",
-//     nextDate: "31/09/2025",
-//     nextSub: "Overdue by 2 weeks",
-//     status: "Overdue",
-//   },
-//   {
-//     service: "Suspension Check",
-//     serviceType: "Routine Services",
-//     lastDate: "31/09/2025",
-//     nextDate: "31/09/2025",
-//     nextSub: "Service is due today",
-//     status: "In Progress",
-//   },
-//   {
-//     service: "Battery Change",
-//     serviceType: "Repair",
-//     lastDate: "31/09/2025",
-//     nextDate: null,
-//     nextSub: null,
-//     status: "Completed",
-//   },
-//   {
-//     service: "Battery Check",
-//     serviceType: "Routine Services",
-//     lastDate: "31/09/2025",
-//     nextDate: "31/09/2025",
-//     nextSub: "Next service in 5 days",
-//     status: "Due Soon",
-//   },
-//   {
-//     service: "General Maintenance",
-//     serviceType: "Routine Services",
-//     lastDate: "31/09/2025",
-//     nextDate: "31/09/2025",
-//     nextSub: "Next service in 2 months",
-//     status: "Scheduled",
-//   },
-//   {
-//     service: "Transmission",
-//     serviceType: "Repair",
-//     lastDate: "31/09/2025",
-//     nextDate: null,
-//     nextSub: null,
-//     status: "Completed",
-//   },
-//   {
-//     service: "Radiator",
-//     serviceType: "Repair",
-//     lastDate: "31/09/2025",
-//     nextDate: null,
-//     nextSub: null,
-//     status: "Completed",
-//   },
-//   {
-//     service: "Electrical/Lighting",
-//     serviceType: "Repair",
-//     lastDate: "31/09/2025",
-//     nextDate: null,
-//     nextSub: null,
-//     status: "Completed",
-//   },
-//   {
-//     service: "Body Work",
-//     serviceType: "Repair",
-//     lastDate: "31/09/2025",
-//     nextDate: null,
-//     nextSub: null,
-//     status: "Completed",
-//   },
-//   {
-//     service: "Brake Inspection",
-//     serviceType: "Routine Services",
-//     lastDate: "31/09/2025",
-//     nextDate: "31/09/2025",
-//     nextSub: "Next service in 2 weeks",
-//     status: "Scheduled",
-//   },
-//   {
-//     service: "Oil Change",
-//     serviceType: "Routine Services",
-//     lastDate: "31/09/2025",
-//     nextDate: "31/09/2025",
-//     nextSub: "Next service in 1 month",
-//     status: "Scheduled",
-//   },
-// ];
-
-const SERVICE_HISTORY_DATA = []
+import FileUploadField from "../../../../../components/FileUploadField";
+import { getBrandLogo } from "../../../../../utils/vehicleUtils";
+import { getServiceIcon } from "../../../../../utils/serviceUtils";
+import { useGetUserQRQuery } from "../../../../../redux/api/authApiSlice";
+import useGet from "../../../../../hooks/useGet";
+import useDownloadQr from "../../../../../hooks/useDownloadQr";
+import EmptyState from "../../../../../components/ui/EmptyState";
+import { useGetServiceHistoryQuery } from "../../../../../redux/api/serviceHistoryApiSlice";
+import Table from "../../../../../components/ui/Table";
+import Loader from "../../../../../components/ui/Loader";
 
 const TABS = [
   { key: "basic", label: "Basic Info", icon: Car },
@@ -221,119 +130,70 @@ function OwnerDetailsTab({ vehicle }) {
 }
 
 
-function ServiceHistoryTab() {
-  const HEADERS = [
-    "Service",
-    "Service Type",
-    "Last Service Date",
-    "Next Service Date",
-    "Status",
+function ServiceHistoryTab({ vehicle }) {
+
+  const [page, setPage] = useState(1);
+
+  const { data: vehicleServiceHistory, loading: isLoadingServiceHistory } = useGet(useGetServiceHistoryQuery, { vehicle: vehicle?._id })
+
+
+
+  const columns = [
+    {
+      key: "service", label: "Service", render: (row) => (
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+            <img src={getServiceIcon(row.service)} alt={row.service} className="w-5 h-5" />
+          </div>
+          <span>{row.service}</span>
+        </div>
+      )
+    },
+    { key: "serviceType", label: "Service Type" },
+    { key: "serviceDate", label: "Service Date", render: (row) => <span>{row.serviceDate?.split('T')[0]}</span> },
+    { key: "nextServiceDate", label: "Next Service Date", render: (row) => <span>{row.nextServiceDate?.split('T')[0]}</span> },
+    { key: "serviceStatus", label: "Status", render: (row) => <StatusBadge status={row.serviceStatus} /> },
   ];
+
+  if (isLoadingServiceHistory) {
+    return <Loader />;
+  }
 
   return (
     <>
-      <div className="md:hidden space-y-3">
-        {SERVICE_HISTORY_DATA.map((row, i) => (
-          <ServiceHistoryCard
-            key={i}
-            title={row.service}
-            status={row.status}
-            rows={[
-              { label: "Service Type", value: row.serviceType },
-              { label: "Last Service Date", value: row.lastDate },
-              {
-                label: "Next Service Date",
-                value: row.nextDate || "--",
-                subValue: row.nextSub,
-              },
-            ]}
-          />
-        ))}
-        {SERVICE_HISTORY_DATA.length === 0 && (
-          <EmptyState
-            title="No Service History Found"
-            description="Keep track of your car's maintenance by logging your previous or recent services here."
-          />
-        )}
-      </div>
-
-      <div className="hidden md:block overflow-x-auto">
-        <table className="w-full min-w-0">
-          <thead>
-            <tr className="border-b border-gray-100">
-              {HEADERS.map((h) => (
-                <th
-                  key={h}
-                  className="text-left text-sm font-semibold text-[#3B82F6] px-4  py-3 whitespace-nowrap"
-                >
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {SERVICE_HISTORY_DATA.map((row, i) => (
-              <tr
-                key={i}
-                className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
-              >
-                <td className=" py-3">
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={getServiceIcon(row.service)}
-                      alt={row.service}
-                      className="w-9 h-9 rounded-full object-cover shrink-0"
-                    />
-                    <span className="text-sm font-medium text-gray-900 whitespace-nowrap">
-                      {row.service}
-                    </span>
-                  </div>
-                </td>
-                <td className="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">
-                  {row.serviceType}
-                </td>
-                <td className="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">
-                  {row.lastDate}
-                </td>
-                <td className="px-4 py-3">
-                  {row.nextDate ? (
-                    <div>
-                      <p className="text-sm text-gray-800 font-medium">
-                        {row.nextDate}
-                      </p>
-                      <p className="text-xs text-gray-400 mt-0.5">
-                        {row.nextSub}
-                      </p>
-                    </div>
-                  ) : (
-                    <span className="text-sm text-gray-400">--</span>
-                  )}
-                </td>
-                <td className="px-4 py-3">
-                  <StatusBadge status={row.status} />
-                </td>
-              </tr>
-            ))}
-            {SERVICE_HISTORY_DATA.length === 0 && (
-              <tr>
-                <td colSpan={5} className="py-4">
-                  <EmptyState
-                    title="No Service History Found"
-                    description="Keep track of your car's maintenance by logging your previous or recent services here."
-                  />
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+      {vehicleServiceHistory?.serviceHistory?.length > 0 ? (
+        <Table
+          columns={columns}
+          data={vehicleServiceHistory?.serviceHistory || []}
+          showSearch={false}
+          border={false}
+          searchableFields={[
+            "service",
+            "vehicle",
+            "lastServiceDate",
+            "date",
+            "serviceProvider",
+            "status",
+            "nextServiceSub",
+            "missedServiceSub",
+          ]}
+          totalCount={vehicleServiceHistory?.totalCount || 0}
+          currentPage={page}
+          onPageChange={setPage}
+        />
+      ) : (
+        <EmptyState
+          title="No Service History Found"
+          description="Keep track of your car's maintenance by logging your previous or recent services here."
+        />
+      )}
     </>
   );
 }
 
 
 function QRCodeTab({ vehicle }) {
-  const { data: userQrData, isLoading: isUserQrLoading, refetch: refetchQr } = useGet(useGetUserQRQuery);
+  const { data: userQrData, loading: isUserQrLoading, refetch: refetchQr } = useGet(useGetUserQRQuery);
   const { downloadImage, downloadPDF } = useDownloadQr();
 
   const handleDownloadImage = () => {
@@ -362,9 +222,7 @@ function QRCodeTab({ vehicle }) {
             alt="QR Code"
             className="w-full h-full object-contain"
           />
-        ) : (
-          <div className="text-xs text-gray-400 px-4">Failed to load QR code</div>
-        )}
+        ) : null}
       </div>
 
       <div className="flex flex-col gap-3 w-full max-w-sm">
@@ -433,7 +291,7 @@ export default function VehicleDetails({ vehicle, onClose, onEdit, onRemove }) {
             <Pencil size={15} />
             <span className="text-sm font-semibold">Edit Details</span>
           </button>
-          
+
           <button
             onClick={() => onRemove?.(vehicle)}
             className="flex items-center gap-2 text-(--red) hover:opacity-70 transition cursor-pointer"
@@ -444,7 +302,7 @@ export default function VehicleDetails({ vehicle, onClose, onEdit, onRemove }) {
         </div>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden flex-1">
+      <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden flex-1 flex flex-col">
         <div className="flex border-b px-4 border-gray-100  overflow-x-auto">
           {TABS.map(({ key, label, icon: Icon }) => {
             const active = activeTab === key;
@@ -469,10 +327,10 @@ export default function VehicleDetails({ vehicle, onClose, onEdit, onRemove }) {
           })}
         </div>
 
-        <div className="px-5 xl:px-10 py-6 xl:py-8 flex-1 overflow-y-auto">
+        <div className="px-5 xl:px-10 py-6 xl:py-8 flex-1 overflow-y-auto flex flex-col">
           {activeTab === "basic" && <BasicInfoTab vehicle={vehicle} />}
           {activeTab === "owner" && <OwnerDetailsTab vehicle={vehicle} />}
-          {activeTab === "history" && <ServiceHistoryTab />}
+          {activeTab === "history" && <ServiceHistoryTab vehicle={vehicle} />}
           {activeTab === "qr" && <QRCodeTab vehicle={vehicle} />}
         </div>
       </div>

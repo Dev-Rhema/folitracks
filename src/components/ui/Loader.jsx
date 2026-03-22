@@ -1,20 +1,23 @@
 import React from "react";
 
-const Loader = ({ size = "default" }) => {
+const Loader = ({ size, message = "Loading..." }) => {
   const isSmall = size === "small";
   
   return (
-    <div className={`flex justify-center items-center h-full w-full ${isSmall ? "min-h-[40px]" : "min-h-[100px]"}`}>
-      <div className={`relative ${isSmall ? "w-8 h-8" : "w-16 h-16"}`}>
-        {/* Outer Ring */}
-        <div className={`absolute inset-0 rounded-full border-${isSmall ? "2" : "4"} border-t-[#080E2B] border-r-transparent border-b-[#080E2B] border-l-transparent animate-spin`}></div>
-
-        {/* Inner Ring */}
-        <div className={`absolute ${isSmall ? "inset-1.5" : "inset-3"} rounded-full border-${isSmall ? "2" : "4"} border-t-transparent border-r-[#24243E] border-b-transparent border-l-[#24243E] animate-spin-reverse`}></div>
-
-        {/* Center Dot */}
-        <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ${isSmall ? "w-1 h-1" : "w-2 h-2"} bg-[#080E2B] rounded-full animate-pulse shadow-[0_0_10px_rgba(8,14,43,0.5)]`}></div>
+    <div className={`flex flex-col justify-center items-center h-full w-full ${isSmall ? "min-h-[40px]" : "min-h-[300px] flex-1 py-12"} animate-fadeIn`}>
+      <div className={`relative flex items-center justify-center ${isSmall ? "w-8 h-8" : "w-14 h-14"}`}>
+        <div className={`absolute inset-0 rounded-full border-t-2 border-r-2 border-b-transparent border-l-transparent border-(--blue) animate-spin`}></div>
+        
+        <div className={`absolute ${isSmall ? "inset-1" : "inset-3"} rounded-full border-b-2 border-l-2 border-t-transparent border-r-transparent border-(--blue) opacity-40 animate-spin-reverse`}></div>
+        
+        <div className={`rounded-full bg-(--blue) ${isSmall ? "w-1 h-1" : "w-2 h-2"} animate-pulse shadow-[0_0_15px_rgba(0,0,102,0.3)]`}></div>
       </div>
+      
+      {!isSmall && (
+        <span className="mt-8 text-(--blue) font-semibold text-xs tracking-[0.2em] uppercase opacity-70 animate-pulse font-title">
+          {message}
+        </span>
+      )}
 
       <style dangerouslySetInnerHTML={{
         __html: `
@@ -23,7 +26,7 @@ const Loader = ({ size = "default" }) => {
           to { transform: rotate(0deg); }
         }
         .animate-spin-reverse {
-          animation: spin-reverse 1.5s linear infinite;
+          animation: spin-reverse 2s linear infinite;
         }
       `}} />
     </div>

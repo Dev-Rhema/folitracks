@@ -3,7 +3,7 @@ import { Wrench } from "lucide-react";
 import CTA from "../../../../../components/CTA";
 import FormInputField from "../../../../../components/FormInputField";
 import SearchableSelect from "../../../../../components/SearchableSelect";
-import { SERVICE_TYPES, SERVICES } from "./constants";
+import { SERVICE_TYPES, SERVICES } from "../constants";
 import { getBrandLogo } from "../../../../../utils/vehicleUtils";
 import FormTextarea from "../../../../../components/FormTextArea";
 

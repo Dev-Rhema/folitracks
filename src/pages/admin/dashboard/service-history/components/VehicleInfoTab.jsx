@@ -13,8 +13,11 @@ function InfoField({ label, value }) {
 }
 
 function QRSection({ vehicle }) {
-  const { data: qrData, isLoading } = useGet(useGetUserQRQuery);
-  const { downloadImage, downloadPDF } = useDownloadQr();
+  // const { data: qrData, isLoading } = useGet(useGetUserQRQuery);
+  // const { downloadImage, downloadPDF } = useDownloadQr();
+
+  const qrData = ""
+  const isLoading = false
 
   return (
     <div>
@@ -38,22 +41,22 @@ function QRSection({ vehicle }) {
       </div>
       <div className="flex gap-3">
         <button
-          onClick={() =>
-            downloadPDF(qrData?.data?.base64 || qrData?.base64, {
-              make: vehicle.make,
-              model: vehicle.vehicleModel,
-              plateNumber: vehicle.plateNumber,
-            })
-          }
+          // onClick={() =>
+          //   downloadPDF(qrData?.data?.base64 || qrData?.base64, {
+          //     make: vehicle.make,
+          //     model: vehicle.vehicleModel,
+          //     plateNumber: vehicle.plateNumber,
+          //   })
+          // }
           className="flex items-center gap-1.5 px-4 py-2 bg-(--blue) text-white text-xs font-semibold rounded-lg hover:opacity-90 transition cursor-pointer"
         >
           <Download size={13} />
           Download PDF
         </button>
         <button
-          onClick={() =>
-            downloadImage(qrData?.data?.base64 || qrData?.base64, vehicle.plateNumber)
-          }
+          // onClick={() =>
+          //   downloadImage(qrData?.data?.base64 || qrData?.base64, vehicle.plateNumber)
+          // }
           className="flex items-center gap-1.5 px-4 py-2 border border-(--blue) text-(--blue) text-xs font-semibold rounded-lg hover:bg-gray-50 transition cursor-pointer"
         >
           <Download size={13} />

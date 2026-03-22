@@ -1,72 +1,29 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Pencil, Eye, EyeOff, ArrowLeft, CheckCircle, HelpCircle } from "lucide-react";
-import CTA from "../../../components/CTA";
-
-
-const USER = {
-  initials: "CE",
-  fullName: "Cynthia Ejike",
-  email: "cynthiaejike@gmail.com",
-  phone: "+234 704 543 5413",
-  accountType: "Individual Car Owner",
-  password: "53888887ABcf#",
-};
+import CTA from "../../../../components/CTA";
+import { useSelector } from "react-redux";
+import { useForm } from "react-hook-form";
+import FormInputField from "../../../../components/FormInputField";
+import PasswordInputField from "../../../../components/PasswordInputField";
 
 const ACCOUNT_TYPES = [
   "Individual Car Owner",
-  "Fleet Manager",
-  "Dealer",
+  "Automobile Related Business"
 ];
 
 
-function PasswordInput({ label, value, onChange, placeholder, className = "" }) {
-  const [visible, setVisible] = useState(false);
-  return (
-    <div className={`flex flex-col gap-2 ${className}`}>
-      <label className="text-sm font-medium text-gray-500">{label}</label>
-      <div className="relative">
-        <input
-          type={visible ? "text" : "password"}
-          value={value}
-          onChange={onChange}
-          placeholder={placeholder}
-          className="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-200 pr-10"
-        />
-        <button
-          type="button"
-          onClick={() => setVisible((v) => !v)}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer"
-        >
-          {visible ? <EyeOff size={18} /> : <Eye size={18} />}
-        </button>
-      </div>
-    </div>
-  );
-}
+function Avatar({ name }) {
+  const initials = name
+    ?.split(" ")
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
 
-// ─── Field input ──────────────────────────────────────────────────────────────
-
-function FieldInput({ label, value, onChange, className = "" }) {
-  return (
-    <div className={`flex flex-col gap-2 ${className}`}>
-      <label className="text-sm font-medium text-gray-500">{label}</label>
-      <input
-        type="text"
-        value={value}
-        onChange={onChange}
-        className="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded text-sm text-gray-800 focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-200"
-      />
-    </div>
-  );
-}
-
-// ─── Avatar ───────────────────────────────────────────────────────────────────
-
-function Avatar() {
   return (
     <div className="relative w-fit mb-6">
       <div className="w-20 h-20 rounded-full bg-[#00002b] flex items-center justify-center">
-        <span className="text-white text-2xl font-bold">{USER.initials}</span>
+        <span className="text-white text-2xl font-bold">{initials || "U"}</span>
       </div>
       <div className="absolute bottom-0 right-0 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
         <Pencil size={12} className="text-white" strokeWidth={2.5} />
@@ -75,7 +32,6 @@ function Avatar() {
   );
 }
 
-// ─── Section heading ──────────────────────────────────────────────────────────
 
 function SectionTitle({ children }) {
   return (
@@ -83,10 +39,10 @@ function SectionTitle({ children }) {
   );
 }
 
-// ─── View mode ────────────────────────────────────────────────────────────────
 
 function ViewSettings({ onEdit }) {
   const [showPassword, setShowPassword] = useState(false);
+  const user = useSelector((state) => state?.app?.userInfo?.user);
 
   return (
     <div className="flex flex-col gap-5 h-full">
@@ -105,22 +61,22 @@ function ViewSettings({ onEdit }) {
 
       {/* Card */}
       <div className="border border-gray-200 rounded-2xl p-8 flex-1">
-        <Avatar />
+        <Avatar name={user?.fullname} />
 
         {/* Personal Information */}
         <SectionTitle>Personal Information</SectionTitle>
         <div className="grid grid-cols-3 gap-8 mb-8">
           <div>
             <p className="text-sm text-gray-400 mb-1">Full Name</p>
-            <p className="text-sm font-medium text-gray-900">{USER.fullName}</p>
+            <p className="text-sm font-medium text-gray-900">{user?.fullname || "—"}</p>
           </div>
           <div>
             <p className="text-sm text-gray-400 mb-1">Email Address</p>
-            <p className="text-sm font-medium text-gray-900">{USER.email}</p>
+            <p className="text-sm font-medium text-gray-900">{user?.email || "—"}</p>
           </div>
           <div>
             <p className="text-sm text-gray-400 mb-1">Phone Number</p>
-            <p className="text-sm font-medium text-gray-900">{USER.phone}</p>
+            <p className="text-sm font-medium text-gray-900">{user?.phone || "—"}</p>
           </div>
         </div>
 
@@ -129,7 +85,7 @@ function ViewSettings({ onEdit }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
           <div>
             <p className="text-sm text-gray-400 mb-1">Account Type</p>
-            <p className="text-sm font-medium text-gray-900">{USER.accountType}</p>
+            <p className="text-sm font-medium text-gray-900">{user?.accountType || "—"}</p>
             <p className="text-xs text-gray-400 italic mt-2 leading-relaxed">
               Individual accounts can register up to 10 vehicles, ideal for personal
               or family use. If you manage a fleet or multiple customer cars, switch
@@ -140,13 +96,13 @@ function ViewSettings({ onEdit }) {
             <p className="text-sm text-gray-400 mb-1">Password</p>
             <div className="flex items-center gap-2">
               <p className="text-sm font-medium text-gray-900 tracking-widest">
-                {showPassword ? USER.password : "•".repeat(13)}
+                {showPassword ? "•••••••••••••" : "•••••••••••••"}
               </p>
               <button
-                onClick={() => setShowPassword((v) => !v)}
-                className="text-gray-400 hover:text-gray-600 cursor-pointer"
+                disabled
+                className="text-gray-400 opacity-50 cursor-not-allowed"
               >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                <Eye size={18} /> 
               </button>
             </div>
           </div>
@@ -155,8 +111,6 @@ function ViewSettings({ onEdit }) {
     </div>
   );
 }
-
-// ─── Discard modal ────────────────────────────────────────────────────────────
 
 function DiscardModal({ onStay, onExit }) {
   return (
@@ -191,34 +145,35 @@ function DiscardModal({ onStay, onExit }) {
   );
 }
 
-// ─── Edit mode ────────────────────────────────────────────────────────────────
 
 function EditSettings({ onCancel, onSave }) {
-  const [form, setForm] = useState({
-    fullName: USER.fullName,
-    email: USER.email,
-    phone: USER.phone,
-    accountType: USER.accountType,
-    password: "",
-    confirmPassword: "",
-  });
+  const user = useSelector((state) => state?.app?.userInfo?.user);
   const [showDiscard, setShowDiscard] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const update = (field) => (e) =>
-    setForm((prev) => ({ ...prev, [field]: e.target.value }));
+  const { register, handleSubmit, watch, formState: { errors, isDirty } } = useForm({
+    defaultValues: {
+      fullname: user?.fullname || "",
+      email: user?.email || "",
+      phone: user?.phone || "",
+      accountType: user?.accountType || "",
+      password: "",
+      confirmPassword: "",
+    }
+  });
 
-  const isDirty =
-    form.fullName !== USER.fullName ||
-    form.email !== USER.email ||
-    form.phone !== USER.phone ||
-    form.accountType !== USER.accountType ||
-    form.password.length > 0;
-
-  const passwordChanged = form.password.length > 0;
+  const watchPassword = watch("password");
+  const passwordChanged = watchPassword?.length > 0;
 
   const handleCancel = () => {
     if (isDirty) setShowDiscard(true);
     else onCancel();
+  };
+
+  const onSubmit = (data) => {
+    console.log("Saving settings:", data);
+    onSave();
   };
 
   return (
@@ -237,30 +192,48 @@ function EditSettings({ onCancel, onSave }) {
         </button>
 
         {/* Card */}
-        <div className="border border-gray-200 rounded-2xl p-8 flex-1">
-          <Avatar />
+        <form onSubmit={handleSubmit(onSubmit)} className="border border-gray-200 rounded-2xl p-8 flex-1">
+          <Avatar name={user?.fullname} />
 
           {/* Personal Information */}
           <SectionTitle>Personal Information</SectionTitle>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-            <FieldInput label="Full Name" value={form.fullName} onChange={update("fullName")} />
-            <FieldInput label="Email Address" value={form.email} onChange={update("email")} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <FormInputField
+              label="Full Name"
+              {...register("fullname", { required: "Full name is required" })}
+              error={errors.fullname?.message}
+            />
+            <FormInputField
+              label="Email Address"
+              type="email"
+              {...register("email", { 
+                required: "Email is required",
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: "Invalid email address"
+                }
+              })}
+              error={errors.email?.message}
+            />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-            <FieldInput label="Phone Number" value={form.phone} onChange={update("phone")} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <FormInputField
+              label="Phone Number"
+              {...register("phone", { required: "Phone number is required" })}
+              error={errors.phone?.message}
+            />
           </div>
 
           {/* Account Details */}
           <SectionTitle>Account Details</SectionTitle>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             {/* Account Type */}
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium text-gray-500">Account Type</label>
+            <div className="flex flex-col gap-2 mb-4">
+              <label className="text-sm font-medium text-gray-700">Account Type</label>
               <div className="relative">
                 <select
-                  value={form.accountType}
-                  onChange={update("accountType")}
-                  className="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded text-sm text-gray-800 appearance-none focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-200 cursor-pointer"
+                  {...register("accountType")}
+                  className="w-full px-4 py-3 bg-[#f1f5fb] border border-gray-200 rounded-lg text-sm text-gray-800 appearance-none focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-200 cursor-pointer"
                 >
                   {ACCOUNT_TYPES.map((t) => (
                     <option key={t} value={t}>{t}</option>
@@ -275,38 +248,46 @@ function EditSettings({ onCancel, onSave }) {
             </div>
 
             {/* Password */}
-            <PasswordInput
-              label="Password"
-              value={form.password}
-              onChange={update("password")}
-              placeholder={`${"•".repeat(13)}`}
+            <PasswordInputField
+              label="New Password (optional)"
+              placeholder="•••••••••••••"
+              showPassword={showPassword}
+              onTogglePassword={() => setShowPassword(!showPassword)}
+              {...register("password")}
             />
           </div>
 
           {/* Confirm Password — only when password is being changed */}
           {passwordChanged && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-              <PasswordInput
-                label="Confirm Password"
-                value={form.confirmPassword}
-                onChange={update("confirmPassword")}
+              <PasswordInputField
+                label="Confirm New Password"
                 placeholder="•••••••••••••"
+                showPassword={showConfirmPassword}
+                onTogglePassword={() => setShowConfirmPassword(!showConfirmPassword)}
+                {...register("confirmPassword", {
+                  validate: (val) => {
+                    if (watch("password") != val) {
+                      return "Passwords do not match";
+                    }
+                  },
+                })}
+                error={errors.confirmPassword?.message}
               />
             </div>
           )}
 
           {/* Buttons */}
           <div className="flex gap-3 mt-6">
-            <CTA name="Cancel" variant="outline" color="blue" onClick={handleCancel} />
-            <CTA name="Save" color="blue" onClick={onSave} />
+            <CTA name="Cancel" variant="outline" color="blue" type="button" onClick={handleCancel} />
+            <CTA name="Save Changes" color="blue" type="submit" />
           </div>
-        </div>
+        </form>
       </div>
     </>
   );
 }
 
-// ─── Success screen ───────────────────────────────────────────────────────────
 
 function SuccessSettings({ onClose }) {
   return (
@@ -340,7 +321,6 @@ function SuccessSettings({ onClose }) {
   );
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
 
 export default function Settings() {
   const [mode, setMode] = useState("view"); // "view" | "edit" | "success"

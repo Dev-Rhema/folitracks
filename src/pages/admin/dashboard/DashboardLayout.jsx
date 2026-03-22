@@ -4,7 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Bell, Menu, X } from "lucide-react";
 import { useSelector } from "react-redux";
 import Dashboard from "./Dashboard";
-import ServiceHistory from "./ServiceHistory";
+import ServiceHistory from "./service-history/ServiceHistory";
 import LogoutModal from "./components/LogoutModal";
 import navIcon1 from "../../../assets/dashboardImgs/dashNavs/nav1.svg";
 import navIcon3 from "../../../assets/dashboardImgs/dashNavs/nav3.svg";
@@ -18,7 +18,7 @@ import { useSendLoginOTPMutation } from "../../../redux/api/authApiSlice";
 import usePost from "../../../hooks/usePost";
 import SearchBar from "./components/SearchBar";
 import CTA from "../../../components/CTA";
-import AddLog from "./components/add-log/AddLog";
+import AddLog from "./service-history/components/AddLog";
 
 const DASHNAVS = [
   {

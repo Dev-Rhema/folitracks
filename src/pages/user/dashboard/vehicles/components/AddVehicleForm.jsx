@@ -4,16 +4,16 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
-import { vehicleFullSchema } from "../../../../validation/authSchema";
-import { useGetVehiclesQuery, useRegisterVehicleMutation } from "../../../../redux/api/vehicleApiSlice";
-import { useUploadDocumentMutation } from "../../../../redux/api/documentApiSlice";
-import { useGetUserQRQuery } from "../../../../redux/api/authApiSlice";
-import usePost from "../../../../hooks/usePost";
-import useDownloadQr from "../../../../hooks/useDownloadQr";
+import { vehicleFullSchema } from "../../../../../validation/authSchema";
+import { useGetVehiclesQuery, useRegisterVehicleMutation } from "../../../../../redux/api/vehicleApiSlice";
+import { useUploadDocumentMutation } from "../../../../../redux/api/documentApiSlice";
+import { useGetUserQRQuery } from "../../../../../redux/api/authApiSlice";
+import usePost from "../../../../../hooks/usePost";
+import useDownloadQr from "../../../../../hooks/useDownloadQr";
 import ConfirmAddVehicle from "./ConfirmAddVehicleModal";
-import VehicleInfo from "./add-vehicle/VehicleInfo";
-import Ownership from "./add-vehicle/Ownership";
-import QR from "./add-vehicle/QR";
+import VehicleInfo from "./VehicleInfo";
+import Ownership from "./Ownership";
+import QR from "./QR";
 
 
 

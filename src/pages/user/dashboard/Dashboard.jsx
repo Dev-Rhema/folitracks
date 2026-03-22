@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import DashHeader from "./components/DashHeader";
 import Table from "../../../components/ui/Table";
-import ServiceHistoryCard from "../../../components/ui/ServiceHistoryCard";
 import StatusBadge from "../../../components/ui/StatusBadge";
 import { getBrandLogo } from "../../../utils/vehicleUtils";
 import { getServiceIcon } from "../../../utils/serviceUtils";
@@ -227,34 +226,6 @@ export default function Dashboard() {
             title="Service History"
             to="/dashboard/service-history"
           />
-
-          <div className="md:hidden space-y-3">
-            {HISTORY_PREVIEW.length > 0 ? (
-              HISTORY_PREVIEW.map((row, i) => (
-                <ServiceHistoryCard
-                  key={i}
-                  icon={getServiceIcon(row.service)}
-                  title={row.service}
-                  status={row.status}
-                  rows={[
-                    { label: "Vehicle", value: row.vehicle, subValue: row.reg },
-                    { label: "Date", value: row.date },
-                    { label: "Cost", value: row.cost },
-                    { label: "Service Provider", value: row.provider },
-                  ]}
-                  onViewDetails={() => { }}
-                />
-              ))
-            ) : (
-              <div className="bg-white border rounded-2xl">
-                <EmptyState
-                  title="No Service History Found"
-                  description="Keep track of your car's maintenance by logging your previous or recent services here."
-                />
-              </div>
-            )}
-          </div>
-
           <div className="border p-2.5 bg-white rounded-2xl">
             {HISTORY_PREVIEW.length > 0 ? (<Table
               columns={HISTORY_COLUMNS}

@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { ArrowLeft, Pencil, Trash2, Wrench, Car, User } from "lucide-react";
-import { getBrandLogo } from "../../../../utils/vehicleUtils";
-import ServiceSummaryTab from "./service-details/ServiceSummaryTab";
-import VehicleInfoTab from "./service-details/VehicleInfoTab";
-import OwnerDetailsTab from "./service-details/OwnerDetailsTab";
+import { getBrandLogo } from "../../../../../utils/vehicleUtils";
+import ServiceSummaryTab from "./ServiceSummaryTab";
+import VehicleInfoTab from "./VehicleInfoTab";
+import OwnerDetailsTab from "./OwnerDetailsTab";
 
 const TABS = [
   { key: "summary", label: "Service Summary", icon: Wrench },

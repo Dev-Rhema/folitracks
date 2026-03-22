@@ -4,7 +4,7 @@ import SearchableSelect from "../../../../../components/SearchableSelect";
 import FileUploadField from "../../../../../components/FileUploadField";
 import CTA from "../../../../../components/CTA";
 import { VehicleInput, StepHeader, PrivacyNotice } from "./Shared";
-import { VEHICLE_MAKES, VEHICLE_MODELS } from "./constants";
+import { VEHICLE_MAKES, VEHICLE_MODELS } from "../constants";
 
 export default function VehicleInfo({ register, control, errors, watch, setValue, onNext, onClose }) {
   const selectedMake = watch("make");

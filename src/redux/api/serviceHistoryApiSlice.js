@@ -3,11 +3,11 @@ import { generalApiSlice } from "./apiSlice";
 const serviceHistoryApiSlice = generalApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     adminGetServiceHistory: builder.query({
-     query: () => ({
+      query: () => ({
         url: "/admin/service-history",
         method: "GET",
       }),
-    }), 
+    }),
 
     adminAddServiceHistory: builder.mutation({
       query: (body) => ({
@@ -26,9 +26,10 @@ const serviceHistoryApiSlice = generalApiSlice.injectEndpoints({
     // }),
 
     getServiceHistory: builder.query({
-     query: () => ({
-        url: "/service-history",
+      query: (param) => ({
+        url: `/service-history`,
         method: "GET",
+        params: param,
       }),
     }),
   }),

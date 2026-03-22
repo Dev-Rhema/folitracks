@@ -1,14 +1,14 @@
 import { useState, useMemo } from "react";
-import Table from "../../../components/ui/Table";
-import DashHeader from "./components/DashHeader";
-import SearchBar from "./components/SearchBar";
-import FilterDropdown from "../../../components/ui/FilterDropdown";
-import { getBrandLogo } from "../../../utils/vehicleUtils";
-import { useGetVehiclesQuery } from "../../../redux/api/vehicleApiSlice";
-import useGet from "../../../hooks/useGet";
-import EmptyState from "../../../components/ui/EmptyState";
-import TableActionMenu from "../../../components/ui/TableActionMenu";
-import Loader from "../../../components/ui/Loader";
+import Table from "../../../../components/ui/Table";
+import DashHeader from "../components/DashHeader";
+import SearchBar from "../components/SearchBar";
+import FilterDropdown from "../../../../components/ui/FilterDropdown";
+import { getBrandLogo } from "../../../../utils/vehicleUtils";
+import { useGetVehiclesQuery } from "../../../../redux/api/vehicleApiSlice";
+import useGet from "../../../../hooks/useGet";
+import EmptyState from "../../../../components/ui/EmptyState";
+import TableActionMenu from "../../../../components/ui/TableActionMenu";
+import Loader from "../../../../components/ui/Loader";
 
 const VEHICLE_TYPE_OPTIONS = [
   "Toyota", "Lexus", "Mercedes-Benz", "BMW", "Hyundai", "Kia", "Ford", "Honda", "Nissan", "Audi", "Volkswagen"
@@ -48,8 +48,8 @@ function Vehicles({ onActionClick }) {
       },
     },
     { key: "plateNumber", label: "Registration Number" },
-    { key: "lastServiceDate", label: "Last Service Date" },
-    { key: "nextServiceDate", label: "Next Service Date" },
+    { key: "lastServiceDate", label: "Last Service Date", render: (row) => <span>{row.lastServiceDate?.split('T')[0]}</span> },
+    { key: "nextServiceDate", label: "Next Service Date", render: (row) => <span>{row.nextServiceDate?.split('T')[0]}</span> },
     {
       key: "actions",
       label: "Action",

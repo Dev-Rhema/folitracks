@@ -6,7 +6,7 @@ import usePost from "../../../../../hooks/usePost";
 import useGet from "../../../../../hooks/useGet";
 import { useAdminAddServiceHistoryMutation } from "../../../../../redux/api/serviceHistoryApiSlice";
 import { useAdminGetVehiclesQuery } from "../../../../../redux/api/vehicleApiSlice";
-import { step2Schema } from "./constants";
+import { step2Schema } from "../constants";
 import ChooseVehicle from "./ChooseVehicle";
 import ServiceDetails from "./ServiceDetails";
 import Success from "./Success";

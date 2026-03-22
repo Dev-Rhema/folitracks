@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { HelpCircle, CheckCircle } from "lucide-react";
-import usePost from "../../../../hooks/usePost";
-import { useDeleteVehicleMutation, useGetVehiclesQuery } from "../../../../redux/api/vehicleApiSlice";
-import CTA from "../../../../components/CTA";
+import usePost from "../../../../../hooks/usePost";
+import { useDeleteVehicleMutation, useGetVehiclesQuery } from "../../../../../redux/api/vehicleApiSlice";
+import CTA from "../../../../../components/CTA";
 
 export default function RemoveVehicleModal({ vehicle, onClose }) {
   const [removed, setRemoved] = useState(false);

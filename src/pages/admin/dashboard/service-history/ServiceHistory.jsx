@@ -1,17 +1,18 @@
 import { useState } from "react";
-import Table from "../../../components/ui/Table";
-import StatusBadge from "../../../components/ui/StatusBadge";
+import Table from "../../../../components/ui/Table";
+import StatusBadge from "../../../../components/ui/StatusBadge";
 import ServiceDetailsView from "./components/ServiceDetailsView";
 import { CheckSquare, Clock, AlertTriangle } from "lucide-react";
-import FilterDropdown from "../../../components/ui/FilterDropdown";
-import SearchBar from "./components/SearchBar";
-import DashHeader from "./components/DashHeader";
-import { useAdminGetServiceHistoryQuery } from "../../../redux/api/serviceHistoryApiSlice";
-import { getServiceIcon } from "../../../utils/serviceUtils";
-import useGet from "../../../hooks/useGet";
-import { capitalizeFirstLetter } from "../../../utils/utils";
-import TableActionMenu from "../../../components/ui/TableActionMenu";
+import FilterDropdown from "../../../../components/ui/FilterDropdown";
+import SearchBar from "../components/SearchBar";
+import DashHeader from "../components/DashHeader";
+import { useAdminGetServiceHistoryQuery } from "../../../../redux/api/serviceHistoryApiSlice";
+import { getServiceIcon } from "../../../../utils/serviceUtils";
+import useGet from "../../../../hooks/useGet";
+import { capitalizeFirstLetter } from "../../../../utils/utils";
+import TableActionMenu from "../../../../components/ui/TableActionMenu";
 import { toast } from "react-toastify";
+import Loader from "../../../../components/ui/Loader";
 
 const REPAIR_SERVICES = [
   "Brake Pad",
@@ -114,7 +115,7 @@ const COMPLETED_COLUMNS = [
 ];
 
 const UPCOMING_COLUMNS = [
-  { key: "sn", label: "S/N", render: (row, index, ) => index + 1 },
+  { key: "sn", label: "S/N", render: (row, index,) => index + 1 },
   { key: "service", label: "Service", render: renderServiceCell },
   { key: "vehicle", label: "Vehicle", render: renderVehicleCell },
   { key: "owner", label: "Owner", render: renderOwnerCell },
@@ -165,6 +166,8 @@ function ServiceHistory() {
   const [selectedService, setSelectedService] = useState(null);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [rescheduleRow, setRescheduleRow] = useState(null);
+  const [page, setPage] = useState(1);
+
 
   const { data: serviceHistories, loading: loadingServiceHistories } = useGet(useAdminGetServiceHistoryQuery)
 
@@ -342,6 +345,10 @@ function ServiceHistory() {
     }
   };
 
+  if(loadingServiceHistories) {
+    return <Loader />
+  }
+
   return (
     <div className="flex flex-col flex-1">
       {selectedService && selectedVehicle ? (
@@ -379,9 +386,6 @@ function ServiceHistory() {
                         : "text-gray-500 hover:text-gray-700"
                         }`}
                     >
-                      {tab.key !== "completed" && (
-                        <span className="absolute -top-1 right-0 w-2 h-2 bg-red-500 rounded-full" />
-                      )}
                       <IconComponent size={16} />
                       <span>
                         {tab.name} ({tab.count})
@@ -429,6 +433,9 @@ function ServiceHistory() {
                   "serviceProvider",
                   "serviceStatus",
                 ]}
+                totalCount={serviceHistories?.totalCount || 0}
+                onPageChange={setPage}
+                currentPage={page}
               />
             </div>
           </div>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { CheckCircle } from "lucide-react";
-import CTA from "../../../../components/CTA";
+import CTA from "../../../../../components/CTA";
 
 export default function ConfirmAddVehicle({ vehicle, onClose, onConfirm, isLoading }) {
 
