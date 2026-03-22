@@ -3,9 +3,10 @@ import { generalApiSlice } from "./apiSlice";
 const serviceHistoryApiSlice = generalApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     adminGetServiceHistory: builder.query({
-      query: () => ({
+      query: (param) => ({
         url: "/admin/service-history",
         method: "GET",
+        params: param,
       }),
     }),
 

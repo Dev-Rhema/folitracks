@@ -169,7 +169,7 @@ function ServiceHistory() {
   const [page, setPage] = useState(1);
 
 
-  const { data: serviceHistories, loading: loadingServiceHistories } = useGet(useAdminGetServiceHistoryQuery)
+  const { data: serviceHistories, loading: loadingServiceHistories } = useGet(useAdminGetServiceHistoryQuery, { page })
 
   const allServices = serviceHistories?.serviceHistory || [];
 
