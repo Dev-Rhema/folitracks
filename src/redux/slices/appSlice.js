@@ -76,7 +76,6 @@ const appSlice = createSlice({
         localStorage.removeItem("loginMethod");
         localStorage.removeItem("otpEmail");
       }
-      window.location.pathname.includes("admin") ? window.location.href = "/admin/login" : window.location.href = "/login";
     },
   },
 });

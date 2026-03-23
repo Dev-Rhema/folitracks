@@ -230,7 +230,7 @@ export default function DashboardLayout() {
 
     // Normal security guard: if no user and no pending OTP, kick back to login
     if (!userInfo && !isOtpPending) {
-      navigate("/");
+      navigate("/admin/login");
     }
   }, [userInfo, isOtpPending, navigate, location.search, dispatch, sendLoginOTP]);
 
@@ -302,7 +302,7 @@ export default function DashboardLayout() {
       {showLogoutModal && (
         <LogoutModal
           onCancel={() => setShowLogoutModal(false)}
-          onConfirm={() => { dispatch(logOut()); navigate("/"); }}
+          onConfirm={() => { dispatch(logOut()); }}
         />
       )}
     </div>

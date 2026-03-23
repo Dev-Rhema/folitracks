@@ -259,7 +259,7 @@ export default function DashboardLayout() {
 
     // Normal security guard: if no user and no pending OTP, kick back to login
     if (!userInfo && !isOtpPending) {
-      navigate("/");
+      navigate("/login");
     }
   }, [userInfo, isOtpPending, navigate, location.search, dispatch, sendLoginOTP]);
 
