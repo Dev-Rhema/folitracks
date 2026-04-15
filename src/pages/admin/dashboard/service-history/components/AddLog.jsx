@@ -4,16 +4,17 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import usePost from "../../../../../hooks/usePost";
 import useGet from "../../../../../hooks/useGet";
-import { useAdminAddServiceHistoryMutation } from "../../../../../redux/api/serviceHistoryApiSlice";
+import { useAdminAddServiceHistoryMutation, useAdminChangeServiceStatusMutation } from "../../../../../redux/api/serviceHistoryApiSlice";
 import { useAdminGetVehiclesQuery } from "../../../../../redux/api/vehicleApiSlice";
 import { step2Schema } from "../constants";
 import ChooseVehicle from "./ChooseVehicle";
 import ServiceDetails from "./ServiceDetails";
 import Success from "./Success";
 
-export default function AddLog({ onClose, onLogAdded }) {
-  const [step, setStep] = useState(1);
-  const [selectedVehicleId, setSelectedVehicleId] = useState("");
+export default function AddLog({ onClose, onLogAdded, initialData }) {
+  const isEdit = !!initialData;
+  const [step, setStep] = useState(isEdit ? 2 : 1);
+  const [selectedVehicleId, setSelectedVehicleId] = useState(initialData?.vehicle?._id || initialData?.vehicle || "");
   const [submittedData, setSubmittedData] = useState(null);
 
   const [page, setPage] = useState(1);
@@ -41,25 +42,28 @@ export default function AddLog({ onClose, onLogAdded }) {
     }
   };
 
-  const { postData: addServiceHistory, isLoading: isSubmitting } = usePost(useAdminAddServiceHistoryMutation);
+  const { postData: addServiceHistory, isLoading: isAdding } = usePost(useAdminAddServiceHistoryMutation);
+  const { postData: updateServiceHistory, isLoading: isUpdating } = usePost(useAdminChangeServiceStatusMutation);
+
+  const isSubmitting = isAdding || isUpdating;
 
   const { register, handleSubmit, control, reset, formState: { errors } } = useForm({
     resolver: zodResolver(step2Schema),
     mode: "onChange",
     defaultValues: {
-      serviceType: "",
-      service: "",
-      serviceDate: "",
-      serviceProvider: "",
-      serviceProviderPhone: "",
-      cost: "",
-      serviceNotes: "",
+      serviceType: initialData?.serviceType || "",
+      service: initialData?.service || "",
+      serviceDate: initialData?.serviceDate || "",
+      serviceProvider: initialData?.serviceProvider || "",
+      serviceProviderPhone: initialData?.serviceProviderPhone || "",
+      cost: initialData?.cost || "",
+      serviceNotes: initialData?.serviceNotes || "",
     },
   });
 
-  const selectedVehicle = vehicles.find((v) => (v._id || v.id) === selectedVehicleId);
-
-  console.log(selectedVehicle);
+  const selectedVehicle = isEdit 
+    ? initialData.vehicle 
+    : vehicles.find((v) => (v._id || v.id) === selectedVehicleId);
 
   const handleNext = () => {
     if (selectedVehicleId) setStep(2);
@@ -77,7 +81,13 @@ export default function AddLog({ onClose, onLogAdded }) {
       serviceProviderPhone: data.serviceProviderPhone,
     };
 
-    const response = await addServiceHistory(payload, "Service record added successfully!");
+    let response;
+    if (isEdit) {
+      response = await updateServiceHistory({ id: initialData._id || initialData.id, body: payload }, "Service record updated successfully!");
+    } else {
+      response = await addServiceHistory(payload, "Service record added successfully!");
+    }
+
     if (response) {
       setSubmittedData({ ...data, vehicle: selectedVehicle });
       onLogAdded?.(response);
@@ -86,10 +96,14 @@ export default function AddLog({ onClose, onLogAdded }) {
   };
 
   const handleLogAnother = () => {
-    setStep(2);
-    setSelectedVehicleId(selectedVehicleId);
-    reset();
-    setSubmittedData(null);
+    if (isEdit) {
+      onClose();
+    } else {
+      setStep(2);
+      setSelectedVehicleId(selectedVehicleId);
+      reset();
+      setSubmittedData(null);
+    }
   };
 
   return (
@@ -99,7 +113,7 @@ export default function AddLog({ onClose, onLogAdded }) {
         className="flex items-center gap-2 text-gray-900 font-bold text-xl w-fit hover:opacity-75 transition cursor-pointer mt-2 mb-1"
       >
         <ArrowLeft size={22} strokeWidth={2.5} />
-        {step === 3 ? "Back to Service History" : "Service Record Form"}
+        {step === 3 ? "Back to Service History" : isEdit ? "Edit Service Record" : "Service Record Form"}
       </button>
 
       <div className="border border-gray-200 rounded-2xl p-6 flex-1 bg-white" style={{ fontFamily: "body" }}>
@@ -125,7 +139,7 @@ export default function AddLog({ onClose, onLogAdded }) {
             handleSubmit={handleSubmit}
             onSubmit={onSubmit}
             isSubmitting={isSubmitting}
-            onBack={() => setStep(1)}
+            onBack={isEdit ? null : () => setStep(1)}
             onClose={onClose}
           />
         )}
@@ -135,6 +149,7 @@ export default function AddLog({ onClose, onLogAdded }) {
             submittedData={submittedData}
             onClose={onClose}
             onLogAnother={handleLogAnother}
+            isEdit={isEdit}
           />
         )}
       </div>

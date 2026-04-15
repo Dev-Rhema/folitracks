@@ -42,7 +42,7 @@ export default function ServiceDetailsView({ vehicle, service, onClose, onEdit, 
 
         <div className="flex items-center gap-4 xl:gap-6">
           <button
-            onClick={() => onEdit?.(vehicle)}
+            onClick={() => onEdit?.(service)}
             className="flex items-center gap-1.5 text-(--blue) hover:opacity-70 transition cursor-pointer"
           >
             <Pencil size={14} />

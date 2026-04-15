@@ -47,6 +47,7 @@ export default function OverdueServices({
   totalCount, 
   searchTerm, 
   handleActionClick,
+  onEditLog,
   filterValues 
 }) {
   
@@ -105,6 +106,10 @@ export default function OverdueServices({
               label: "Reschedule",
               onClick: (r) => handleActionClick(r, "reschedule"),
             },
+            // {
+            //   label: "Edit Details",
+            //   onClick: (r) => onEditLog(r),
+            // },
           ]}
           row={row}
         />

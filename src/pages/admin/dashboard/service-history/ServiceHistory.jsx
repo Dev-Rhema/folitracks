@@ -15,7 +15,7 @@ import CompletedServices, { COMPLETED_FILTER_CATEGORIES } from "./components/Com
 import UpcomingServices, { UPCOMING_FILTER_CATEGORIES } from "./components/UpcomingServices";
 import OverdueServices, { OVERDUE_FILTER_CATEGORIES } from "./components/OverdueServices";
 
-function ServiceHistory() {
+function ServiceHistory({ onEditLog }) {
   const [activeTab, setActiveTab] = useState("completed");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterValues, setFilterValues] = useState({});
@@ -71,6 +71,7 @@ function ServiceHistory() {
       totalCount: serviceHistories?.totalCount || 0,
       searchTerm,
       handleActionClick,
+      onEditLog,
       filterValues,
     };
 
@@ -94,6 +95,11 @@ function ServiceHistory() {
             onClose={() => {
               setSelectedService(null);
               setSelectedVehicle(null);
+            }}
+            onEdit={(data) => {
+              setSelectedService(null);
+              setSelectedVehicle(null);
+              onEditLog(data);
             }}
             isUpcoming={activeTab === "upcoming"}
             isOverdue={activeTab === "overdue"}

@@ -176,7 +176,7 @@ function TopDash({ onAddServiceHistory }) {
           <CTA
             name="+ &nbsp; Log Service"
             color="blue"
-            onClick={onAddServiceHistory}
+            onClick={() => onAddServiceHistory()}
           />
           <div className="bg-[#EEF1F8] w-8 h-8 xl:w-12 xl:h-12 flex items-center justify-center text-center rounded-full cursor-pointer">
             <Bell size={16} />
@@ -235,9 +235,15 @@ export default function DashboardLayout() {
   }, [userInfo, isOtpPending, navigate, location.search, dispatch, sendLoginOTP]);
 
   const [showAddLog, setShowAddLog] = useState(false);
+  const [editingLogData, setEditingLogData] = useState(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [viewVehicle, setViewVehicle] = useState(null);
+
+  const handleAddLog = (data = null) => {
+    setEditingLogData(data);
+    setShowAddLog(true);
+  };
 
   const handleActionClick = (row, action) => {
     if (action === "view") setViewVehicle(row);
@@ -247,8 +253,10 @@ export default function DashboardLayout() {
     if (showAddLog) {
       return (
         <AddLog
+          initialData={editingLogData}
           onClose={() => {
             setShowAddLog(false)
+            setEditingLogData(null)
             navigate("/admin/dashboard/service-history")
           }}
           onLogAdded={(v) => {
@@ -261,20 +269,21 @@ export default function DashboardLayout() {
     if (path === "/admin/dashboard" || path === "/admin/dashboard/") {
       return <Dashboard />;
     } else if (path === "/admin/dashboard/service-history") {
-      return <ServiceHistory />;
+      return <ServiceHistory onEditLog={handleAddLog} />;
     }
     return <Dashboard />;
   };
 
   useEffect(() => {
     setShowAddLog(false);
+    setEditingLogData(null);
     setViewVehicle(null);
   }, [location.pathname]);
 
   return (
     <div className="bg-[#F8FAFC] flex">
       <MobileHeader
-        onAddServiceHistory={() => setShowAddLog(true)}
+        onAddServiceHistory={() => handleAddLog()}
         onOpenNav={() => setMobileNavOpen(true)}
       />
       <MobileNavDrawer
@@ -289,7 +298,7 @@ export default function DashboardLayout() {
       </div>
 
       <div className="flex-1 min-w-0 overflow-hidden">
-        <TopDash onAddServiceHistory={() => setShowAddLog(true)} />
+        <TopDash onAddServiceHistory={() => handleAddLog()} />
         <main className="md:ml-44 xl:ml-70 px-3 xl:px-8 pb-3 xl:pb-6 pt-16 md:pt-12 xl:pt-18 min-h-screen flex flex-col">
           <div className="flex flex-col flex-1">
             <div className="rounded-2xl pt-8 font-(--body) flex-1 flex flex-col">

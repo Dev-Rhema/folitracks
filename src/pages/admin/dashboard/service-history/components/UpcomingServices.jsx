@@ -47,6 +47,7 @@ export default function UpcomingServices({
   searchTerm, 
   handleActionClick,
   handleStatusChange,
+  onEditLog,
   filterValues 
 }) {
   
@@ -111,6 +112,10 @@ export default function UpcomingServices({
               label: "Reschedule",
               onClick: (r) => handleActionClick(r, "reschedule"),
             },
+            // {
+            //   label: "Edit Details",
+            //   onClick: (r) => onEditLog(r),
+            // },
             {
               label: "Change Status",
               subActions: [

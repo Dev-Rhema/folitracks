@@ -32,6 +32,7 @@ export default function CompletedServices({
   totalCount, 
   searchTerm, 
   handleActionClick,
+  onEditLog,
   filterValues 
 }) {
   
@@ -95,6 +96,10 @@ export default function CompletedServices({
               label: "View Details",
               onClick: (r) => handleActionClick(r, "view"),
             },
+            // {
+            //   label: "Edit Details",
+            //   onClick: (r) => onEditLog(r),
+            // },
           ]}
           row={row}
         />
