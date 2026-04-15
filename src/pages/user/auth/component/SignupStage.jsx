@@ -10,6 +10,8 @@ import { useRegisterUserMutation } from "../../../../redux/api/authApiSlice";
 import usePost from "../../../../hooks/usePost";
 import { useDispatch } from "react-redux";
 import { setUserInfo } from "../../../../redux/slices/appSlice";
+import SearchableSelect from "../../../../components/SearchableSelect";
+import { Controller } from "react-hook-form";
 
 export default function SignupStage({ onContinue, onScanQR, defaultValues }) {
   const dispatch = useDispatch();
@@ -17,6 +19,7 @@ export default function SignupStage({ onContinue, onScanQR, defaultValues }) {
     register,
     handleSubmit,
     watch,
+    control,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(signupSchema),
@@ -26,6 +29,7 @@ export default function SignupStage({ onContinue, onScanQR, defaultValues }) {
       email: defaultValues?.email || "",
       phone: defaultValues?.phone || "",
       password: defaultValues?.password || "",
+      accountType: ""
     },
   });
 
@@ -46,13 +50,12 @@ export default function SignupStage({ onContinue, onScanQR, defaultValues }) {
     const response = await registerUser(data);
 
     if (response) {
-      dispatch(setUserInfo({ fullname: data.fullname }));
+      dispatch(setUserInfo({ fullname: data.fullname, accountType: data.accountType }));
       onContinue(response);
     }
-
   };
 
-  return (
+    return (
     <div className="min-h-screen bg-white pt-20 pb-10">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2
@@ -97,6 +100,25 @@ export default function SignupStage({ onContinue, onScanQR, defaultValues }) {
             placeholder="+234 912 653 1214"
             error={errors.phone?.message}
             {...register("phone")}
+          />
+
+          <Controller
+            name="accountType"
+            control={control}
+            render={({ field }) => (
+              <SearchableSelect
+                label="Account Type"
+                options={[
+                  "Individual Car Owner",
+                  "Automobile Related Business",
+                ]}
+                value={field.value}
+                onChange={field.onChange}
+                placeholder="Select Account Type"
+                error={errors.accountType?.message}
+                searchable={false}
+              />
+            )}
           />
 
           {/* Password */}

@@ -21,7 +21,7 @@ export default function AddLog({ onClose, onLogAdded }) {
   const [hasMore, setHasMore] = useState(true);
 
   const { data: vehiclesData, loading: vehiclesLoading } = useGet(useAdminGetVehiclesQuery, { page, limit: 10 });
-  
+
   useEffect(() => {
     if (vehiclesData?.vehicles) {
       setVehicles((prev) => {

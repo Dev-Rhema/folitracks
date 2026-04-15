@@ -18,7 +18,7 @@ import Loader from "../../../components/ui/Loader";
 
 
 const HISTORY_COLUMNS = [
-  { key: "sn", label: "S/N" },
+  { key: "sn", label: "S/N", render: (_, index) => index + 1 },
   {
     key: "service",
     label: "Service",
@@ -39,19 +39,19 @@ const HISTORY_COLUMNS = [
     render: (row) => (
       <div>
         <p className="text-xs xl:text-sm font-medium text-gray-800">
-          {row.vehicle}
+          {row.vehicle?.make} {row.vehicle?.vehicleModel} {row.vehicle?.yearOfManufacture}
         </p>
-        <p className="text-xs text-gray-400">{row.reg}</p>
+        <p className="text-xs text-gray-400">{row.vehicle?.plateNumber}</p>
       </div>
     ),
   },
-  { key: "date", label: "Date" },
+  { key: "date", label: "Date", render: (row) => row?.vehicle?.nextServiceDate?.split("T")[0] },
   { key: "cost", label: "Cost" },
-  { key: "provider", label: "Service Provider" },
+  { key: "serviceProvider", label: "Service Provider" },
   {
-    key: "status",
+    key: "serviceStatus",
     label: "Status",
-    render: (row) => <StatusBadge status={row.status} />
+    render: (row) => <StatusBadge status={row.serviceStatus} />
   },
 ];
 
@@ -210,22 +210,27 @@ export default function Dashboard() {
         </div>
 
 
-        <div className="border p-2.5 bg-white rounded-2xl">
-          {HISTORY_DATA.length > 0 ? (<Table
-            columns={HISTORY_COLUMNS}
-            data={HISTORY_DATA}
-            rowsPerPage={4}
-            showSearch={false}
-            showPagination={false}
-            showActions={false}
-          />) : (<>
+        <div>
+          <SectionHeader
+            title="Service History"
+            to="/dashboard/service-history"
+          />
 
-            <EmptyState
-              title="No Service History Found"
-              description="Keep track of your car's maintenance by logging your previous or recent services here."
-            />
-          </>)}
-
+          <div className="">
+            {HISTORY_DATA.length > 0 ? (<Table
+              columns={HISTORY_COLUMNS}
+              data={HISTORY_DATA}
+              rowsPerPage={4}
+              showSearch={false}
+              showPagination={false}
+              showActions={false}
+            />) : (<>
+              <EmptyState
+                title="No Service History Found"
+                description="Keep track of your car's maintenance by logging your previous or recent services here."
+              />
+            </>)}
+          </div>
         </div>
       </div>
     </div>

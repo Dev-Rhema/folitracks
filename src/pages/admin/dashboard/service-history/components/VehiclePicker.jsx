@@ -2,7 +2,7 @@ import { useState } from "react";
 import { capitalizeFirstLetter } from "../../../../../utils/utils"
 import Loader from "../../../../../components/ui/Loader";
 
-export default function VehiclePicker({ vehicles = [], value, onChange, onLoadMore, hasMore, isLoading }) {
+export default function VehiclePicker({ vehicles = [], value, onChange, onLoadMore, hasMore, isLoading, onSearch }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
 
@@ -65,7 +65,19 @@ export default function VehiclePicker({ vehicles = [], value, onChange, onLoadMo
               placeholder="Type to filter..."
               className="w-full px-3 py-2 text-sm bg-[#f1f5fb] border border-gray-200 rounded focus:outline-none"
             />
+
+            {query && (
+              <button
+                type="button"
+                onClick={onSearch}
+                className="shrink-0 text-xs font-semibold text-white bg-[#3d82f6] cursor-pointer rounded px-2 py-0.5"
+              >
+                Search
+              </button>
+            )}
           </div>
+
+
           <ul
             onScroll={handleScroll}
             className="max-h-60 overflow-y-auto divide-y divide-gray-100"

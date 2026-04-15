@@ -15,9 +15,7 @@ import { useSelector } from "react-redux";
 import FileUploadField from "../../../../../components/FileUploadField";
 import { getBrandLogo } from "../../../../../utils/vehicleUtils";
 import { getServiceIcon } from "../../../../../utils/serviceUtils";
-import { useGetUserQRQuery } from "../../../../../redux/api/authApiSlice";
 import useGet from "../../../../../hooks/useGet";
-import useDownloadQr from "../../../../../hooks/useDownloadQr";
 import EmptyState from "../../../../../components/ui/EmptyState";
 import { useGetServiceHistoryQuery } from "../../../../../redux/api/serviceHistoryApiSlice";
 import Table from "../../../../../components/ui/Table";
@@ -27,7 +25,6 @@ const TABS = [
   { key: "basic", label: "Basic Info", icon: Car },
   { key: "owner", label: "Owner Details", icon: User },
   { key: "history", label: "Service History", icon: Key },
-  { key: "qr", label: "QR Code", icon: QrCode },
 ];
 
 
@@ -191,62 +188,6 @@ function ServiceHistoryTab({ vehicle }) {
   );
 }
 
-
-function QRCodeTab({ vehicle }) {
-  const { data: userQrData, loading: isUserQrLoading, refetch: refetchQr } = useGet(useGetUserQRQuery);
-  const { downloadImage, downloadPDF } = useDownloadQr();
-
-  const handleDownloadImage = () => {
-    downloadImage(userQrData?.base64, vehicle.plateNumber);
-  };
-
-  const handleDownloadPDF = () => {
-    downloadPDF(userQrData?.base64, {
-      make: vehicle.make,
-      model: vehicle.vehicleModel,
-      plateNumber: vehicle.plateNumber,
-    });
-  };
-
-  return (
-    <div className="flex flex-col items-center gap-8 py-8">
-      <div className="w-40 h-40 rounded flex items-center justify-center relative">
-        {isUserQrLoading ? (
-          <div className="flex flex-col items-center gap-2">
-            <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
-            <span className="text-xs text-gray-500 font-medium">Generating QR...</span>
-          </div>
-        ) : userQrData?.base64 ? (
-          <img
-            src={userQrData?.base64}
-            alt="QR Code"
-            className="w-full h-full object-contain"
-          />
-        ) : null}
-      </div>
-
-      <div className="flex flex-col gap-3 w-full max-w-sm">
-        <button
-          onClick={handleDownloadPDF}
-          className="w-full flex items-center justify-center gap-2 py-3 bg-(--blue) text-white rounded-md text-sm font-medium hover:opacity-90 transition cursor-pointer"
-        >
-          <Download size={16} />
-          Download as PDF
-        </button>
-
-        <button
-          onClick={handleDownloadImage}
-          className="w-full flex items-center justify-center gap-2 py-3 border border-(--blue) text-(--blue) rounded-md text-sm font-medium hover:bg-gray-50 transition cursor-pointer"
-        >
-          <Download size={16} />
-          Download as Image
-        </button>
-      </div>
-    </div>
-  );
-}
-
-
 export default function VehicleDetails({ vehicle, onClose, onEdit, onRemove }) {
   const [activeTab, setActiveTab] = useState("basic");
   const logo = getBrandLogo(vehicle.make);
@@ -331,7 +272,6 @@ export default function VehicleDetails({ vehicle, onClose, onEdit, onRemove }) {
           {activeTab === "basic" && <BasicInfoTab vehicle={vehicle} />}
           {activeTab === "owner" && <OwnerDetailsTab vehicle={vehicle} />}
           {activeTab === "history" && <ServiceHistoryTab vehicle={vehicle} />}
-          {activeTab === "qr" && <QRCodeTab vehicle={vehicle} />}
         </div>
       </div>
     </div>

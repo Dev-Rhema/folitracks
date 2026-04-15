@@ -1,12 +1,11 @@
 import { ChevronLeft } from "lucide-react";
 import FileUploadField from "../../../../../components/FileUploadField";
 import CTA from "../../../../../components/CTA";
-import { VehicleInput, StepHeader, PrivacyNotice } from "./Shared";
+import { StepHeader, PrivacyNotice } from "./Shared";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 export default function Ownership({
-  register,
-  watch,
-  trigger,
   errors,
   files,
   loadingFiles,
@@ -17,13 +16,20 @@ export default function Ownership({
   isUploading,
   onClose,
 }) {
-  const accountType = watch("accountType");
-  const isIndividual = accountType === "individual";
+  const user = useSelector((state) => state.app.userInfo);
+  const isIndividual = user?.accountType === "Individual Car Owner";
 
   const handleSubmitClick = async () => {
-    const fields = ["accountType", isIndividual ? "fullName" : "businessName"];
-    const isValid = await trigger(fields);
-    if (isValid) onShowConfirm();
+    const requiredUrls = isIndividual
+      ? [files.vehicleRegistrationDocument, files.driverLicense]
+      : [files.vehicleRegistrationDocument, files.businessLicense];
+
+    if (!requiredUrls.every(Boolean)) {
+      toast.error("Please upload all required documents and wait for them to finish.");
+      return;
+    }
+
+    onShowConfirm();
   };
 
   return (
@@ -34,35 +40,6 @@ export default function Ownership({
         subtitle="Submit the required documents to confirm you're the rightful owner."
         onClose={onClose}
       />
-
-      {/* Account Type */}
-      <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2">Account Type</label>
-        <select
-          {...register("accountType")}
-          className="w-full px-4 py-3 bg-gray-100 rounded border border-gray-200 focus:outline-none focus:border-blue-500"
-        >
-          <option value="individual">Individual Car Owner</option>
-          <option value="business">Automobile Related Business</option>
-        </select>
-      </div>
-
-      {/* Name field */}
-      {isIndividual ? (
-        <VehicleInput
-          label="Full Name"
-          placeholder="Obafemi Olusuntimilehin"
-          {...register("fullName")}
-          error={errors.fullName?.message}
-        />
-      ) : (
-        <VehicleInput
-          label="Business Name"
-          placeholder="Acme Auto Ltd."
-          {...register("businessName")}
-          error={errors.businessName?.message}
-        />
-      )}
 
       {/* Document uploads */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">

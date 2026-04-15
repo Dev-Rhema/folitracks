@@ -8,6 +8,7 @@ const serviceHistoryApiSlice = generalApiSlice.injectEndpoints({
         method: "GET",
         params: param,
       }),
+      providesTags: ["ServiceHistory"],
     }),
 
     adminAddServiceHistory: builder.mutation({
@@ -16,15 +17,17 @@ const serviceHistoryApiSlice = generalApiSlice.injectEndpoints({
         method: "POST",
         body,
       }),
+      invalidatesTags: ["ServiceHistory"],
     }),
 
-    // adminChangeServiceStatus: builder.mutation({
-    //   query: (body) => ({
-    //     url: "/admin/service-history/create",
-    //     method: "POST",
-    //     body,
-    //   }),
-    // }),
+    adminChangeServiceStatus: builder.mutation({
+      query: ({ id, body }) => ({
+        url: `/admin/service-history/update/${id}`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: ["ServiceHistory"],
+    }),
 
     getServiceHistory: builder.query({
       query: (param) => ({
@@ -32,9 +35,10 @@ const serviceHistoryApiSlice = generalApiSlice.injectEndpoints({
         method: "GET",
         params: param,
       }),
+      providesTags: ["ServiceHistory"],
     }),
   }),
   overrideExisting: false,
 });
 
-export const { useAdminGetServiceHistoryQuery, useAdminAddServiceHistoryMutation, useGetServiceHistoryQuery } = serviceHistoryApiSlice;
+export const { useAdminGetServiceHistoryQuery, useAdminAddServiceHistoryMutation, useGetServiceHistoryQuery, useAdminChangeServiceStatusMutation } = serviceHistoryApiSlice;

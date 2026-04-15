@@ -4,7 +4,7 @@ import FormInputField from "../../../../components/FormInputField";
 import SearchableSelect from "../../../../components/SearchableSelect";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { vehicleSchema } from "../../../../validation/authSchema";
+import { vehicleFullSchema } from "../../../../validation/vehicleSchema";
 import { useSelector } from "react-redux";
 
 const VEHICLE_MAKES = [
@@ -38,7 +38,7 @@ export default function VehicleRegistrationStage({ onContinue, onBack, defaultVa
     getValues,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(vehicleSchema),
+    resolver: zodResolver(vehicleFullSchema),
     mode: "all",
     defaultValues: {
       make: defaultValues?.make || "",

@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
-import { vehicleFullSchema } from "../../../../../validation/authSchema";
+import { vehicleFullSchema } from "../../../../../validation/vehicleSchema";
 import { useGetVehiclesQuery, useRegisterVehicleMutation } from "../../../../../redux/api/vehicleApiSlice";
 import { useUploadDocumentMutation } from "../../../../../redux/api/documentApiSlice";
 import { useGetUserQRQuery } from "../../../../../redux/api/authApiSlice";
@@ -19,7 +19,6 @@ import QR from "./QR";
 
 export default function AddVehicleForm({ onClose }) {
   const [step, setStep] = useState(1);
-  const userInfo = useSelector((state) => state.app.userInfo);
 
   const { postData: registerVehicle, isLoading: isRegistering } = usePost(useRegisterVehicleMutation);
   const { postData: uploadDocument, isLoading: isUploading } = usePost(useUploadDocumentMutation);
@@ -54,12 +53,12 @@ export default function AddVehicleForm({ onClose }) {
     mode: "all",
     defaultValues: {
       make: "", vehicleModel: "", yearOfManufacture: "",
-      plateNumber: "", vin: "", accountType: "individual",
-      fullName: userInfo?.fullname || "", businessName: "",
+      plateNumber: "", vin: "", accountType: "",
     },
   });
 
-  const isIndividual = watch("accountType") === "individual";
+  const user = useSelector((state) => state.app.userInfo);
+  const isIndividual = user?.accountType === "Individual Car Owner";
 
   const handleFileChange = async (e, fileKey) => {
     const file = e.target.files?.[0];
@@ -90,23 +89,15 @@ export default function AddVehicleForm({ onClose }) {
   };
 
   const onSubmit = async (data) => {
-    const requiredUrls = isIndividual
-      ? [uploadedUrls.vehicleRegistrationDocument, uploadedUrls.driverLicense]
-      : [uploadedUrls.vehicleRegistrationDocument, uploadedUrls.businessLicense];
-
-    if (!requiredUrls.every(Boolean)) {
-      toast.error("Please upload all required documents and wait for them to finish.");
-      return;
-    }
-
     const payload = {
       make: data.make,
       vehicleModel: data.vehicleModel,
       yearOfManufacture: data.yearOfManufacture,
       plateNumber: data.plateNumber,
       vin: data.vin,
-      accountType: isIndividual ? "Individual Car Owner" : "Automobile Related Business",
-      ...(isIndividual ? { fullName: data.fullName } : { businessName: data.businessName }),
+      accountType: user?.accountType,
+      fullName: user.fullname || "",
+      businessName: user.fullname || "",
       vehicleRegistrationDocument: uploadedUrls.vehicleRegistrationDocument,
       driverLicense: uploadedUrls.driverLicense,
       ...(isIndividual ? {} : { businessLicense: uploadedUrls.businessLicense }),
@@ -162,16 +153,7 @@ export default function AddVehicleForm({ onClose }) {
         )}
 
         {step === 4 && (
-          <QR
-            userQrData={userQrData}
-            isUserQrLoading={isUserQrLoading}
-            onDownloadPDF={() => downloadPDF(userQrData?.data?.base64, {
-              make: getValues("make"),
-              model: getValues("vehicleModel"),
-              plateNumber: getValues("plateNumber"),
-            })}
-            onDownloadImage={() => downloadImage(userQrData?.data?.base64, getValues("plateNumber"))}
-          />
+          <QR />
         )}
       </div>
 

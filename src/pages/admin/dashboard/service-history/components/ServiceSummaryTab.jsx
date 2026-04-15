@@ -32,17 +32,8 @@ function InProgressBody() {
   );
 }
 
-export default function ServiceSummaryTab({ service }) {
-  console.log(service);
-
-  const isInProgress = service?.status === "In Progress";
-
-  const serviceDate = service?.date || service?.lastServiceDate || service?.serviceDate || "—";
-
-  const hasNextDate = service?.nextServiceDate || service?.missedServiceDate;
-  const nextDateLabel = service?.missedServiceDate ? "Missed Service Date" : "Next Service Date";
-  const nextDateValue = service?.missedServiceDate || service?.nextServiceDate || null;
-  const nextDateSub = service?.missedServiceSub || service?.nextServiceSub || null;
+export default function ServiceSummaryTab({ service, vehicle }) {
+  const isInProgress = service?.serviceStatus === "In Progress";
 
   return (
     <div>
@@ -62,7 +53,7 @@ export default function ServiceSummaryTab({ service }) {
             </p>
           </div>
         </div>
-        <StatusBadge status={service?.status || "Completed"} />
+        <StatusBadge status={service?.serviceStatus} />
       </div>
 
       {isInProgress ? (
@@ -72,7 +63,7 @@ export default function ServiceSummaryTab({ service }) {
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
             <InfoColumn
               label="Service Date"
-              value={serviceDate}
+              value={vehicle?.vehicle?.nextServiceDate?.split("T")[0]}
             />
 
             {service?.serviceProvider && (
@@ -82,11 +73,11 @@ export default function ServiceSummaryTab({ service }) {
               />
             )}
 
-            {hasNextDate && (
+            {service?.missedServiceDate || service?.nextServiceDate && (
               <InfoColumn
-                label={nextDateLabel}
-                value={nextDateValue}
-                sub={nextDateSub}
+                label={service?.missedServiceDate ? "Missed Service Date" : "Next Service Date"}
+                value={service?.missedServiceDate || service?.nextServiceDate}
+                sub={service?.missedServiceSub || service?.nextServiceSub}
               />
             )}
 

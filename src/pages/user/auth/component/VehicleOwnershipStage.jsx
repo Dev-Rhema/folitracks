@@ -5,27 +5,25 @@ import FileUploadField from "../../../../components/FileUploadField";
 import FormInputField from "../../../../components/FormInputField";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { vehicleOwnershipSchema } from "../../../../validation/authSchema";
+import { vehicleFullSchema } from "../../../../validation/vehicleSchema";
 import { useRegisterVehicleMutation } from "../../../../redux/api/vehicleApiSlice";
 import { useUploadDocumentMutation } from "../../../../redux/api/documentApiSlice";
 import usePost from "../../../../hooks/usePost";
 import { toast } from "react-toastify";
 import { ChevronLeft } from "lucide-react";
-
-const ACCOUNT_TYPE_LABELS = {
-  individual: "Individual Car Owner",
-  business: "Automobile Related Business",
-};
+import { useSelector } from "react-redux";
 
 export default function VehicleOwnershipStage({
   onContinue,
   onBack,
-  fullName,
   vehicleData,
   defaultValues,
 }) {
   const { postData: registerVehicle, isLoading: isRegistering } = usePost(useRegisterVehicleMutation);
   const { postData: uploadDocument, isLoading: isUploading } = usePost(useUploadDocumentMutation);
+
+  const user = useSelector((state) => state.app.userInfo);
+  const isIndividual = user?.accountType === "Individual Car Owner";
 
   const [files, setFiles] = useState({
     vehicleRegistrationDocument: defaultValues?.files?.vehicleRegistrationDocument || null,
@@ -47,33 +45,8 @@ export default function VehicleOwnershipStage({
     getValues,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(vehicleOwnershipSchema),
     mode: "all",
-    defaultValues: {
-      accountType: defaultValues?.accountType || "individual",
-      fullName: defaultValues?.fullName || fullName || "",
-      businessName: defaultValues?.businessName || "",
-    },
   });
-
-  const accountType = watch("accountType");
-  const isIndividual = accountType === "individual";
-
-  const handleAccountTypeChange = (type) => {
-    setValue("accountType", type, { shouldValidate: true });
-    if (type === "individual") {
-      setValue("fullName", fullName || "", { shouldValidate: false });
-      setValue("businessName", "");
-    } else {
-      setValue("fullName", "");
-      setValue("businessName", "", { shouldValidate: false });
-    }
-    setFiles({
-      vehicleRegistrationDocument: null,
-      driverLicense: null,
-      businessLicense: null,
-    });
-  };
 
   const handleFileChange = async (e, fileKey) => {
     const file = e.target.files?.[0];
@@ -97,7 +70,6 @@ export default function VehicleOwnershipStage({
     }
   };
 
-
   const onSubmit = async (data) => {
     const requiredUrls = isIndividual
       ? [uploadedUrls.vehicleRegistrationDocument, uploadedUrls.driverLicense]
@@ -117,10 +89,10 @@ export default function VehicleOwnershipStage({
         yearOfManufacture: vehicleData?.yearOfManufacture || "",
         plateNumber: vehicleData?.plateNumber || "",
         vin: vehicleData?.vin || "",
-        accountType: ACCOUNT_TYPE_LABELS[data.accountType],
-        ...(isIndividual
-          ? { fullName: data.fullName }
-          : { businessName: data.businessName }),
+        accountType: user?.accountType,
+        fullName: user.fullname || "",
+        businessName: user.fullname || "",
+        // businessName: user.businessName || "",
         vehicleRegistrationDocument: uploadedUrls.vehicleRegistrationDocument,
         driverLicense: uploadedUrls.driverLicense,
         ...(isIndividual ? {} : { businessLicense: uploadedUrls.businessLicense })
@@ -162,45 +134,6 @@ export default function VehicleOwnershipStage({
           className="space-y-6"
           style={{ fontFamily: "body" }}
         >
-          {/* Account Type */}
-          <div>
-            <label
-              className="block text-sm font-medium text-gray-700 mb-2"
-              style={{ fontFamily: "title" }}
-            >
-              Account Type
-            </label>
-            <select
-              value={accountType}
-              onChange={(e) => handleAccountTypeChange(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-100 rounded border border-gray-200 focus:outline-none focus:border-blue-500"
-            >
-              <option value="individual">Individual Car Owner</option>
-              <option value="business">Automobile Related Business</option>
-            </select>
-          </div>
-
-          {/* Full Name (individual) */}
-          {isIndividual && (
-            <FormInputField
-              label="Full Name"
-              placeholder="Obafemi Olusuntimilehin"
-              error={errors.fullName?.message}
-              {...register("fullName")}
-            />
-          )}
-
-          {/* Business Name (business) */}
-          {!isIndividual && (
-            <FormInputField
-              label="Business Name"
-              placeholder="Acme Auto Ltd."
-              error={errors.businessName?.message}
-              {...register("businessName")}
-            />
-          )}
-
-
           {/* Individual Documents */}
           {isIndividual && (
             <>
@@ -224,9 +157,9 @@ export default function VehicleOwnershipStage({
           {!isIndividual && (
             <>
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-1" style={{ fontFamily: "title" }}>
+                {/* <p className="text-sm font-medium text-gray-700 mb-1" style={{ fontFamily: "title" }}>
                   Must match Business License / Registration Certificate
-                </p>
+                </p> */}
                 <FileUploadField
                   label="Business License / Registration Certificate"
                   fieldId="busLic"

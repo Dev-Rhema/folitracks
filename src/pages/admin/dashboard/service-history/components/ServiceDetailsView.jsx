@@ -7,16 +7,16 @@ import OwnerDetailsTab from "./OwnerDetailsTab";
 
 const TABS = [
   { key: "summary", label: "Service Summary", icon: Wrench },
-  { key: "vehicle", label: "Vehicle Info",    icon: Car },
-  { key: "owner",   label: "Owner Details",   icon: User },
+  { key: "vehicle", label: "Vehicle Info", icon: Car },
+  { key: "owner", label: "Owner Details", icon: User },
 ];
 
 export default function ServiceDetailsView({ vehicle, service, onClose, onEdit, onRemove }) {
   const [activeTab, setActiveTab] = useState("summary");
-  const logo = getBrandLogo(vehicle?.make || vehicle?.vehicle || "");
 
-  const vehicleName  = vehicle?.vehicle  || `${vehicle?.make ?? ""} ${vehicle?.vehicleModel ?? ""} ${vehicle?.yearOfManufacture ?? ""}`.trim();
-  const plateNumber  = vehicle?.registrationNumber || vehicle?.plateNumber || "";
+  const logo = getBrandLogo(vehicle?.vehicle?.make || "");
+  const vehicleName = `${vehicle?.vehicle?.make ?? ""} ${vehicle?.vehicle?.vehicleModel ?? ""} ${vehicle?.vehicle?.yearOfManufacture ?? ""}`.trim();
+  const plateNumber = vehicle?.vehicle?.plateNumber || "";
 
   return (
     <div className="flex flex-col gap-4 xl:gap-5 flex-1">
@@ -62,19 +62,15 @@ export default function ServiceDetailsView({ vehicle, service, onClose, onEdit, 
         <div className="flex border-b border-gray-100 overflow-x-auto">
           {TABS.map(({ key, label, icon: Icon }) => {
             const active = activeTab === key;
+
             return (
               <button
                 key={key}
                 onClick={() => setActiveTab(key)}
-                className={`relative flex items-center gap-2 px-5 xl:px-7 py-3.5 xl:py-4 text-sm font-medium cursor-pointer transition-colors whitespace-nowrap shrink-0 ${
-                  active ? "text-gray-900" : "text-gray-400 hover:text-gray-600"
-                }`}
+                className={`relative flex items-center gap-2 px-5 xl:px-7 py-3.5 xl:py-4 text-sm font-medium cursor-pointer transition-colors whitespace-nowrap shrink-0 ${active ? "text-gray-900" : "text-gray-400 hover:text-gray-600"
+                  }`}
               >
-                {active ? (
-                  <Icon size={14} className="text-(--blue) shrink-0" />
-                ) : (
-                  <span className="w-2 h-2 rounded-full border border-gray-300 shrink-0 inline-block" />
-                )}
+                <Icon size={14} className="text-(--blue) shrink-0" />
                 {label}
                 {active && (
                   <div className="absolute bottom-0 left-0 right-0 h-[3px] rounded-t-sm bg-(--blue)" />
@@ -85,9 +81,9 @@ export default function ServiceDetailsView({ vehicle, service, onClose, onEdit, 
         </div>
 
         <div className="px-4 xl:px-6 py-4 xl:py-6 flex-1 overflow-y-auto">
-          {activeTab === "summary" && <ServiceSummaryTab service={service} />}
+          {activeTab === "summary" && <ServiceSummaryTab service={service} vehicle={vehicle} />}
           {activeTab === "vehicle" && <VehicleInfoTab vehicle={vehicle} />}
-          {activeTab === "owner"   && <OwnerDetailsTab vehicle={vehicle} />}
+          {activeTab === "owner" && <OwnerDetailsTab vehicle={vehicle} />}
         </div>
       </div>
     </div>

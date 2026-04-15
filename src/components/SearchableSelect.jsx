@@ -10,6 +10,7 @@ export default function SearchableSelect({
   disabled = false,
   required = false,
   error,
+  searchable = true,
 }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -32,7 +33,7 @@ export default function SearchableSelect({
   }, [open]);
 
   const filtered = options.filter((opt) =>
-    opt.toLowerCase().includes(query.toLowerCase())
+    opt?.toLowerCase().includes(query.toLowerCase())
   );
 
   const handleSelect = (opt) => {
@@ -52,11 +53,10 @@ export default function SearchableSelect({
   };
 
   return (
-    <div ref={containerRef} className="relative w-full" style={{ fontFamily: "body" }}>
+    <div ref={containerRef} className="relative w-full">
       {label && (
         <label
           className="block text-sm font-medium text-gray-700 mb-2"
-          style={{ fontFamily: "title" }}
         >
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
@@ -68,7 +68,7 @@ export default function SearchableSelect({
         onClick={handleToggle}
         disabled={disabled}
         className={`
-          w-full flex items-center justify-between px-4 py-3 text-left
+          w-full flex items-center justify-between px-4 py-3 text-left text-sm
           bg-[#f1f5fb] border rounded border-gray-200 transition-colors duration-150 outline-none
           ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
           ${error ? "border-red-400" : ""}
@@ -94,7 +94,7 @@ export default function SearchableSelect({
 
       {open && (
         <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
-          <div className="p-2 border-b border-gray-100">
+         {searchable && <div className="p-2 border-b border-gray-100">
             <input
               ref={inputRef}
               type="text"
@@ -103,7 +103,7 @@ export default function SearchableSelect({
               placeholder="Type to filter..."
               className="w-full px-3 py-2 text-sm bg-gray-50 border bg-[#f1f5fb] border-gray-200 rounded focus:outline-none"
             />
-          </div>
+          </div>}
 
           <ul className="max-h-52 overflow-y-auto">
             {filtered.length > 0 ? (

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Table from "../../../../components/ui/Table";
 import DashHeader from "../components/DashHeader";
 import SearchBar from "../components/SearchBar";
@@ -16,19 +16,40 @@ const VEHICLE_TYPE_OPTIONS = [
 
 function Vehicles({ onActionClick }) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [appliedSearch, setAppliedSearch] = useState("");
   const [filterValues, setFilterValues] = useState({});
   const [page, setPage] = useState(1);
   const rowsPerPage = 10;
 
-  const { data: vehiclesData, loading: vehiclesLoading } = useGet(useGetVehiclesQuery, { page, limit: rowsPerPage });
+  // Reset applied search when search term is cleared (e.g. 'x' clicked in search input)
+  useEffect(() => {
+    if (searchTerm === "" && appliedSearch !== "") {
+      setAppliedSearch("");
+      setPage(1);
+    }
+  }, [searchTerm, appliedSearch]);
+  
+
+  const queryParams = useMemo(() => {
+    const params = { page, limit: rowsPerPage };
+    if (appliedSearch) params.search = appliedSearch;
+    return params;
+  }, [page, rowsPerPage, appliedSearch, filterValues]);
+
+  const { data: vehiclesData, loading: vehiclesLoading } = useGet(useGetVehiclesQuery, queryParams);
+
+  const handleSearch = () => {
+    setAppliedSearch(searchTerm);
+    setPage(1);
+  };
 
   const handleFilterChange = (category, value) => {
     setFilterValues((prev) => ({ ...prev, [category]: value }));
   };
 
   const columns = useMemo(() => [
-    { 
-      key: "sn", 
+    {
+      key: "sn",
       label: "S/N",
       render: (_, index) => String((page - 1) * rowsPerPage + index + 1).padStart(2, "0")
     },
@@ -77,7 +98,7 @@ function Vehicles({ onActionClick }) {
     },
   ], [onActionClick]);
 
-  if(vehiclesLoading) {
+  if (vehiclesLoading) {
     return <Loader />
   }
 
@@ -93,6 +114,7 @@ function Vehicles({ onActionClick }) {
               placeholder="Search vehicles..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              onSearch={handleSearch}
               className="w-48 xl:w-75"
             />
 
@@ -108,7 +130,7 @@ function Vehicles({ onActionClick }) {
         {vehiclesData?.vehicles.length === 0 ? (
           <EmptyState
             title="No Vehicles Found"
-            description={searchTerm ? "No vehicles match your search criteria." : "You haven't added any vehicles to your account yet."}
+            description={(appliedSearch || filterValues["Vehicle Type"]) ? "No vehicles match your search or filter criteria." : "You haven't added any vehicles to your account yet."}
             className="border-2 border-dashed border-gray-100 rounded-xl"
           />
         ) : (
@@ -124,7 +146,7 @@ function Vehicles({ onActionClick }) {
               emptyState={
                 <EmptyState
                   title="No Vehicles Found"
-                  description={searchTerm ? "No vehicles match your search criteria." : "You haven't added any vehicles to your account yet."}
+                  description={(appliedSearch || filterValues["Vehicle Type"]) ? "No vehicles match your search or filter criteria." : "You haven't added any vehicles to your account yet."}
                 />
               }
             />
