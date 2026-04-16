@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Table from "../../../../../components/ui/Table";
 import TableActionMenu from "../../../../../components/ui/TableActionMenu";
 import StatusBadge from "../../../../../components/ui/StatusBadge";
@@ -10,7 +10,7 @@ import {
 } from "../constants";
 import { renderServiceCell, renderVehicleCell } from "../serviceHistoryUtils";
 import useGet from "../../../../../hooks/useGet";
-import { useAdminGetServiceHistoryQuery } from "../../../../../redux/api/serviceHistoryApiSlice";
+import { useGetServiceHistoryQuery } from "../../../../../redux/api/serviceHistoryApiSlice";
 import Loader from "../../../../../components/ui/Loader";
 
 const OVERDUE_FILTER_CATEGORIES = [
@@ -20,7 +20,7 @@ const OVERDUE_FILTER_CATEGORIES = [
 ];
 
 const OVERDUE_COLUMNS = [
-  { key: "sn", label: "S/N" },
+  { key: "sn", label: "S/N", render: (_, index) => index + 1 },
   { key: "service", label: "Service", render: renderServiceCell },
   { key: "vehicle", label: "Vehicle", render: renderVehicleCell },
   { key: "lastServiceDate", label: "Last Service Date" },
@@ -43,18 +43,15 @@ const OVERDUE_COLUMNS = [
   },
 ];
 
-
-
 export default function OverdueServices({ 
   page, 
   setPage, 
   searchTerm, 
   handleActionClick,
-  onEditLog,
   filterValues,
   onCountUpdate
 }) {
-  const { data: serviceHistories, loading } = useGet(useAdminGetServiceHistoryQuery, { 
+  const { data: serviceHistories, loading } = useGet(useGetServiceHistoryQuery, { 
     page, 
     status: "Overdue",
     search: searchTerm
@@ -63,18 +60,17 @@ export default function OverdueServices({
   const data = serviceHistories?.serviceHistory || [];
   const totalCount = serviceHistories?.totalCount || 0;
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!loading && serviceHistories) {
       onCountUpdate?.(totalCount);
     }
   }, [totalCount, loading, serviceHistories]);
 
   if (loading) return <Loader />;
-  
+
   const getFilteredData = () => {
     let filteredData = [...data];
     
-    // Service Type filter
     const svcFilter = filterValues["Service Type"];
     if (svcFilter) {
       if (svcFilter.service) {
@@ -86,7 +82,6 @@ export default function OverdueServices({
       }
     }
 
-    // Vehicle Make filter
     const makeFilter = filterValues["Vehicle Make"];
     if (makeFilter) {
       filteredData = filteredData.filter((row) =>
@@ -94,12 +89,11 @@ export default function OverdueServices({
       );
     }
 
-    // Date Range filter
     const dateFilter = filterValues["Date Range"];
     if (dateFilter?.start) {
       filteredData = filteredData.filter((row) => {
         const rawDate = row.date || row.lastServiceDate || "";
-        const [d, m, y] = rawDate?.split("/");
+        const [d, m, y] = rawDate.split("/");
         const iso = `${y}-${m}-${d}`;
         if (dateFilter.end) return iso >= dateFilter.start && iso <= dateFilter.end;
         return iso === dateFilter.start;
@@ -126,10 +120,6 @@ export default function OverdueServices({
               label: "Reschedule",
               onClick: (r) => handleActionClick(r, "reschedule"),
             },
-            // {
-            //   label: "Edit Details",
-            //   onClick: (r) => onEditLog(r),
-            // },
           ]}
           row={row}
         />

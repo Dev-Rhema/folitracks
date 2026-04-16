@@ -8,6 +8,9 @@ import {
   ROUTINE_SERVICES 
 } from "../constants";
 import { renderServiceCell, renderVehicleCell } from "../serviceHistoryUtils";
+import useGet from "../../../../../hooks/useGet";
+import { useAdminGetServiceHistoryQuery } from "../../../../../redux/api/serviceHistoryApiSlice";
+import Loader from "../../../../../components/ui/Loader";
 
 const COMPLETED_FILTER_CATEGORIES = [
   SERVICE_TYPE_ACCORDION,
@@ -25,16 +28,33 @@ const COMPLETED_COLUMNS = [
   { key: "serviceProvider", label: "Service Provider" },
 ];
 
+
+
 export default function CompletedServices({ 
-  data, 
   page, 
   setPage, 
-  totalCount, 
   searchTerm, 
   handleActionClick,
   onEditLog,
-  filterValues 
+  filterValues,
+  onCountUpdate
 }) {
+  const { data: serviceHistories, loading } = useGet(useAdminGetServiceHistoryQuery, { 
+    page, 
+    status: "Completed",
+    search: searchTerm
+  });
+
+  const data = serviceHistories?.serviceHistory || [];
+  const totalCount = serviceHistories?.totalCount || 0;
+
+  React.useEffect(() => {
+    if (!loading && serviceHistories) {
+      onCountUpdate?.(totalCount);
+    }
+  }, [totalCount, loading, serviceHistories]);
+
+  if (loading) return <Loader />;
   
   const getFilteredData = () => {
     let filteredData = [...data];

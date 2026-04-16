@@ -4,35 +4,6 @@ import StatusBadge from "../../../../../components/ui/StatusBadge";
 import { getBrandLogo } from "../../../../../utils/vehicleUtils";
 import { getServiceIcon } from "../../../../../utils/serviceUtils";
 
-// ─── Shared card header ───────────────────────────────────────────────────────
-
-function ServiceCardHeader({ service }) {
-  return (
-    <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
-      <div className="flex items-center gap-4">
-        <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center shrink-0 overflow-hidden">
-          <img
-            src={getServiceIcon(service.service || "")}
-            alt="Service"
-            className="w-8 h-8 object-contain"
-          />
-        </div>
-        <div>
-          <p className="text-lg font-bold text-gray-900">
-            {service.service || "Service"}
-          </p>
-          <p className="text-sm text-gray-500 mt-0.5">
-            {service.serviceType || ""}
-          </p>
-        </div>
-      </div>
-      <StatusBadge status={service.status || "Completed"} />
-    </div>
-  );
-}
-
-// ─── In-progress card body ────────────────────────────────────────────────────
-
 function InProgressBody() {
   return (
     <div className="flex-1 flex flex-col items-center justify-center text-center px-6 py-10">
@@ -47,8 +18,6 @@ function InProgressBody() {
     </div>
   );
 }
-
-// ─── Reminders section ────────────────────────────────────────────────────────
 
 function RemindersSection({ reminders, onAdd }) {
   return (
@@ -109,12 +78,11 @@ function RemindersSection({ reminders, onAdd }) {
   );
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
-
 export default function ServiceDetailsView({
   vehicle,
   service,
   onClose,
+  onReschedule,
   isUpcoming = false,
   isOverdue = false,
 }) {
@@ -127,36 +95,24 @@ export default function ServiceDetailsView({
   const [reminders, setReminders] = useState(
     hasReminders
       ? [
-          { id: 1, value: "1 day before", label: "1 day before" },
-          { id: 2, value: "2 days before", label: "2 days before" },
-          { id: 3, value: "5 days before", label: "5 days before" },
-        ]
+        { id: 1, value: "1 day before", label: "1 day before" },
+        { id: 2, value: "2 days before", label: "2 days before" },
+        { id: 3, value: "5 days before", label: "5 days before" },
+      ]
       : [],
   );
-
-  const serviceDate =
-    service.date || service.lastDate || service.lastServiceDate || "--";
-  const nextServiceDate =
-    service.nextServiceDate || service.missedServiceDate || null;
-  const nextServiceSub =
-    service.nextServiceSub || (isOverdue ? "Overdue by 2 weeks" : null);
-  const costLabel = !isUpcoming && !isOverdue ? "Cost" : "Estimated Cost";
-  const costValue = service.cost || "--";
-  const serviceDateLabel =
-    isUpcoming || isOverdue ? "Last Service Date" : "Service Date";
-  const secondDateLabel = isOverdue ? "Missed Service Date" : "Next Service Date";
 
   const handleAddReminder = () => {
     const newId = Math.max(...reminders.map((r) => r.id), 0) + 1;
     setReminders([...reminders, { id: newId, value: "", label: "" }]);
   };
 
-  const showReschedule = isUpcoming && !isInProgress && !isDueToday;
-  const showEditDetails = isOverdue || isDueToday;
+  const logo = getBrandLogo(vehicle?.make || "");
+  const vehicleName = `${vehicle?.make ?? ""} ${vehicle?.vehicleModel ?? ""} ${vehicle?.yearOfManufacture ?? ""}`.trim();
+  const plateNumber = vehicle?.plateNumber || "";
 
   return (
     <div className="w-full flex flex-col flex-1">
-      {/* Back button */}
       <div className="flex items-center justify-between mb-6">
         <button
           onClick={onClose}
@@ -167,117 +123,92 @@ export default function ServiceDetailsView({
         </button>
       </div>
 
-      {/* Vehicle info row */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-full bg-black overflow-hidden flex items-center justify-center shrink-0">
-            <img
-              src={getBrandLogo(vehicle.vehicle || "")}
-              alt="Vehicle"
-              className="w-full h-full object-contain"
-            />
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="flex items-center gap-3 xl:gap-4">
+          <div className="w-12 h-12 xl:w-14 xl:h-14 rounded-full bg-black overflow-hidden flex items-center justify-center shrink-0">
+            <img src={logo} alt={vehicleName} className="w-full h-full object-contain" />
           </div>
           <div>
-            <p className="text-xl font-bold text-gray-900">
-              {vehicle.vehicle || "Vehicle"}
-            </p>
-            <p className="text-sm text-gray-400 mt-1">
-              {vehicle.registrationNumber || ""}
-            </p>
+            <p className="text-base xl:text-xl font-bold text-gray-900">{vehicleName}</p>
+            <p className="text-xs xl:text-sm text-gray-400 mt-0.5">{plateNumber}</p>
           </div>
         </div>
 
-        {showReschedule && (
-          <div className="flex items-center gap-1 text-(--darkBlue) cursor-pointer hover:opacity-75 transition">
-            <span className="text-sm flex gap-1 items-center">
-              <CalendarDays className="w-4 h-4" /> Reschedule
-            </span>
-          </div>
-        )}
-        {showEditDetails && (
-          <div className="flex items-center gap-1 text-(--darkBlue) cursor-pointer hover:opacity-75 transition">
-            <span className="text-sm flex gap-1 items-center">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-              </svg>
-              Edit Details
-            </span>
-          </div>
-        )}
+        {!isInProgress && <button
+          onClick={onReschedule}
+          className="flex items-center gap-1.5 text-(--blue) hover:opacity-70 transition cursor-pointer"
+        >
+          <CalendarDays size={14} />
+          <span className="text-sm font-semibold">Reschedule</span>
+        </button>}
       </div>
 
-      {/* Service Details Card */}
-      <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden flex-1 flex flex-col">
-        <ServiceCardHeader service={service} />
+      <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden flex-1 flex flex-col mt-5">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+          <div className="flex items-center gap-3">
+            <img
+              src={getServiceIcon(service.service || "")}
+              alt="Service"
+              className="w-10 h-10 object-contain"
+            />
+
+            <div>
+              <p className="text-[#04040D]">
+                {service.service}
+              </p>
+              <p className="text-sm text-[#9E9FA3]">
+                {service.serviceType || "-"}
+              </p>
+            </div>
+          </div>
+
+          <StatusBadge status={service.serviceStatus} />
+        </div>
 
         {isInProgress ? (
           <InProgressBody />
         ) : (
           <div className="px-6 py-6 flex-1 flex flex-col overflow-y-auto">
-            {/* Three columns */}
             <div className="grid grid-cols-3 gap-12 mb-8">
               <div>
-                <p className="text-xs text-gray-500 mb-2">{serviceDateLabel}</p>
+                <p className="text-xs text-gray-500 mb-2">{isUpcoming || isOverdue ? "Last Service Date" : "Service Date"}</p>
                 <p className="text-base font-semibold text-gray-900">
-                  {serviceDate}
+                  {vehicle?.nextServiceDate?.split("T")[0] || vehicle?.lastServiceDate?.split("T")[0] || "--"}
                 </p>
               </div>
 
-              {/* Column 2: varies by tab/status */}
-              {!isUpcoming && !isOverdue ? (
-                service.serviceProvider && (
-                  <div>
-                    <p className="text-xs text-gray-500 mb-2">
-                      Service Provider
-                    </p>
-                    <p className="text-base font-semibold text-gray-900">
-                      {service.serviceProvider}
-                    </p>
-                  </div>
-                )
-              ) : isDueToday ? (
+              <div>
+                <p className="text-xs text-gray-500 mb-2">
+                  Service Provider
+                </p>
+                <p className="text-base font-semibold text-gray-900">
+                  {service.serviceProvider}
+                </p>
+              </div>
+
+              {isDueToday && (
                 <div>
                   <p className="text-xs text-gray-500 mb-2">
-                    {secondDateLabel}
+                    {isOverdue ? "Missed Service Date" : "Next Service Date"}
                   </p>
                   <p className="text-base font-semibold text-gray-900">
-                    {nextServiceSub || "Service is due today"}
+                    {vehicle?.nextServiceDate?.split("T")[0]}
                   </p>
                 </div>
-              ) : (
-                nextServiceDate && (
-                  <div>
-                    <p className="text-xs text-gray-500 mb-2">
-                      {secondDateLabel}
-                    </p>
-                    <p className="text-base font-semibold text-gray-900">
-                      {nextServiceDate}
-                    </p>
-                    {nextServiceSub && (
-                      <p className="text-xs text-gray-500 mt-1">
-                        {nextServiceSub}
-                      </p>
-                    )}
-                  </div>
-                )
               )}
 
-              {costValue && (
-                <div>
-                  <p className="text-xs text-gray-500 mb-2">{costLabel}</p>
-                  <p className="text-base font-semibold text-gray-900">
-                    {costValue}
-                  </p>
-                </div>
-              )}
+              <div>
+                <p className="text-xs text-gray-500 mb-2">Cost</p>
+                <p className="text-base font-semibold text-gray-900">
+                  {service.cost}
+                </p>
+              </div>
             </div>
 
-            {/* Reminders — upcoming only (not in-progress) */}
             {isUpcoming && !isInProgress && (
               <RemindersSection reminders={reminders} onAdd={handleAddReminder} />
             )}
 
-            {/* Note — completed only */}
             {!isUpcoming && !isOverdue && service.note && (
               <div>
                 <p className="text-xs text-gray-500 mb-2">Note</p>

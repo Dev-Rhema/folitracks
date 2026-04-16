@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import CTA from "../CTA";
 
 const MONTH_NAMES = [
   "January","February","March","April","May","June",
@@ -11,17 +12,6 @@ function toStr(year, month, day) {
   return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 }
 
-/**
- * Reusable calendar with single-date and date-range selection.
- *
- * Props:
- *   singleDate – boolean: if true, value is an ISO string (or null); onChange receives a string
- *   value      – range mode: { start, end }  |  single mode: string|null
- *   onChange   – (value) => void  called on every click
- *   onCancel   – () => void
- *   onSave     – (value) => void  called when Save is clicked
- *   className  – override the root width (default "w-72")
- */
 function Calendar({ singleDate = false, value, onChange, onCancel, onSave, className = "w-72", showActions = true }) {
   const today = new Date();
   const todayStr = toStr(today.getFullYear(), today.getMonth(), today.getDate());
@@ -98,12 +88,18 @@ function Calendar({ singleDate = false, value, onChange, onCancel, onSave, class
   const daysInMo  = new Date(viewYear, viewMonth + 1, 0).getDate();
   const cells     = [...Array(firstDow).fill(null), ...Array.from({ length: daysInMo }, (_, i) => i + 1)];
 
-  const getDayClassName = (state) => {
-    const base = "w-8 h-8 mx-auto flex items-center justify-center text-xs rounded-lg cursor-pointer transition-colors font-medium";
-    if (state === "selected" || state === "start" || state === "end") return `${base} bg-(--darkBlue) text-white`;
-    if (state === "range") return `${base} bg-[#E8EAF6] text-(--darkBlue)`;
-    if (state === "today") return `${base} bg-blue-50 text-(--darkBlue) hover:bg-blue-100`;
-    return `${base} text-gray-800 hover:bg-gray-100`;
+  const getDayClassName = (state, isDisabled) => {
+    const base = "w-8 h-8 mx-auto flex items-center justify-center text-xs rounded-lg transition-colors font-medium";
+    
+    if (isDisabled) {
+      return `${base} text-gray-300 cursor-not-allowed`;
+    }
+
+    const clickable = `${base} cursor-pointer`;
+    if (state === "selected" || state === "start" || state === "end") return `${clickable} bg-(--blue) text-white`;
+    if (state === "range") return `${clickable} bg-[#E8EAF6] text-(--blue)`;
+    if (state === "today") return `${clickable} bg-blue-50 text-(--blue) hover:bg-blue-100`;
+    return `${clickable} text-gray-800 hover:bg-gray-100`;
   };
 
   return (
@@ -114,10 +110,10 @@ function Calendar({ singleDate = false, value, onChange, onCancel, onSave, class
           {MONTH_NAMES[viewMonth]} {viewYear}
         </span>
         <div className="flex gap-2">
-          <button onClick={prevMonth} className="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 cursor-pointer">
+          <button onClick={prevMonth} className="w-7 h-7 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 cursor-pointer">
             <ChevronLeft size={15} />
           </button>
-          <button onClick={nextMonth} className="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 cursor-pointer">
+          <button onClick={nextMonth} className="w-7 h-7 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 cursor-pointer">
             <ChevronRight size={15} />
           </button>
         </div>
@@ -135,13 +131,16 @@ function Calendar({ singleDate = false, value, onChange, onCancel, onSave, class
         {cells.map((day, i) => {
           if (!day) return <div key={`e-${i}`} />;
           const state = getDayState(day);
+          const dStr = toStr(viewYear, viewMonth, day);
+          const isDisabled = dStr < todayStr;
+
           return (
             <button
               key={day}
-              onClick={() => handleDayClick(day)}
-              onMouseEnter={() => setHoverDay(day)}
+              onClick={() => !isDisabled && handleDayClick(day)}
+              onMouseEnter={() => !isDisabled && setHoverDay(day)}
               onMouseLeave={() => setHoverDay(null)}
-              className={getDayClassName(state)}
+              className={getDayClassName(state, isDisabled)}
             >
               {day}
             </button>
@@ -149,23 +148,20 @@ function Calendar({ singleDate = false, value, onChange, onCancel, onSave, class
         })}
       </div>
 
-      {/* Actions */}
-      {showActions && (
-        <div className="flex justify-center gap-3 mt-5">
-          <button
-            onClick={onCancel}
-            className="px-6 py-2 rounded-xl border border-(--darkBlue) text-(--darkBlue) text-sm font-semibold hover:bg-gray-50 cursor-pointer transition-colors"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={() => onSave?.(local)}
-            className="px-6 py-2 rounded-xl bg-(--darkBlue) text-white text-sm font-semibold hover:opacity-90 cursor-pointer transition-opacity"
-          >
-            Save
-          </button>
-        </div>
-      )}
+       <div className="mt-5 flex justify-end gap-3">
+        <CTA
+          name="Cancel"
+          onClick={onCancel}
+          color="blue"
+          variant="outline"
+        />
+
+        <CTA
+          onClick={() => onSave?.(local)}
+          color="blue"
+          name="Save"
+        />
+      </div>
     </div>
   );
 }

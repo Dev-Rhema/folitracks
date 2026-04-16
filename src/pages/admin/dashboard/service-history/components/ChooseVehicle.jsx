@@ -1,15 +1,14 @@
 import CTA from "../../../../../components/CTA";
 import VehiclePicker from "./VehiclePicker";
 
-export default function Step1ChooseVehicle({ vehicles, vehiclesLoading, selectedVehicleId, onSelect, onNext, onClose, onLoadMore, hasMore }) {
+export default function Step1ChooseVehicle({ vehicles, vehiclesLoading, selectedVehicle, onSelect, onNext, onClose, onLoadMore, hasMore, onSearch }) {
+
   return (
     <div>
       <div className="flex items-start justify-between mb-1">
-        <div>
-          <p className="font-semibold text-gray-900">Step 1: Choose the Vehicle</p>
-          <p className="text-sm text-gray-500 mt-0.5">
-            Find this vehicle to link it to a service record correctly.
-          </p>
+        <div className="flex flex-col gap-1">
+          <p className="text-gray-900 font-bold text-xl xl:text-2xl" style={{ fontFamily: "title" }}>Choose Customer Vehicle</p>
+          <p className="text-gray-600 text-sm xl:text-base">Search for the customer vehicle using type or plate number.</p>
         </div>
         <button
           onClick={onClose}
@@ -19,13 +18,18 @@ export default function Step1ChooseVehicle({ vehicles, vehiclesLoading, selected
         </button>
       </div>
 
-      <div className="mt-5">
+      <div className="mt-8 flex flex-col gap-8">
         <VehiclePicker
           vehicles={vehicles}
-          value={selectedVehicleId}
-          onChange={onSelect}
+          value={selectedVehicle?._id || selectedVehicle?.id}
+          onChange={(id) => {
+             const v = vehicles.find(item => (item._id || item.id) === id);
+             if (v) onSelect(v);
+          }}
+          selectedVehicle={selectedVehicle}
           onLoadMore={onLoadMore}
           hasMore={hasMore}
+          onSearch={onSearch}
           isLoading={vehiclesLoading}
         />
       </div>
@@ -36,7 +40,7 @@ export default function Step1ChooseVehicle({ vehicles, vehiclesLoading, selected
           name="Next"
           color="blue"
           onClick={onNext}
-          disabled={!selectedVehicleId || vehiclesLoading}
+          disabled={!selectedVehicle || vehiclesLoading}
         />
       </div>
     </div>

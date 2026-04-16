@@ -1,80 +1,64 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Table from "../../../../../components/ui/Table";
 import TableActionMenu from "../../../../../components/ui/TableActionMenu";
-import StatusBadge from "../../../../../components/ui/StatusBadge";
-import { 
-  UPCOMING_OVERDUE_VEHICLE_MAKES, 
+import {
+  COMPLETED_VEHICLE_MAKES,
   SERVICE_TYPE_ACCORDION,
   REPAIR_SERVICES,
-  ROUTINE_SERVICES 
+  ROUTINE_SERVICES
 } from "../constants";
 import { renderServiceCell, renderVehicleCell } from "../serviceHistoryUtils";
 import useGet from "../../../../../hooks/useGet";
-import { useAdminGetServiceHistoryQuery } from "../../../../../redux/api/serviceHistoryApiSlice";
+import { useGetServiceHistoryQuery } from "../../../../../redux/api/serviceHistoryApiSlice";
 import Loader from "../../../../../components/ui/Loader";
 
-const OVERDUE_FILTER_CATEGORIES = [
+const COMPLETED_FILTER_CATEGORIES = [
   SERVICE_TYPE_ACCORDION,
-  { label: "Vehicle Make", type: "list", options: UPCOMING_OVERDUE_VEHICLE_MAKES },
+  { label: "Vehicle Make", type: "list", options: COMPLETED_VEHICLE_MAKES },
   { label: "Date Range", type: "calendar" },
+  { label: "Price Range", type: "priceRange" },
 ];
 
-const OVERDUE_COLUMNS = [
-  { key: "sn", label: "S/N" },
+const COMPLETED_COLUMNS = [
+  { key: "sn", label: "S/N", render: (_, index) => index + 1 },
   { key: "service", label: "Service", render: renderServiceCell },
   { key: "vehicle", label: "Vehicle", render: renderVehicleCell },
-  { key: "lastServiceDate", label: "Last Service Date" },
-  {
-    key: "missedServiceDate",
-    label: "Missed Service Date",
-    render: (row) => (
-      <div>
-        <div className="font-medium text-gray-800 text-sm">
-          {row.missedServiceDate}
-        </div>
-        <div className="text-xs text-gray-400">{row.missedServiceSub}</div>
-      </div>
-    ),
-  },
-  {
-    key: "status",
-    label: "Status",
-    render: (row) => <StatusBadge status={row.serviceStatus || "Overdue"} />,
-  },
+  { key: "date", label: "Date", render: (row) => row?.vehicle?.nextServiceDate?.split("T")[0] },
+  { key: "cost", label: "Cost" },
+  { key: "serviceProvider", label: "Service Provider" },
 ];
 
-
-
-export default function OverdueServices({ 
-  page, 
-  setPage, 
-  searchTerm, 
+export default function CompletedServices({
+  page,
+  setPage,
+  searchTerm,
   handleActionClick,
-  onEditLog,
   filterValues,
   onCountUpdate
 }) {
-  const { data: serviceHistories, loading } = useGet(useAdminGetServiceHistoryQuery, { 
-    page, 
-    status: "Overdue",
+  const { data: serviceHistories, loading } = useGet(useGetServiceHistoryQuery, {
+    page,
+    status: "Completed",
     search: searchTerm
   });
 
   const data = serviceHistories?.serviceHistory || [];
   const totalCount = serviceHistories?.totalCount || 0;
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!loading && serviceHistories) {
       onCountUpdate?.(totalCount);
     }
   }, [totalCount, loading, serviceHistories]);
 
   if (loading) return <Loader />;
-  
+
   const getFilteredData = () => {
     let filteredData = [...data];
-    
-    // Service Type filter
+
+    // Server already handles status and search, but we check filters locally if needed
+    // or we could pass filters to the API. For now, following the pattern.
+
     const svcFilter = filterValues["Service Type"];
     if (svcFilter) {
       if (svcFilter.service) {
@@ -86,7 +70,6 @@ export default function OverdueServices({
       }
     }
 
-    // Vehicle Make filter
     const makeFilter = filterValues["Vehicle Make"];
     if (makeFilter) {
       filteredData = filteredData.filter((row) =>
@@ -94,15 +77,22 @@ export default function OverdueServices({
       );
     }
 
-    // Date Range filter
     const dateFilter = filterValues["Date Range"];
     if (dateFilter?.start) {
       filteredData = filteredData.filter((row) => {
-        const rawDate = row.date || row.lastServiceDate || "";
-        const [d, m, y] = rawDate?.split("/");
+        const rawDate = row.date || "";
+        const [d, m, y] = rawDate.split("/");
         const iso = `${y}-${m}-${d}`;
         if (dateFilter.end) return iso >= dateFilter.start && iso <= dateFilter.end;
         return iso === dateFilter.start;
+      });
+    }
+
+    const priceFilter = filterValues["Price Range"];
+    if (priceFilter) {
+      filteredData = filteredData.filter((row) => {
+        const cost = parseInt(row.cost?.replace(/[₦,]/g, "") || "0", 10);
+        return cost >= priceFilter.min && cost <= priceFilter.max;
       });
     }
 
@@ -110,7 +100,7 @@ export default function OverdueServices({
   };
 
   const columnsWithActions = [
-    ...OVERDUE_COLUMNS,
+    ...COMPLETED_COLUMNS,
     {
       key: "actions",
       label: "Action",
@@ -122,14 +112,6 @@ export default function OverdueServices({
               label: "View Details",
               onClick: (r) => handleActionClick(r, "view"),
             },
-            {
-              label: "Reschedule",
-              onClick: (r) => handleActionClick(r, "reschedule"),
-            },
-            // {
-            //   label: "Edit Details",
-            //   onClick: (r) => onEditLog(r),
-            // },
           ]}
           row={row}
         />
@@ -144,7 +126,7 @@ export default function OverdueServices({
       rowsPerPage={10}
       showSearch={false}
       searchTerm={searchTerm}
-      searchableFields={["service", "date"]}
+      searchableFields={["service", "date", "serviceProvider"]}
       totalCount={totalCount}
       onPageChange={setPage}
       currentPage={page}
@@ -152,4 +134,4 @@ export default function OverdueServices({
   );
 }
 
-export { OVERDUE_FILTER_CATEGORIES };
+export { COMPLETED_FILTER_CATEGORIES };

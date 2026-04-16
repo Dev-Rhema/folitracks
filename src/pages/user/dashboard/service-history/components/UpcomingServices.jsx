@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Table from "../../../../../components/ui/Table";
 import TableActionMenu from "../../../../../components/ui/TableActionMenu";
 import StatusBadge from "../../../../../components/ui/StatusBadge";
-import {
-  UPCOMING_OVERDUE_VEHICLE_MAKES,
+import { 
+  UPCOMING_OVERDUE_VEHICLE_MAKES, 
   UPCOMING_STATUSES,
   SERVICE_TYPE_ACCORDION,
   REPAIR_SERVICES,
-  ROUTINE_SERVICES
+  ROUTINE_SERVICES 
 } from "../constants";
-import { renderServiceCell, renderVehicleCell, renderOwnerCell } from "../serviceHistoryUtils";
+import { renderServiceCell, renderVehicleCell } from "../serviceHistoryUtils";
 import useGet from "../../../../../hooks/useGet";
-import { useAdminGetServiceHistoryQuery } from "../../../../../redux/api/serviceHistoryApiSlice";
+import { useGetServiceHistoryQuery } from "../../../../../redux/api/serviceHistoryApiSlice";
 import Loader from "../../../../../components/ui/Loader";
-import RescheduleServiceModal from "./RescheduleServiceModal";
 
 const UPCOMING_FILTER_CATEGORIES = [
   SERVICE_TYPE_ACCORDION,
@@ -26,13 +25,21 @@ const UPCOMING_COLUMNS = [
   { key: "sn", label: "S/N", render: (_, index) => index + 1 },
   { key: "service", label: "Service", render: renderServiceCell },
   { key: "vehicle", label: "Vehicle", render: renderVehicleCell },
-  { key: "owner", label: "Owner", render: renderOwnerCell },
+  {
+    key: "serviceDate",
+    label: "Last Service Date",
+    render: (row) => (
+      <div className="font-medium text-gray-800 text-sm">
+        {row.serviceDate?.split('T')[0] || "N/A"}
+      </div>
+    ),
+  },
   {
     key: "nextServiceDate",
     label: "Next Service Date",
     render: (row) => (
       <div className="font-medium text-gray-800 text-sm">
-        {row?.vehicle?.nextServiceDate?.split("T")[0] || "N/A"}
+        {row.nextServiceDate || "N/A"}
       </div>
     ),
   },
@@ -43,25 +50,18 @@ const UPCOMING_COLUMNS = [
   },
 ];
 
-
-
-export default function UpcomingServices({
-  page,
-  setPage,
-  searchTerm,
-  handleActionClick,
-  handleStatusChange,
-  onEditLog,
+export default function UpcomingServices({ 
+  page, 
+  setPage, 
+  searchTerm, 
+  handleActionClick, 
   filterValues,
   onCountUpdate
 }) {
-
-  const [showRescheduleModal, setShowRescheduleModal] = useState(false);
-  const [selectedRow, setSelectedRow] = useState(null);
-
-  const { data: serviceHistories, loading } = useGet(useAdminGetServiceHistoryQuery, {
-    page,
-    status: "Scheduled",
+  const { data: serviceHistories, loading } = useGet(useGetServiceHistoryQuery, { 
+    page, 
+    status: "In Progress",
+    // status: "Scheduled",
     search: searchTerm
   });
 
@@ -78,8 +78,7 @@ export default function UpcomingServices({
 
   const getFilteredData = () => {
     let filteredData = [...data];
-
-    // Service Type filter
+    
     const svcFilter = filterValues["Service Type"];
     if (svcFilter) {
       if (svcFilter.service) {
@@ -91,7 +90,6 @@ export default function UpcomingServices({
       }
     }
 
-    // Vehicle Make filter
     const makeFilter = filterValues["Vehicle Make"];
     if (makeFilter) {
       filteredData = filteredData.filter((row) =>
@@ -99,18 +97,16 @@ export default function UpcomingServices({
       );
     }
 
-    // Status filter
     const statusFilter = filterValues["Status"];
     if (statusFilter) {
       filteredData = filteredData.filter((row) => row.serviceStatus === statusFilter);
     }
 
-    // Date Range filter
     const dateFilter = filterValues["Date Range"];
     if (dateFilter?.start) {
       filteredData = filteredData.filter((row) => {
-        const rawDate = row.date || row.nextServiceDate || "";
-        const [d, m, y] = rawDate?.split("/");
+        const rawDate = row.nextServiceDate || "";
+        const [d, m, y] = rawDate.split("/");
         const iso = `${y}-${m}-${d}`;
         if (dateFilter.end) return iso >= dateFilter.start && iso <= dateFilter.end;
         return iso === dateFilter.start;
@@ -135,27 +131,11 @@ export default function UpcomingServices({
             },
             {
               label: "Reschedule",
-              onClick: (r) => {
-                setSelectedRow(r);
-                setShowRescheduleModal(true);
-              },
+              onClick: (r) => handleActionClick(r, "reschedule"),
             },
-            // {
-            //   label: "Edit Details",
-            //   onClick: (r) => onEditLog(r),
-            // },
             {
-              label: "Change Status",
-              subActions: [
-                {
-                  label: "Start Service",
-                  onClick: (r) => handleStatusChange(r._id, "In Progress"),
-                },
-                {
-                  label: "Complete Service",
-                  onClick: (r) => handleStatusChange(r._id, "Completed"),
-                },
-              ],
+              label: "Set Reminder",
+              onClick: (r) => handleActionClick(r, "set_reminder"),
             },
           ]}
           row={row}
@@ -165,29 +145,17 @@ export default function UpcomingServices({
   ];
 
   return (
-    <>
-      <Table
-        columns={columnsWithActions}
-        data={getFilteredData()}
-        rowsPerPage={10}
-        showSearch={false}
-        searchTerm={searchTerm}
-        searchableFields={["service", "serviceStatus"]}
-        totalCount={totalCount}
-        onPageChange={setPage}
-        currentPage={page}
-      />
-
-      {showRescheduleModal && (
-        <RescheduleServiceModal
-          row={selectedRow}
-          onClose={() => {
-            setShowRescheduleModal(false);
-            setSelectedRow(null);
-          }}
-        />
-      )}
-    </>
+    <Table
+      columns={columnsWithActions}
+      data={getFilteredData()}
+      rowsPerPage={10}
+      showSearch={false}
+      searchTerm={searchTerm}
+      searchableFields={["service", "serviceStatus"]}
+      totalCount={totalCount}
+      onPageChange={setPage}
+      currentPage={page}
+    />
   );
 }
 

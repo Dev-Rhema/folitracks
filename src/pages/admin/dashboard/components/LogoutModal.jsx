@@ -45,7 +45,6 @@ export default function LogoutModal({ onCancel }) {
             onClick={handleLogout}
             color="red"
             isLoading={isLoading}
-
           />
         </div>
       </div>

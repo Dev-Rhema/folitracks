@@ -19,6 +19,9 @@ export default function ServiceDetails({
   onBack,
   onClose,
 }) {
+
+  console.log(selectedVehicle);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} style={{ fontFamily: "body" }}>
       <div className="flex items-start justify-between mb-4">
@@ -96,6 +99,7 @@ export default function ServiceDetails({
           error={errors.serviceDate?.message}
           {...register("serviceDate")}
         />
+
         <FormInputField
           label="Service Provider"
           placeholder="Enter service provider/technician name"

@@ -1,15 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { capitalizeFirstLetter } from "../../../../../utils/utils"
 import Loader from "../../../../../components/ui/Loader";
 
-export default function VehiclePicker({ vehicles = [], value, onChange, onLoadMore, hasMore, isLoading, onSearch }) {
+export default function VehiclePicker({ vehicles = [], value, onChange, onLoadMore, hasMore, isLoading, onSearch, selectedVehicle }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
 
-  const filtered = vehicles.filter((v) => {
-    const label = `${v.make} ${v.vehicleModel} ${v.yearOfManufacture} ${v.plateNumber} ${v.fullName || ""}`.toLowerCase();
-    return label.includes(query.toLowerCase());
-  });
+  console.log(selectedVehicle);
+  console.log(value);
+
+  // Debounce search
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      onSearch?.(query);
+    }, 500); // 500ms delay
+
+    return () => clearTimeout(handler);
+  }, [query]);
 
   // fetch more after they view last 5 items and there's more data in the api
   const handleScroll = (e) => {
@@ -21,7 +28,10 @@ export default function VehiclePicker({ vehicles = [], value, onChange, onLoadMo
     }
   };
 
-  const selected = vehicles.find((v) => v._id === value || v.id === value);
+  const selected = value
+    ? (vehicles.find((v) => (v._id || v.id) === value) || selectedVehicle)
+    : (selectedVehicle || null);
+
 
   return (
     <div className="relative w-full" style={{ fontFamily: "body" }}>
@@ -56,34 +66,23 @@ export default function VehiclePicker({ vehicles = [], value, onChange, onLoadMo
 
       {open && (
         <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden max-w-[480px]">
-          <div className="p-2 border-b border-gray-100">
+          <div className="p-2 border-b border-gray-100 flex items-center gap-2">
             <input
               autoFocus
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Type to filter..."
+              placeholder="Type to search..."
               className="w-full px-3 py-2 text-sm bg-[#f1f5fb] border border-gray-200 rounded focus:outline-none"
             />
-
-            {query && (
-              <button
-                type="button"
-                onClick={onSearch}
-                className="shrink-0 text-xs font-semibold text-white bg-[#3d82f6] cursor-pointer rounded px-2 py-0.5"
-              >
-                Search
-              </button>
-            )}
           </div>
-
 
           <ul
             onScroll={handleScroll}
             className="max-h-60 overflow-y-auto divide-y divide-gray-100"
           >
-            {filtered.length > 0 ? (
-              filtered.map((v) => {
+            {vehicles.length > 0 ? (
+              vehicles.map((v) => {
                 const vid = v._id || v.id;
                 return (
                   <li
@@ -107,8 +106,11 @@ export default function VehiclePicker({ vehicles = [], value, onChange, onLoadMo
             ) : (
               <li className="px-4 py-3 text-sm text-gray-400 text-center">No vehicles found</li>
             )}
-            {isLoading && hasMore && (
-              <Loader size="small" />
+
+            {isLoading && (
+              <div className="py-4">
+                <Loader size="small" />
+              </div>
             )}
           </ul>
         </div>
@@ -116,3 +118,4 @@ export default function VehiclePicker({ vehicles = [], value, onChange, onLoadMo
     </div>
   );
 }
+

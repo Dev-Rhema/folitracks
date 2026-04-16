@@ -14,14 +14,15 @@ import Success from "./Success";
 export default function AddLog({ onClose, onLogAdded, initialData }) {
   const isEdit = !!initialData;
   const [step, setStep] = useState(isEdit ? 2 : 1);
-  const [selectedVehicleId, setSelectedVehicleId] = useState(initialData?.vehicle?._id || initialData?.vehicle || "");
+  const [selectedVehicle, setSelectedVehicle] = useState(initialData?.vehicle || null);
   const [submittedData, setSubmittedData] = useState(null);
 
   const [page, setPage] = useState(1);
   const [vehicles, setVehicles] = useState([]);
   const [hasMore, setHasMore] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const { data: vehiclesData, loading: vehiclesLoading } = useGet(useAdminGetVehiclesQuery, { page, limit: 10 });
+  const { data: vehiclesData, loading: vehiclesLoading } = useGet(useAdminGetVehiclesQuery, { page, limit: 10, search: searchTerm });
 
   useEffect(() => {
     if (vehiclesData?.vehicles) {
@@ -40,6 +41,12 @@ export default function AddLog({ onClose, onLogAdded, initialData }) {
     if (!vehiclesLoading && hasMore) {
       setPage((prev) => prev + 1);
     }
+  };
+
+  const handleSearch = (query) => {
+    setSearchTerm(query);
+    setVehicles([]); // Clear current list to load search results
+    setPage(1);      // Reset to first page
   };
 
   const { postData: addServiceHistory, isLoading: isAdding } = usePost(useAdminAddServiceHistoryMutation);
@@ -61,17 +68,15 @@ export default function AddLog({ onClose, onLogAdded, initialData }) {
     },
   });
 
-  const selectedVehicle = isEdit 
-    ? initialData.vehicle 
-    : vehicles.find((v) => (v._id || v.id) === selectedVehicleId);
+  console.log(initialData);
 
   const handleNext = () => {
-    if (selectedVehicleId) setStep(2);
+    if (selectedVehicle) setStep(2);
   };
 
   const onSubmit = async (data) => {
     const payload = {
-      vehicle: selectedVehicleId,
+      vehicle: selectedVehicle?._id || selectedVehicle?.id,
       service: data.service,
       serviceDate: data.serviceDate,
       serviceType: data.serviceType,
@@ -100,7 +105,7 @@ export default function AddLog({ onClose, onLogAdded, initialData }) {
       onClose();
     } else {
       setStep(2);
-      setSelectedVehicleId(selectedVehicleId);
+      // selectedVehicle stays the same
       reset();
       setSubmittedData(null);
     }
@@ -121,11 +126,12 @@ export default function AddLog({ onClose, onLogAdded, initialData }) {
           <ChooseVehicle
             vehicles={vehicles}
             vehiclesLoading={vehiclesLoading}
-            selectedVehicleId={selectedVehicleId}
-            onSelect={setSelectedVehicleId}
+            selectedVehicle={selectedVehicle}
+            onSelect={setSelectedVehicle}
             onNext={handleNext}
             onClose={onClose}
             onLoadMore={handleLoadMore}
+            onSearch={handleSearch}
             hasMore={hasMore}
           />
         )}
