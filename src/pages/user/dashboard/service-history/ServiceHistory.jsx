@@ -150,14 +150,15 @@ function ServiceHistory() {
         </>
       )}
 
-      <RescheduleServiceModal
+      {rescheduleRow && <RescheduleServiceModal
         row={rescheduleRow}
         onClose={() => setRescheduleRow(null)}
-      />
-      <SetReminderModal
+      />}
+
+      {setReminderRow && <SetReminderModal
         row={setReminderRow}
         onClose={() => setSetReminderRow(null)}
-      />
+      />}
     </div>
   );
 }

@@ -1,11 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import { X, Bell, ChevronUp, ChevronDown, CheckCircle2 } from "lucide-react";
+import CTA from "../../../../../components/CTA";
+import { useSetReminderServiceHistoryMutation } from "../../../../../redux/api/serviceHistoryApiSlice";
+import usePost from "../../../../../hooks/usePost";
 
 const PRESET_OPTIONS = ["1 day before", "2 days before", "5 days before", "Custom"];
 const UNITS = ["days", "weeks", "months"];
 const UNIT_MAX = { days: 31, weeks: 10, months: 2 };
 
-// ── Custom Picker ─────────────────────────────────────────────────────────────
 function CustomPicker({ onCancel, onSave }) {
   const [numIndex, setNumIndex] = useState(0);
   const [unitIndex, setUnitIndex] = useState(0);
@@ -34,6 +36,28 @@ function CustomPicker({ onCancel, onSave }) {
     return `${currN} ${currN === 1 ? "month" : "months"} before`;
   };
 
+  const scrollAccNum = useRef(0);
+  const scrollAccUnit = useRef(0);
+  const THRESHOLD = 50;
+
+  const handleWheelNum = (e) => {
+    scrollAccNum.current += e.deltaY;
+    if (Math.abs(scrollAccNum.current) >= THRESHOLD) {
+      if (scrollAccNum.current > 0) setNumIndex((numIndex + 1) % numbers.length);
+      else setNumIndex((numIndex - 1 + numbers.length) % numbers.length);
+      scrollAccNum.current = 0;
+    }
+  };
+
+  const handleWheelUnit = (e) => {
+    scrollAccUnit.current += e.deltaY;
+    if (Math.abs(scrollAccUnit.current) >= THRESHOLD) {
+      if (scrollAccUnit.current > 0) handleUnitChange((unitIndex + 1) % UNITS.length);
+      else handleUnitChange((unitIndex - 1 + UNITS.length) % UNITS.length);
+      scrollAccUnit.current = 0;
+    }
+  };
+
   const ROW_H = "h-12";
 
   return (
@@ -57,46 +81,66 @@ function CustomPicker({ onCancel, onSave }) {
         </div>
 
         {/* Unified 3-row drum roll */}
-        <div className="relative px-6 py-2">
+        <div className="relative px-6 py-2 flex items-center justify-center">
           {/* Full-width highlight for selected (middle) row */}
           <div className={`absolute inset-x-4 top-12 ${ROW_H} bg-gray-100 rounded-xl pointer-events-none`} />
 
-          {/* Row: prev */}
-          <div className={`flex items-center justify-center gap-6 ${ROW_H} relative z-10`}>
-            <button
-              onClick={() => setNumIndex((numIndex - 1 + numbers.length) % numbers.length)}
-              className="w-10 text-center text-sm text-gray-400 cursor-pointer hover:text-gray-600 transition-colors"
-            >
-              {prevN}
-            </button>
-            <button
-              onClick={() => handleUnitChange((unitIndex - 1 + UNITS.length) % UNITS.length)}
-              className="w-16 text-sm text-gray-400 cursor-pointer hover:text-gray-600 transition-colors"
-            >
-              {prevU}
-            </button>
+          {/* Column: Number */}
+          <div
+            onWheel={handleWheelNum}
+            className="flex flex-col items-center w-20"
+          >
+            {/* Row: prev */}
+            <div className={`flex items-center justify-center ${ROW_H} relative z-10 w-full`}>
+              <button
+                onClick={() => setNumIndex((numIndex - 1 + numbers.length) % numbers.length)}
+                className="w-10 text-center text-sm text-gray-400 cursor-pointer hover:text-gray-600 transition-colors"
+              >
+                {prevN}
+              </button>
+            </div>
+            {/* Row: selected */}
+            <div className={`flex items-center justify-center ${ROW_H} relative z-10 w-full`}>
+              <div className="w-10 text-center text-base font-bold text-gray-900">{currN}</div>
+            </div>
+            {/* Row: next */}
+            <div className={`flex items-center justify-center ${ROW_H} relative z-10 w-full`}>
+              <button
+                onClick={() => setNumIndex((numIndex + 1) % numbers.length)}
+                className="w-10 text-center text-sm text-gray-400 cursor-pointer hover:text-gray-600 transition-colors"
+              >
+                {nextN}
+              </button>
+            </div>
           </div>
 
-          {/* Row: selected */}
-          <div className={`flex items-center justify-center gap-6 ${ROW_H} relative z-10`}>
-            <div className="w-10 text-center text-base font-bold text-gray-900">{currN}</div>
-            <div className="w-16 text-base font-bold text-gray-900">{currU}</div>
-          </div>
-
-          {/* Row: next */}
-          <div className={`flex items-center justify-center gap-6 ${ROW_H} relative z-10`}>
-            <button
-              onClick={() => setNumIndex((numIndex + 1) % numbers.length)}
-              className="w-10 text-center text-sm text-gray-400 cursor-pointer hover:text-gray-600 transition-colors"
-            >
-              {nextN}
-            </button>
-            <button
-              onClick={() => handleUnitChange((unitIndex + 1) % UNITS.length)}
-              className="w-16 text-sm text-gray-400 cursor-pointer hover:text-gray-600 transition-colors"
-            >
-              {nextU}
-            </button>
+          {/* Column: Unit */}
+          <div
+            onWheel={handleWheelUnit}
+            className="flex flex-col items-center w-28"
+          >
+            {/* Row: prev */}
+            <div className={`flex items-center justify-center ${ROW_H} relative z-10 w-full`}>
+              <button
+                onClick={() => handleUnitChange((unitIndex - 1 + UNITS.length) % UNITS.length)}
+                className="w-full text-sm text-gray-400 cursor-pointer hover:text-gray-600 transition-colors text-center"
+              >
+                {prevU}
+              </button>
+            </div>
+            {/* Row: selected */}
+            <div className={`flex items-center justify-center ${ROW_H} relative z-10 w-full`}>
+              <div className="w-full text-base font-bold text-gray-900 text-center">{currU}</div>
+            </div>
+            {/* Row: next */}
+            <div className={`flex items-center justify-center ${ROW_H} relative z-10 w-full`}>
+              <button
+                onClick={() => handleUnitChange((unitIndex + 1) % UNITS.length)}
+                className="w-full text-sm text-gray-400 cursor-pointer hover:text-gray-600 transition-colors text-center"
+              >
+                {nextU}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -104,8 +148,7 @@ function CustomPicker({ onCancel, onSave }) {
   );
 }
 
-// ── Reminder option dropdown ───────────────────────────────────────────────────
-function ReminderDropdown({ isEditMode, onSelect, onClose }) {
+function ReminderDropdown({ isEditMode, onSelect, onClose, currentReminders = [] }) {
   const ref = useRef(null);
 
   useEffect(() => {
@@ -116,47 +159,68 @@ function ReminderDropdown({ isEditMode, onSelect, onClose }) {
     return () => document.removeEventListener("mousedown", handler);
   }, [onClose]);
 
+  // Filter out options that are already selected, except for "Custom"
+  const availableOptions = PRESET_OPTIONS.filter(
+    (opt) => opt === "Custom" || !currentReminders.includes(opt)
+  );
+
   return (
-    <div
-      ref={ref}
-      className="absolute top-full right-0 z-55 mt-0 w-44 bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md"
-    >
-      {PRESET_OPTIONS.map((opt) => (
-        <button
-          key={opt}
-          onClick={() => onSelect(opt)}
-          className="w-full text-left px-4 py-2.5 text-sm text-gray-800 hover:bg-gray-50 border-b border-gray-100 cursor-pointer transition-colors"
-        >
-          {opt}
-        </button>
-      ))}
-      {isEditMode && (
-        <>
-          <div className="border-t border-gray-200" />
+    <div className="fixed inset-0 z-60 flex items-end md:items-center justify-center bg-black/40" onClick={onClose}>
+      <div
+        className="bg-white rounded-t-3xl md:rounded-2xl shadow-lg w-full md:max-w-xs overflow-hidden select-none animate-slide-up md:animate-none"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {availableOptions.map((opt) => (
+          <button
+            key={opt}
+            onClick={() => onSelect(opt)}
+            className="w-full text-left px-4 py-2.5 text-sm text-gray-800 hover:bg-gray-50 border-b border-gray-100 cursor-pointer transition-colors"
+          >
+            {opt}
+          </button>
+        ))}
+        {isEditMode && (
           <button
             onClick={() => onSelect("none")}
             className="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-gray-50 cursor-pointer transition-colors"
           >
-            None
+            Remove Reminder
           </button>
-        </>
-      )}
+        )}
+      </div>
     </div>
   );
 }
 
-// ── Main SetReminderModal ─────────────────────────────────────────────────────
 export default function SetReminderModal({
   row,
-  initialReminders = ["1 day before", "2 days before", "5 days before"],
+  initialReminders = [],
   onClose,
 }) {
-  const [step, setStep] = useState("form"); // "form" | "success"
+  const [step, setStep] = useState("form");
   const [reminders, setReminders] = useState(initialReminders);
   const [openDropdownIndex, setOpenDropdownIndex] = useState(null);
   const [customTarget, setCustomTarget] = useState(null);
 
-  if (!row) return null;
+  const { postData: setReminder, isLoading: isSettingReminder } = usePost(useSetReminderServiceHistoryMutation);
+
+  console.log(reminders);
+
+  console.log(row);
+
+  const handleSave = async () => {
+    try {
+      await setReminder({
+        id: row?._id,
+        body: { serviceReminderNumber: reminders[0]?.split(" ")[0], serviceReminderType: reminders[0]?.split(" ")[1] }
+      });
+      setStep("success");
+      // onClose();
+    } catch (error) {
+      console.error("Set reminder failed:", error);
+    }
+  };
+
 
   const handleDropdownSelect = (option, index) => {
     setOpenDropdownIndex(null);
@@ -179,56 +243,55 @@ export default function SetReminderModal({
     }
   };
 
-  // ── Success screen ──────────────────────────────────────────────────────────
   if (step === "success") {
     return (
       <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/40" onClick={onClose}>
         <div
-          className="bg-white rounded-t-3xl md:rounded-2xl shadow-lg w-full md:max-w-sm md:mx-4 p-8 flex flex-col items-center text-center animate-slide-up md:animate-none"
+          className="bg-white rounded-t-3xl md:rounded-2xl shadow-lg w-full md:max-w-[480px] md:mx-4 p-8 flex flex-col items-center text-center animate-slide-up md:animate-none"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="w-16 h-16 rounded-full bg-teal-50 flex items-center justify-center mb-5">
             <CheckCircle2 size={36} className="text-green-500" />
           </div>
+
           <h2 className="text-2xl font-bold text-gray-900 mb-3">Reminder Updated Successfully</h2>
           <p className="text-sm text-gray-500 mb-8">
             Your new reminder settings have been saved. You&apos;ll be notified accordingly before your next service.
           </p>
-          <button
+
+          <CTA
             onClick={onClose}
-            className="w-full py-3 rounded-xl bg-(--darkBlue) text-white text-sm font-bold hover:opacity-90 transition-opacity cursor-pointer"
-          >
-            Close
-          </button>
+            color="blue"
+            name="Close"
+          className="w-full"
+          />
         </div>
       </div>
     );
   }
 
-  // ── Form screen ─────────────────────────────────────────────────────────────
   return (
     <>
       <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/40" onClick={onClose}>
         <div
-          className="bg-white rounded-t-3xl md:rounded-2xl shadow-lg w-full md:max-w-sm md:mx-4 animate-slide-up md:animate-none"
+          className="bg-white rounded-t-3xl md:rounded-2xl shadow-lg w-full md:max-w-[480px] md:mx-4 animate-slide-up md:animate-none"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Header */}
-          <div className="flex items-start justify-between px-5 pt-5 pb-2">
+          <div className="flex items-center justify-between px-5 pt-5">
             <div>
-              <h2 className="text-xl font-bold text-gray-900">Set Reminder</h2>
-              <p className="text-sm text-gray-500 mt-0.5">Get notified before your next service date.</p>
+              <h2 className="text-base sm:text-lg font-semibold text-[#04040D]">Set Reminder</h2>
+              <p className="text-sm text-[#48486B] mt-0.5">Get notified before your next service date.</p>
             </div>
-            <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 cursor-pointer transition-colors mt-0.5">
-              <X size={20} className="text-gray-700" />
+            <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 cursor-pointer transition-colors">
+              <X size={18} className="text-gray-500" />
             </button>
           </div>
 
           {/* Reminders section */}
           <div className="px-5 py-4">
-            <div className="flex items-center gap-2 mb-3">
-              <Bell size={15} className="text-(--blue)" />
-              <span className="text-sm font-semibold text-(--blue)">Current Reminders</span>
+            <div className="flex items-center gap-2 mt-3 mb-1 text-[#48486B]">
+              <Bell size={15} className="" />
+              <span className="text-sm">Current Reminders</span>
             </div>
 
             <div className="flex flex-col">
@@ -240,19 +303,21 @@ export default function SetReminderModal({
                 <div key={i} className="relative">
                   <button
                     onClick={() => setOpenDropdownIndex(openDropdownIndex === i ? null : i)}
-                    className="w-full flex items-center justify-between py-3.5 text-sm text-gray-900 font-medium border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer"
+                    className="w-full flex items-center justify-between text-[#04040D] mb-1 transition-colors cursor-pointer"
                   >
                     <span>{reminder}</span>
                     <div className="flex flex-col shrink-0 ml-2">
-                      <ChevronUp size={13} className="text-gray-400" />
-                      <ChevronDown size={13} className="text-gray-400" />
+                      <ChevronUp size={11} className="text-[#04040D]" />
+                      <ChevronDown size={11} className="text-[#04040D]" />
                     </div>
                   </button>
+
                   {openDropdownIndex === i && (
                     <ReminderDropdown
                       isEditMode
                       onSelect={(opt) => handleDropdownSelect(opt, i)}
                       onClose={() => setOpenDropdownIndex(null)}
+                      currentReminders={reminders}
                     />
                   )}
                 </div>
@@ -262,36 +327,38 @@ export default function SetReminderModal({
               <div className="relative mt-3">
                 <button
                   onClick={() => setOpenDropdownIndex(openDropdownIndex === "add" ? null : "add")}
-                  className="flex items-center gap-2 text-sm font-semibold text-(--blue) hover:opacity-80 transition-opacity cursor-pointer"
+                  className="flex items-center gap-2 font-medium text-[#3B82F6] cursor-pointer"
                 >
                   <span className="text-xl leading-none">+</span>
                   Add Reminder
                 </button>
+
                 {openDropdownIndex === "add" && (
                   <ReminderDropdown
                     isEditMode={false}
                     onSelect={(opt) => handleDropdownSelect(opt, "add")}
                     onClose={() => setOpenDropdownIndex(null)}
+                    currentReminders={reminders}
                   />
                 )}
               </div>
             </div>
           </div>
 
-          {/* Footer */}
-          <div className="px-5 pb-5 pt-2 flex gap-3">
-            <button
+          <div className="px-5 pb-5 flex justify-end gap-3">
+            <CTA
+              name="Cancel"
               onClick={onClose}
-              className="flex-1 py-3 rounded-xl border-2 border-(--darkBlue) text-sm font-bold text-(--darkBlue) hover:bg-gray-50 transition-colors cursor-pointer"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={() => setStep("success")}
-              className="flex-1 py-3 rounded-xl bg-(--darkBlue) text-white text-sm font-bold hover:opacity-90 transition-opacity cursor-pointer"
-            >
-              Save
-            </button>
+              color="blue"
+              variant="outline"
+            />
+
+            <CTA
+              onClick={handleSave}
+              color="blue"
+              isLoading={isSettingReminder}
+              name={isSettingReminder ? "Saving..." : "Save"}
+            />
           </div>
         </div>
       </div>

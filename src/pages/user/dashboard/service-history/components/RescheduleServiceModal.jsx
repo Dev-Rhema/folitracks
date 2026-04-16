@@ -98,8 +98,8 @@ export default function RescheduleServiceModal({ row, onClose }) {
     <ModalSheet onBackdropClick={onClose}>
       <div className="flex items-center justify-between px-5 pt-5">
         <div>
-          <h2 className="text-base font-bold text-gray-900">Reschedule Service</h2>
-          <p className="text-xs text-gray-500 mt-0.5">Pick a new date for this service.</p>
+          <h2 className="text-base sm:text-lg font-semibold text-[#04040D]">Reschedule Service</h2>
+          <p className="text-sm text-[#48486B] mt-0.5">Pick a new date for this service.</p>
         </div>
         <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 cursor-pointer transition-colors">
           <X size={18} className="text-gray-500" />

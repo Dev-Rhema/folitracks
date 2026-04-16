@@ -38,6 +38,15 @@ const serviceHistoryApiSlice = generalApiSlice.injectEndpoints({
       invalidatesTags: ["ServiceHistory"],
     }),
 
+    setReminderServiceHistory: builder.mutation({
+      query: ({ id, body }) => ({
+        url: `/service-history/reminder/${id}`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: ["ServiceHistory"],
+    }),
+
     adminChangeServiceStatus: builder.mutation({
       query: ({ id, body }) => ({
         url: `/admin/service-history/update/${id}`,
@@ -59,4 +68,4 @@ const serviceHistoryApiSlice = generalApiSlice.injectEndpoints({
   overrideExisting: false,
 });
 
-export const { useAdminGetServiceHistoryQuery, useAdminAddServiceHistoryMutation, useGetServiceHistoryQuery, useAdminChangeServiceStatusMutation, useRescheduleServiceHistoryMutation, useAdminRescheduleServiceHistoryMutation } = serviceHistoryApiSlice;
+export const { useAdminGetServiceHistoryQuery, useAdminAddServiceHistoryMutation, useGetServiceHistoryQuery, useAdminChangeServiceStatusMutation, useRescheduleServiceHistoryMutation, useAdminRescheduleServiceHistoryMutation, useSetReminderServiceHistoryMutation } = serviceHistoryApiSlice;
