@@ -2,15 +2,18 @@ import { useState, useEffect } from "react";
 import { Pencil, Eye, EyeOff, ArrowLeft, CheckCircle, HelpCircle } from "lucide-react";
 import CTA from "../../../../components/CTA";
 import { useSelector } from "react-redux";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import FormInputField from "../../../../components/FormInputField";
-import PasswordInputField from "../../../../components/PasswordInputField";
+import SearchableSelect from "../../../../components/SearchableSelect";
+import { useUpdateProfileMutation } from "../../../../redux/api/authApiSlice";
+import usePost from "../../../../hooks/usePost";
+import { setUserInfo } from "../../../../redux/slices/appSlice";
+import { useDispatch } from "react-redux";
 
 const ACCOUNT_TYPES = [
   "Individual Car Owner",
   "Automobile Related Business"
 ];
-
 
 function Avatar({ name }) {
   const initials = name
@@ -32,21 +35,11 @@ function Avatar({ name }) {
   );
 }
 
-
-function SectionTitle({ children }) {
-  return (
-    <h3 className="text-base font-bold text-gray-900 mb-4">{children}</h3>
-  );
-}
-
-
 function ViewSettings({ onEdit }) {
-  const [showPassword, setShowPassword] = useState(false);
-  const user = useSelector((state) => state?.app?.userInfo?.user);
+  const user = useSelector((state) => state?.app?.userInfo);
 
   return (
     <div className="flex flex-col gap-5 h-full">
-      {/* Page header */}
       <div className="flex justify-between items-center">
         <h1 className="font-title text-[28px] font-bold text-gray-900">Settings</h1>
         <button
@@ -59,53 +52,35 @@ function ViewSettings({ onEdit }) {
         </button>
       </div>
 
-      {/* Card */}
       <div className="border border-gray-200 rounded-2xl p-8 flex-1">
         <Avatar name={user?.fullname} />
 
-        {/* Personal Information */}
-        <SectionTitle>Personal Information</SectionTitle>
+        <h3 className="text-base font-bold text-gray-900 mb-4">Personal Information</h3>
         <div className="grid grid-cols-3 gap-8 mb-8">
           <div>
             <p className="text-sm text-gray-400 mb-1">Full Name</p>
-            <p className="text-sm font-medium text-gray-900">{user?.fullname || "—"}</p>
+            <p className="text-sm font-medium text-gray-900">{user?.user?.fullname || "—"}</p>
           </div>
           <div>
             <p className="text-sm text-gray-400 mb-1">Email Address</p>
-            <p className="text-sm font-medium text-gray-900">{user?.email || "—"}</p>
+            <p className="text-sm font-medium text-gray-900">{user?.user?.email || "—"}</p>
           </div>
           <div>
             <p className="text-sm text-gray-400 mb-1">Phone Number</p>
-            <p className="text-sm font-medium text-gray-900">{user?.phone || "—"}</p>
+            <p className="text-sm font-medium text-gray-900">{user?.user?.phone || "—"}</p>
           </div>
         </div>
 
-        {/* Account Details */}
-        <SectionTitle>Account Details</SectionTitle>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-          <div>
-            <p className="text-sm text-gray-400 mb-1">Account Type</p>
-            <p className="text-sm font-medium text-gray-900">{user?.accountType || "—"}</p>
-            <p className="text-xs text-gray-400 italic mt-2 leading-relaxed">
-              Individual accounts can register up to 10 vehicles, ideal for personal
-              or family use. If you manage a fleet or multiple customer cars, switch
-              to a dealer account for unlimited vehicle registrations.
-            </p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-400 mb-1">Password</p>
-            <div className="flex items-center gap-2">
-              <p className="text-sm font-medium text-gray-900 tracking-widest">
-                {showPassword ? "•••••••••••••" : "•••••••••••••"}
-              </p>
-              <button
-                disabled
-                className="text-gray-400 opacity-50 cursor-not-allowed"
-              >
-                <Eye size={18} /> 
-              </button>
-            </div>
-          </div>
+        <h3 className="text-base font-bold text-gray-900 mb-4">Account Details</h3>
+
+        <div>
+          <p className="text-sm text-gray-400 mb-1">Account Type</p>
+          <p className="text-sm font-medium text-gray-900">{user?.accountType || user?.user?.accountType || "—"}</p>
+          <p className="text-xs text-gray-400 italic mt-2 leading-relaxed max-w-[320px]">
+            Individual accounts can register up to 10 vehicles, ideal for personal
+            or family use. If you manage a fleet or multiple customer cars, switch
+            to a dealer account for unlimited vehicle registrations.
+          </p>
         </div>
       </div>
     </div>
@@ -145,35 +120,36 @@ function DiscardModal({ onStay, onExit }) {
   );
 }
 
-
 function EditSettings({ onCancel, onSave }) {
-  const user = useSelector((state) => state?.app?.userInfo?.user);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state?.app?.userInfo);
+  
   const [showDiscard, setShowDiscard] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const { register, handleSubmit, watch, formState: { errors, isDirty } } = useForm({
+  const { postData: updateProfile, isLoading: isUpdating } = usePost(useUpdateProfileMutation);
+
+  const { register, handleSubmit, control, formState: { errors, isDirty } } = useForm({
     defaultValues: {
-      fullname: user?.fullname || "",
-      email: user?.email || "",
-      phone: user?.phone || "",
-      accountType: user?.accountType || "",
-      password: "",
-      confirmPassword: "",
+      fullname: user?.user?.fullname || "",
+      email: user?.user?.email || "",
+      phone: user?.user?.phone || "",
+      accountType: user?.user?.accountType || user?.accountType || "",
     }
   });
-
-  const watchPassword = watch("password");
-  const passwordChanged = watchPassword?.length > 0;
 
   const handleCancel = () => {
     if (isDirty) setShowDiscard(true);
     else onCancel();
   };
 
-  const onSubmit = (data) => {
-    console.log("Saving settings:", data);
-    onSave();
+  const onSubmit = async (data) => {
+    const { email, ...rest } = data;
+
+    const res = await updateProfile({ ...rest });
+    if (res?.status == true) {
+      dispatch(setUserInfo(res?.data));
+      onSave();
+    }
   };
 
   return (
@@ -181,8 +157,8 @@ function EditSettings({ onCancel, onSave }) {
       {showDiscard && (
         <DiscardModal onStay={() => setShowDiscard(false)} onExit={onCancel} />
       )}
+
       <div className="flex flex-col gap-5 h-full">
-        {/* Page header */}
         <button
           onClick={handleCancel}
           className="flex items-center gap-2 text-gray-900 font-bold text-2xl w-fit hover:opacity-75 transition cursor-pointer"
@@ -191,22 +167,21 @@ function EditSettings({ onCancel, onSave }) {
           Edit Settings
         </button>
 
-        {/* Card */}
         <form onSubmit={handleSubmit(onSubmit)} className="border border-gray-200 rounded-2xl p-8 flex-1">
           <Avatar name={user?.fullname} />
 
-          {/* Personal Information */}
-          <SectionTitle>Personal Information</SectionTitle>
+          <h3 className="text-base font-bold text-gray-900 mb-4">Personal Information</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <FormInputField
               label="Full Name"
               {...register("fullname", { required: "Full name is required" })}
               error={errors.fullname?.message}
             />
+
             <FormInputField
               label="Email Address"
               type="email"
-              {...register("email", { 
+              {...register("email", {
                 required: "Email is required",
                 pattern: {
                   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
@@ -214,6 +189,7 @@ function EditSettings({ onCancel, onSave }) {
                 }
               })}
               error={errors.email?.message}
+              disabled
             />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
@@ -224,70 +200,39 @@ function EditSettings({ onCancel, onSave }) {
             />
           </div>
 
-          {/* Account Details */}
-          <SectionTitle>Account Details</SectionTitle>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-            {/* Account Type */}
-            <div className="flex flex-col gap-2 mb-4">
-              <label className="text-sm font-medium text-gray-700">Account Type</label>
-              <div className="relative">
-                <select
-                  {...register("accountType")}
-                  className="w-full px-4 py-3 bg-[#f1f5fb] border border-gray-200 rounded-lg text-sm text-gray-800 appearance-none focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-200 cursor-pointer"
-                >
-                  {ACCOUNT_TYPES.map((t) => (
-                    <option key={t} value={t}>{t}</option>
-                  ))}
-                </select>
-                <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
-              </div>
-            </div>
+          <h3 className="text-base font-bold text-gray-900 mb-4">Account Details</h3>
 
-            {/* Password */}
-            <PasswordInputField
-              label="New Password (optional)"
-              placeholder="•••••••••••••"
-              showPassword={showPassword}
-              onTogglePassword={() => setShowPassword(!showPassword)}
-              {...register("password")}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <Controller
+              name="accountType"
+              control={control}
+              render={({ field }) => (
+                <SearchableSelect
+                  label="Account Type"
+                  options={[
+                    "Individual Car Owner",
+                    "Automobile Related Business",
+                  ]}
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Select Account Type"
+                  error={errors.accountType?.message}
+                  searchable={false}
+                />
+              )}
             />
           </div>
-
-          {/* Confirm Password — only when password is being changed */}
-          {passwordChanged && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-              <PasswordInputField
-                label="Confirm New Password"
-                placeholder="•••••••••••••"
-                showPassword={showConfirmPassword}
-                onTogglePassword={() => setShowConfirmPassword(!showConfirmPassword)}
-                {...register("confirmPassword", {
-                  validate: (val) => {
-                    if (watch("password") != val) {
-                      return "Passwords do not match";
-                    }
-                  },
-                })}
-                error={errors.confirmPassword?.message}
-              />
-            </div>
-          )}
 
           {/* Buttons */}
           <div className="flex gap-3 mt-6">
             <CTA name="Cancel" variant="outline" color="blue" type="button" onClick={handleCancel} />
-            <CTA name="Save Changes" color="blue" type="submit" />
+            <CTA name="Save Changes" color="blue" type="submit" isLoading={isUpdating} />
           </div>
         </form>
       </div>
     </>
   );
 }
-
 
 function SuccessSettings({ onClose }) {
   return (
@@ -321,9 +266,8 @@ function SuccessSettings({ onClose }) {
   );
 }
 
-
 export default function Settings() {
-  const [mode, setMode] = useState("view"); // "view" | "edit" | "success"
+  const [mode, setMode] = useState("view");
 
   if (mode === "edit") return <EditSettings onCancel={() => setMode("view")} onSave={() => setMode("success")} />;
   if (mode === "success") return <SuccessSettings onClose={() => setMode("view")} />;

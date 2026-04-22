@@ -134,46 +134,35 @@ export default function VehicleOwnershipStage({
           className="space-y-6"
           style={{ fontFamily: "body" }}
         >
-          {/* Individual Documents */}
-          {isIndividual && (
-            <>
-              <FileUploadField
-                label="Vehicle Registration Document"
-                fieldId="regDoc"
-                fileName={files.vehicleRegistrationDocument}
-                onFileChange={(e) => handleFileChange(e, "vehicleRegistrationDocument")}
-              />
+          <>
+            <FileUploadField
+              label="Vehicle Registration Document"
+              fieldId="regDoc"
+              fileName={files.vehicleRegistrationDocument}
+              onFileChange={(e) => handleFileChange(e, "vehicleRegistrationDocument")}
+            />
 
-              <FileUploadField
-                label="Driver's License"
-                fieldId="driverLic"
-                fileName={files.driverLicense}
-                onFileChange={(e) => handleFileChange(e, "driverLicense")}
-              />
-            </>
-          )}
+            <FileUploadField
+              label="Driver's License"
+              fieldId="driverLic"
+              fileName={files.driverLicense}
+              onFileChange={(e) => handleFileChange(e, "driverLicense")}
+            />
+          </>
 
           {/* Business Documents */}
           {!isIndividual && (
-            <>
-              <div>
-                {/* <p className="text-sm font-medium text-gray-700 mb-1" style={{ fontFamily: "title" }}>
-                  Must match Business License / Registration Certificate
-                </p> */}
-                <FileUploadField
-                  label="Business License / Registration Certificate"
-                  fieldId="busLic"
-                  fileName={files.businessLicense}
-                  onFileChange={(e) => handleFileChange(e, "businessLicense")}
-                />
-              </div>
+            <div>
               <FileUploadField
-                label="Vehicle Registration Document"
-                fieldId="busRegDoc"
-                fileName={files.vehicleRegistrationDocument}
-                onFileChange={(e) => handleFileChange(e, "vehicleRegistrationDocument")}
+                label="Business License / Registration Certificate"
+                fieldId="busLic"
+                fileName={files.businessLicense}
+                onFileChange={(e) => handleFileChange(e, "businessLicense")}
               />
-            </>
+              <p className="text-sm font-medium text-gray-700 mb-1" style={{ fontFamily: "title" }}>
+                Must match Business License / Registration Certificate
+              </p>
+            </div>
           )}
 
           {/* Privacy Notice */}
@@ -191,13 +180,12 @@ export default function VehicleOwnershipStage({
 
           {/* Continue Button */}
           <div className="pt-4">
-            <button type="submit" className="w-full" disabled={isRegistering || isUploading}>
-              <CTA
-                name={isRegistering || isUploading ? "Submitting..." : "Continue"}
-                color="blue"
-                className="w-full"
-              />
-            </button>
+            <CTA
+              name="Continue"
+              color="blue"
+              className="w-full"
+              isLoading={isRegistering || isUploading}
+            />
           </div>
         </form>
 

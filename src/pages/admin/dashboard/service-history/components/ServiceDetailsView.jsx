@@ -4,6 +4,7 @@ import { getBrandLogo } from "../../../../../utils/vehicleUtils";
 import ServiceSummaryTab from "./ServiceSummaryTab";
 import VehicleInfoTab from "./VehicleInfoTab";
 import OwnerDetailsTab from "./OwnerDetailsTab";
+import RemoveLog from "./RemoveLog";
 
 const TABS = [
   { key: "summary", label: "Service Summary", icon: Wrench },
@@ -11,8 +12,9 @@ const TABS = [
   { key: "owner", label: "Owner Details", icon: User },
 ];
 
-export default function ServiceDetailsView({ vehicle, service, onClose, onEdit, onRemove }) {
+export default function ServiceDetailsView({ vehicle, service, onClose, onEdit }) {
   const [activeTab, setActiveTab] = useState("summary");
+  const [showRemoveModal, setShowRemoveModal] = useState(false);
 
   const logo = getBrandLogo(vehicle?.vehicle?.make || "");
   const vehicleName = `${vehicle?.vehicle?.make ?? ""} ${vehicle?.vehicle?.vehicleModel ?? ""} ${vehicle?.vehicle?.yearOfManufacture ?? ""}`.trim();
@@ -48,8 +50,9 @@ export default function ServiceDetailsView({ vehicle, service, onClose, onEdit, 
             <Pencil size={14} />
             <span className="text-sm font-semibold">Edit Details</span>
           </button>
+
           <button
-            onClick={() => onRemove?.(service)}
+            onClick={() => setShowRemoveModal(true)}
             className="flex items-center gap-1.5 text-(--red) hover:opacity-70 transition cursor-pointer"
           >
             <Trash2 size={14} />
@@ -86,6 +89,13 @@ export default function ServiceDetailsView({ vehicle, service, onClose, onEdit, 
           {activeTab === "owner" && <OwnerDetailsTab vehicle={vehicle} />}
         </div>
       </div>
+
+      <RemoveLog
+        onClose={() => setShowRemoveModal(false)}
+        onSuccess={onClose}
+        id={service?._id}
+        open={showRemoveModal}
+      />
     </div>
   );
 }

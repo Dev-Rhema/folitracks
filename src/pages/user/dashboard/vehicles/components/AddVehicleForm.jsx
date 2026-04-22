@@ -9,7 +9,6 @@ import { useGetVehiclesQuery, useRegisterVehicleMutation } from "../../../../../
 import { useUploadDocumentMutation } from "../../../../../redux/api/documentApiSlice";
 import { useGetUserQRQuery } from "../../../../../redux/api/authApiSlice";
 import usePost from "../../../../../hooks/usePost";
-import useDownloadQr from "../../../../../hooks/useDownloadQr";
 import ConfirmAddVehicle from "./ConfirmAddVehicleModal";
 import VehicleInfo from "./VehicleInfo";
 import Ownership from "./Ownership";
@@ -26,7 +25,6 @@ export default function AddVehicleForm({ onClose }) {
     skip: step !== 4,
   });
   const { data: vehiclesData, refetch: refetchVehicles } = useGetVehiclesQuery();
-  const { downloadImage, downloadPDF } = useDownloadQr();
 
   const [loadingFiles, setLoadingFiles] = useState({
     vehicleRegistrationDocument: false,

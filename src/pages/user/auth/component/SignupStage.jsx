@@ -26,6 +26,7 @@ export default function SignupStage({ onContinue, onScanQR, defaultValues }) {
     mode: "all",
     defaultValues: {
       fullname: defaultValues?.fullname || "",
+      businessName: defaultValues?.businessName || "",
       email: defaultValues?.email || "",
       phone: defaultValues?.phone || "",
       password: defaultValues?.password || "",
@@ -50,12 +51,12 @@ export default function SignupStage({ onContinue, onScanQR, defaultValues }) {
     const response = await registerUser(data);
 
     if (response) {
-      dispatch(setUserInfo({ fullname: data.fullname, accountType: data.accountType }));
+      dispatch(setUserInfo({ fullname: data.fullname, accountType: data.accountType, businessName: data?.businessName }));
       onContinue(response);
     }
   };
 
-    return (
+  return (
     <div className="min-h-screen bg-white pt-20 pb-10">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2
@@ -120,6 +121,15 @@ export default function SignupStage({ onContinue, onScanQR, defaultValues }) {
               />
             )}
           />
+
+          {watch("accountType") === "Automobile Related Business" && (
+            <FormInputField
+              label="Business Name"
+              placeholder="Obafemi Auto Shop"
+              error={errors.businessName?.message}
+              {...register("businessName")}
+            />
+          )}
 
           {/* Password */}
           <PasswordInputField

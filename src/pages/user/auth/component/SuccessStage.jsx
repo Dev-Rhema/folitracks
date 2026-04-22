@@ -3,19 +3,16 @@ import CTA from "../../../../components/CTA";
 import { useGetUserQRQuery } from "../../../../redux/api/authApiSlice";
 import useGet from "../../../../hooks/useGet";
 import SuccessCheck from "../../../../assets/svgs/SuccessCheck";
+import useDownloadQr from "../../../../hooks/useDownloadQr";
 
 export default function SuccessStage({ onContinueDashboard }) {
   const { data: qrCode, loading: isLoadingQrCode } = useGet(useGetUserQRQuery);
+  const { downloadImage } = useDownloadQr()
 
   const handleDownloadQR = () => {
     if (!qrCode?.base64) return;
 
-    const link = document.createElement("a");
-    link.href = qrCode.base64;
-    link.download = "folitracks-qr-code.png";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    downloadImage(qrCode.base64, "folitracks-qr-code");
   };
 
   return (

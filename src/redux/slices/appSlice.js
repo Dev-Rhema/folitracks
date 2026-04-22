@@ -42,7 +42,13 @@ const appSlice = createSlice({
     },
 
     setUserInfo: (state, action) => {
-      state.userInfo = { ...state.userInfo, ...action.payload };
+      state.userInfo = {
+        ...state.userInfo,
+        user: {
+          ...(state.userInfo?.user || {}),
+          ...action.payload,
+        },
+      };
       localStorage.setItem("userInfo", JSON.stringify(state.userInfo));
     },
 

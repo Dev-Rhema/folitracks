@@ -20,6 +20,14 @@ const serviceHistoryApiSlice = generalApiSlice.injectEndpoints({
       invalidatesTags: ["ServiceHistory"],
     }),
 
+    adminDeleteServiceHistory: builder.mutation({
+      query: (id) => ({
+        url: `/admin/service-history/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["ServiceHistory"],
+    }),
+
     adminRescheduleServiceHistory: builder.mutation({
       query: ({ id, body }) => ({
         url: `/admin/service-history/reschedule/${id}`,
@@ -29,7 +37,7 @@ const serviceHistoryApiSlice = generalApiSlice.injectEndpoints({
       invalidatesTags: ["ServiceHistory"],
     }),
 
-     rescheduleServiceHistory: builder.mutation({
+    rescheduleServiceHistory: builder.mutation({
       query: ({ id, body }) => ({
         url: `/service-history/reschedule/${id}`,
         method: "PUT",
@@ -68,4 +76,4 @@ const serviceHistoryApiSlice = generalApiSlice.injectEndpoints({
   overrideExisting: false,
 });
 
-export const { useAdminGetServiceHistoryQuery, useAdminAddServiceHistoryMutation, useGetServiceHistoryQuery, useAdminChangeServiceStatusMutation, useRescheduleServiceHistoryMutation, useAdminRescheduleServiceHistoryMutation, useSetReminderServiceHistoryMutation } = serviceHistoryApiSlice;
+export const { useAdminGetServiceHistoryQuery, useAdminAddServiceHistoryMutation, useGetServiceHistoryQuery, useAdminChangeServiceStatusMutation, useRescheduleServiceHistoryMutation, useAdminRescheduleServiceHistoryMutation, useSetReminderServiceHistoryMutation, useAdminDeleteServiceHistoryMutation } = serviceHistoryApiSlice;

@@ -32,6 +32,7 @@ export default function LogoutModal({ onCancel }) {
         <p className="text-gray-500 text-sm leading-relaxed mb-8">
           Are you sure you want to log out of your account? Your current session will be closed.
         </p>
+        
         <div className="flex gap-3 justify-end">
           <CTA
             name="Cancel"

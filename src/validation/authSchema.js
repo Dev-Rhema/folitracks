@@ -5,6 +5,7 @@ export const signupSchema = z.object({
   email: z.string().email('Invalid email address'),
   phone: z.string().min(10, 'Phone number must be at least 10 digits'),
   accountType: z.enum(['Individual Car Owner', 'Automobile Related Business']),
+  businessName: z.string().optional(),
   password: z.string()
     .min(8, 'Password must be at least 8 characters')
     .regex(/[0-9]/, 'Password must contain at least one number')

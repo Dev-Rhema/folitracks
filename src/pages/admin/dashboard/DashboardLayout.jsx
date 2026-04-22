@@ -245,10 +245,6 @@ export default function DashboardLayout() {
     setShowAddLog(true);
   };
 
-  const handleActionClick = (row, action) => {
-    if (action === "view") setViewVehicle(row);
-  };
-
   const renderComponent = () => {
     if (showAddLog) {
       return (

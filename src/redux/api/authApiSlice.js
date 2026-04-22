@@ -77,9 +77,24 @@ const authApiSlice = generalApiSlice.injectEndpoints({
         url: "/user/qr-code",
         method: "GET",
       })
-    })
+    }),
+
+    adminGetUserQR: builder.query({
+      query: (id) => ({
+        url: `/admin/user/${id}/qr-code`,
+        method: "GET",
+      })
+    }),
+
+    updateProfile: builder.mutation({
+      query: (body) => ({
+        url: "/user/update-profile",
+        method: "PUT",
+        body,
+      })
+    }),
   }),
   overrideExisting: false
 });
 
-export const { useAdminLoginMutation, useLoginWithEmailMutation, useRegisterUserMutation, useVerifyUserEmailMutation, useGetUserQRQuery, useLoginByQrUploadMutation, useSendLoginOTPMutation, useVerifyLoginOTPMutation, useLogoutUserMutation, useLogoutAdminMutation } = authApiSlice;
+export const { useAdminLoginMutation, useLoginWithEmailMutation, useRegisterUserMutation, useVerifyUserEmailMutation, useGetUserQRQuery, useLoginByQrUploadMutation, useSendLoginOTPMutation, useVerifyLoginOTPMutation, useLogoutUserMutation, useLogoutAdminMutation, useAdminGetUserQRQuery, useUpdateProfileMutation } = authApiSlice;

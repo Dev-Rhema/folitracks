@@ -66,7 +66,6 @@ export default function Auth() {
     goToUrlStep("vehicle");
   };
 
-  const handleDownloadQR = () => console.log("Downloading QR code...");
   const handleContinueDashboard = () => navigate("/dashboard");
 
   return (

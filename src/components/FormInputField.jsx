@@ -7,6 +7,7 @@ const FormInputField = forwardRef(({
   placeholder,
   required = false,
   error,
+  disabled,
   ...props
 }, ref) => {
   return (
@@ -21,9 +22,10 @@ const FormInputField = forwardRef(({
         type={type}
         name={name}
         placeholder={placeholder}
+        disabled={disabled}
         className={`w-full px-4 py-3 border rounded-lg bg-[#f1f5fb] focus:outline-none text-sm ${
           error ? "border-red-500" : "border-gray-200"
-        }`}
+        } ${disabled ? "cursor-not-allowed" : ""}`}
         {...props}
       />
       {error && <p className="text-red-500 text-xs mt-1">{error}</p>}

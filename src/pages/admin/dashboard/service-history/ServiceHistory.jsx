@@ -4,15 +4,14 @@ import DashHeader from "../components/DashHeader";
 import SearchBar from "../components/SearchBar";
 import FilterDropdown from "../../../../components/ui/FilterDropdown";
 import Loader from "../../../../components/ui/Loader";
-import useGet from "../../../../hooks/useGet";
 import usePost from "../../../../hooks/usePost";
-import { useAdminGetServiceHistoryQuery, useAdminChangeServiceStatusMutation } from "../../../../redux/api/serviceHistoryApiSlice";
+import { useAdminChangeServiceStatusMutation } from "../../../../redux/api/serviceHistoryApiSlice";
 import ServiceDetailsView from "./components/ServiceDetailsView";
 import CompletedServices, { COMPLETED_FILTER_CATEGORIES } from "./components/CompletedServices";
 import UpcomingServices, { UPCOMING_FILTER_CATEGORIES } from "./components/UpcomingServices";
 import OverdueServices, { OVERDUE_FILTER_CATEGORIES } from "./components/OverdueServices";
 
-function ServiceHistory({ onEditLog }) {
+function ServiceHistory({ onEditLog, onRemoveLog }) {
   const [activeTab, setActiveTab] = useState("completed");
   const [counts, setCounts] = useState({ completed: 0, upcoming: 0, overdue: 0 });
   const [searchTerms, setSearchTerms] = useState({ completed: "", upcoming: "", overdue: "" });
