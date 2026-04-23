@@ -42,6 +42,11 @@ const appSlice = createSlice({
     },
 
     setUserInfo: (state, action) => {
+      state.userInfo = action.payload;
+      localStorage.setItem("userInfo", JSON.stringify(state.userInfo));
+    },
+
+    updateUserInfo: (state, action) => {
       state.userInfo = {
         ...state.userInfo,
         user: {
@@ -90,6 +95,7 @@ export default appSlice.reducer;
 export const {
   setAppLoading,
   setUserInfo,
+  updateUserInfo,
   logOut,
   setOtpPending,
 } = appSlice.actions;

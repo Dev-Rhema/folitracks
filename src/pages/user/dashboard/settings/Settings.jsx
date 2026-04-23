@@ -7,7 +7,7 @@ import FormInputField from "../../../../components/FormInputField";
 import SearchableSelect from "../../../../components/SearchableSelect";
 import { useUpdateProfileMutation } from "../../../../redux/api/authApiSlice";
 import usePost from "../../../../hooks/usePost";
-import { setUserInfo } from "../../../../redux/slices/appSlice";
+import { updateUserInfo } from "../../../../redux/slices/appSlice";
 import { useDispatch } from "react-redux";
 
 const ACCOUNT_TYPES = [
@@ -147,7 +147,7 @@ function EditSettings({ onCancel, onSave }) {
 
     const res = await updateProfile({ ...rest });
     if (res?.status == true) {
-      dispatch(setUserInfo(res?.data));
+      dispatch(updateUserInfo(res?.data));
       onSave();
     }
   };

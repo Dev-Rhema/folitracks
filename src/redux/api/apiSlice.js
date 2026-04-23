@@ -17,7 +17,7 @@ const rawBaseQuery = fetchBaseQuery({
   baseUrl: getBaseUrl(),
   prepareHeaders: (headers, { getState }) => {
     const state = getState();
-    const userInfo = state?.app?.userInfo?.user;
+    const userInfo = state?.app?.userInfo;
 
     const token = userInfo?.authResponse?.accessToken || 
                   userInfo?.accessToken || userInfo?.token 

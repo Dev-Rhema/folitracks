@@ -60,8 +60,8 @@ export default function UpcomingServices({
 }) {
   const { data: serviceHistories, loading } = useGet(useGetServiceHistoryQuery, { 
     page, 
-    status: "In Progress",
-    // status: "Scheduled",
+    // status: "In Progress",
+    status: "Scheduled",
     search: searchTerm
   });
 
