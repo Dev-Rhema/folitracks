@@ -28,5 +28,5 @@ export const renderVehicleCell = (row) => {
 };
 
 export const renderOwnerCell = (row) => {
-  return capitalizeFirstLetter(row?.user?.[0]?.fullname || "");
+  return capitalizeFirstLetter(row?.user?.fullname || "");
 };

@@ -69,8 +69,8 @@ function Vehicles({ onActionClick }) {
       },
     },
     { key: "plateNumber", label: "Registration Number" },
-    { key: "lastServiceDate", label: "Last Service Date", render: (row) => <span>{row.lastServiceDate?.split('T')[0]}</span> },
-    { key: "nextServiceDate", label: "Next Service Date", render: (row) => <span>{row.nextServiceDate?.split('T')[0]}</span> },
+    { key: "lastServiceDate", label: "Last Service Date", render: (row) => <span>{row.lastServiceDate?.split('T')[0] || "--"}</span> },
+    { key: "nextServiceDate", label: "Next Service Date", render: (row) => <span>{row.nextServiceDate?.split('T')[0] || "--"}</span> },
     {
       key: "actions",
       label: "Action",

@@ -63,7 +63,7 @@ export default function ServiceSummaryTab({ service, vehicle }) {
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
             <InfoColumn
               label="Service Date"
-              value={vehicle?.vehicle?.nextServiceDate?.split("T")[0]}
+              value={vehicle?.serviceDate?.split("T")[0]}
             />
 
             {service?.serviceProvider && (
@@ -81,9 +81,7 @@ export default function ServiceSummaryTab({ service, vehicle }) {
               />
             )}
 
-            {service?.cost && (
-              <InfoColumn label="Cost" value={service.cost} />
-            )}
+            <InfoColumn label="Cost" value={service.cost || 0} />
           </div>
 
           {service?.note && (

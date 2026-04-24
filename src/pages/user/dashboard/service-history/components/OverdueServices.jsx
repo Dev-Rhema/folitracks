@@ -54,6 +54,7 @@ export default function OverdueServices({
   const { data: serviceHistories, loading } = useGet(useGetServiceHistoryQuery, { 
     page, 
     status: "Overdue",
+    // status: ["Overdue"],
     search: searchTerm
   });
 
@@ -133,8 +134,6 @@ export default function OverdueServices({
       data={getFilteredData()}
       rowsPerPage={10}
       showSearch={false}
-      searchTerm={searchTerm}
-      searchableFields={["service", "date"]}
       totalCount={totalCount}
       onPageChange={setPage}
       currentPage={page}

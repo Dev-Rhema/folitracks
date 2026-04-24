@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Table from "../../../../../components/ui/Table";
 import TableActionMenu from "../../../../../components/ui/TableActionMenu";
 import StatusBadge from "../../../../../components/ui/StatusBadge";
@@ -56,14 +56,14 @@ export default function OverdueServices({
 }) {
   const { data: serviceHistories, loading } = useGet(useAdminGetServiceHistoryQuery, { 
     page, 
-    status: "Overdue",
+    status: ["Overdue"],
     search: searchTerm
   });
 
   const data = serviceHistories?.serviceHistory || [];
   const totalCount = serviceHistories?.totalCount || 0;
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!loading && serviceHistories) {
       onCountUpdate?.(totalCount);
     }
@@ -143,8 +143,6 @@ export default function OverdueServices({
       data={getFilteredData()}
       rowsPerPage={10}
       showSearch={false}
-      searchTerm={searchTerm}
-      searchableFields={["service", "date"]}
       totalCount={totalCount}
       onPageChange={setPage}
       currentPage={page}

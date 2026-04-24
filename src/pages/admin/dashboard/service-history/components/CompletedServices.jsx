@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Table from "../../../../../components/ui/Table";
 import TableActionMenu from "../../../../../components/ui/TableActionMenu";
-import { 
-  COMPLETED_VEHICLE_MAKES, 
+import {
+  COMPLETED_VEHICLE_MAKES,
   SERVICE_TYPE_ACCORDION,
   REPAIR_SERVICES,
-  ROUTINE_SERVICES 
+  ROUTINE_SERVICES
 } from "../constants";
 import { renderServiceCell, renderVehicleCell } from "../serviceHistoryUtils";
 import useGet from "../../../../../hooks/useGet";
@@ -28,37 +28,36 @@ const COMPLETED_COLUMNS = [
   { key: "serviceProvider", label: "Service Provider" },
 ];
 
-
-
-export default function CompletedServices({ 
-  page, 
-  setPage, 
-  searchTerm, 
+export default function CompletedServices({
+  page,
+  setPage,
+  searchTerm,
   handleActionClick,
   onEditLog,
   filterValues,
   onCountUpdate
 }) {
-  const { data: serviceHistories, loading } = useGet(useAdminGetServiceHistoryQuery, { 
-    page, 
-    status: "Completed",
+  const { data: serviceHistories, loading } = useGet(useAdminGetServiceHistoryQuery, {
+    page,
+    status: ["Completed"],
     search: searchTerm
   });
+
 
   const data = serviceHistories?.serviceHistory || [];
   const totalCount = serviceHistories?.totalCount || 0;
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!loading && serviceHistories) {
       onCountUpdate?.(totalCount);
     }
   }, [totalCount, loading, serviceHistories]);
 
   if (loading) return <Loader />;
-  
+
   const getFilteredData = () => {
     let filteredData = [...data];
-    
+
     // Service Type filter
     const svcFilter = filterValues["Service Type"];
     if (svcFilter) {
@@ -133,8 +132,6 @@ export default function CompletedServices({
       data={getFilteredData()}
       rowsPerPage={10}
       showSearch={false}
-      searchTerm={searchTerm}
-      searchableFields={["service", "date", "serviceProvider"]}
       totalCount={totalCount}
       onPageChange={setPage}
       currentPage={page}

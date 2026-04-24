@@ -2,12 +2,12 @@ import React, { useEffect } from "react";
 import Table from "../../../../../components/ui/Table";
 import TableActionMenu from "../../../../../components/ui/TableActionMenu";
 import StatusBadge from "../../../../../components/ui/StatusBadge";
-import { 
-  UPCOMING_OVERDUE_VEHICLE_MAKES, 
+import {
+  UPCOMING_OVERDUE_VEHICLE_MAKES,
   UPCOMING_STATUSES,
   SERVICE_TYPE_ACCORDION,
   REPAIR_SERVICES,
-  ROUTINE_SERVICES 
+  ROUTINE_SERVICES
 } from "../constants";
 import { renderServiceCell, renderVehicleCell } from "../serviceHistoryUtils";
 import useGet from "../../../../../hooks/useGet";
@@ -50,18 +50,18 @@ const UPCOMING_COLUMNS = [
   },
 ];
 
-export default function UpcomingServices({ 
-  page, 
-  setPage, 
-  searchTerm, 
-  handleActionClick, 
+export default function UpcomingServices({
+  page,
+  setPage,
+  searchTerm,
+  handleActionClick,
   filterValues,
   onCountUpdate
 }) {
-  const { data: serviceHistories, loading } = useGet(useGetServiceHistoryQuery, { 
-    page, 
-    // status: "In Progress",
+  const { data: serviceHistories, loading } = useGet(useGetServiceHistoryQuery, {
+    page,
     status: "Scheduled",
+    // status: ["Scheduled", "In Progress", "Due Soon"],
     search: searchTerm
   });
 
@@ -78,7 +78,7 @@ export default function UpcomingServices({
 
   const getFilteredData = () => {
     let filteredData = [...data];
-    
+
     const svcFilter = filterValues["Service Type"];
     if (svcFilter) {
       if (svcFilter.service) {
@@ -150,8 +150,6 @@ export default function UpcomingServices({
       data={getFilteredData()}
       rowsPerPage={10}
       showSearch={false}
-      searchTerm={searchTerm}
-      searchableFields={["service", "serviceStatus"]}
       totalCount={totalCount}
       onPageChange={setPage}
       currentPage={page}

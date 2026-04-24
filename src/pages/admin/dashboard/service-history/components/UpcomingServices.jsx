@@ -61,7 +61,7 @@ export default function UpcomingServices({
 
   const { data: serviceHistories, loading } = useGet(useAdminGetServiceHistoryQuery, {
     page,
-    status: "Scheduled",
+    status: ["Scheduled", "In Progress", "Due Soon"],
     search: searchTerm
   });
 
@@ -171,8 +171,6 @@ export default function UpcomingServices({
         data={getFilteredData()}
         rowsPerPage={10}
         showSearch={false}
-        searchTerm={searchTerm}
-        searchableFields={["service", "serviceStatus"]}
         totalCount={totalCount}
         onPageChange={setPage}
         currentPage={page}

@@ -20,6 +20,7 @@ import EmptyState from "../../../../../components/ui/EmptyState";
 import { useGetServiceHistoryQuery } from "../../../../../redux/api/serviceHistoryApiSlice";
 import Table from "../../../../../components/ui/Table";
 import Loader from "../../../../../components/ui/Loader";
+import {capitalizeFirstLetter } from "../../../../../utils/utils";
 
 const TABS = [
   { key: "basic", label: "Basic Info", icon: Car },
@@ -92,7 +93,7 @@ function OwnerDetailsTab({ vehicle }) {
         <div className="">
           <p className="text-sm text-gray-400 mb-1">Owner</p>
           <p className="text-base xl:text-[15px] font-semibold text-gray-900">
-            {vehicle.fullName || vehicle.businessName || userInfo?.fullname || "—"}
+            {capitalizeFirstLetter(vehicle?.user?.fullname || vehicle?.user?.businessName )|| "—"}
           </p>
         </div>
 

@@ -39,6 +39,7 @@ export default function CompletedServices({
   const { data: serviceHistories, loading } = useGet(useGetServiceHistoryQuery, {
     page,
     status: "Completed",
+    // status: ["Completed"],
     search: searchTerm
   });
 
@@ -125,8 +126,6 @@ export default function CompletedServices({
       data={getFilteredData()}
       rowsPerPage={10}
       showSearch={false}
-      searchTerm={searchTerm}
-      searchableFields={["service", "date", "serviceProvider"]}
       totalCount={totalCount}
       onPageChange={setPage}
       currentPage={page}

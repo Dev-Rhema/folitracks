@@ -51,7 +51,7 @@ export default function VehiclePicker({ vehicles = [], value, onChange, onLoadMo
             <span className="font-medium text-gray-900">
               {selected.make} {selected.vehicleModel} {selected.yearOfManufacture}
             </span>
-            <span className="ml-3 text-sm text-gray-400">{selected.plateNumber + " | " + selected.fullName}</span>
+            <span className="ml-3 text-sm text-gray-400">{selected.plateNumber + " | " + (selected?.user?.accountType === "Individual Car Owner" ? capitalizeFirstLetter(selected?.user?.fullName) : capitalizeFirstLetter(selected?.user?.businessName))}</span>
           </div>
         ) : (
           <span>Search by vehicle type, plate number, customer name</span>
@@ -98,7 +98,7 @@ export default function VehiclePicker({ vehicles = [], value, onChange, onLoadMo
                       {v.make} {v.vehicleModel} {v.yearOfManufacture}
                     </div>
                     <div className="flex gap-3 mt-0.5">
-                      <span className="text-sm text-gray-400">{v.plateNumber + " | " + capitalizeFirstLetter(v.fullName)}</span>
+                      <span className="text-sm text-gray-400">{v.plateNumber + " | " + capitalizeFirstLetter(v?.user?.accountType === "Individual Car Owner" ? v?.user?.fullname : v?.user?.businessName)}</span>
                     </div>
                   </li>
                 );
