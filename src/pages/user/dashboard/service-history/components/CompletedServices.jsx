@@ -38,8 +38,7 @@ export default function CompletedServices({
 }) {
   const { data: serviceHistories, loading } = useGet(useGetServiceHistoryQuery, {
     page,
-    status: "Completed",
-    // status: ["Completed"],
+    status: ["Completed"],
     search: searchTerm
   });
 

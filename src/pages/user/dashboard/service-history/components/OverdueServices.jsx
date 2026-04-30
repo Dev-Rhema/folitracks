@@ -53,8 +53,7 @@ export default function OverdueServices({
 }) {
   const { data: serviceHistories, loading } = useGet(useGetServiceHistoryQuery, { 
     page, 
-    status: "Overdue",
-    // status: ["Overdue"],
+    status: ["Overdue"],
     search: searchTerm
   });
 

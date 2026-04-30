@@ -5,7 +5,7 @@ import useDownloadQr from "../../../../../hooks/useDownloadQr";
 import CTA from "../../../../../components/CTA";
 
 export default function OwnerDetailsTab({ vehicle }) {
-  const { data: qrData, loading: loadingQR } = useGet(useAdminGetUserQRQuery, vehicle?.user[0]?._id);
+  const { data: qrData, loading: loadingQR } = useGet(useAdminGetUserQRQuery, vehicle?.user?._id);
   const { downloadPDF, downloadImage } = useDownloadQr()
 
   const ownerName = vehicle?.vehicle?.fullName || vehicle?.vehicle?.businessName || "—";

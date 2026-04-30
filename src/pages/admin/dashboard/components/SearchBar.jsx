@@ -20,7 +20,7 @@ function SearchBar({ placeholder = "", value = "", onChange, className = "" }) {
         />
       </svg>
       <input
-        type="text"
+        type="search"
         {...(onChange ? { value } : { defaultValue: value })}
         onChange={onChange}
         placeholder={placeholder}

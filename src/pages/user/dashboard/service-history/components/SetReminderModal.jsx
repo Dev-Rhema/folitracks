@@ -210,12 +210,14 @@ export default function SetReminderModal({
 
   const handleSave = async () => {
     try {
-      await setReminder({
+      const res = await setReminder({
         id: row?._id,
         body: { serviceReminderNumber: reminders[0]?.split(" ")[0], serviceReminderType: reminders[0]?.split(" ")[1] }
       });
-      setStep("success");
-      // onClose();
+
+      if (res?.status == true) {
+        setStep("success");
+      }
     } catch (error) {
       console.error("Set reminder failed:", error);
     }
@@ -263,7 +265,7 @@ export default function SetReminderModal({
             onClick={onClose}
             color="blue"
             name="Close"
-          className="w-full"
+            className="w-full"
           />
         </div>
       </div>

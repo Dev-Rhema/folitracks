@@ -39,7 +39,7 @@ const UPCOMING_COLUMNS = [
     label: "Next Service Date",
     render: (row) => (
       <div className="font-medium text-gray-800 text-sm">
-        {row.nextServiceDate || "N/A"}
+        {row?.vehicle?.nextServiceDate?.split('T')[0] || "N/A"}
       </div>
     ),
   },
@@ -60,8 +60,7 @@ export default function UpcomingServices({
 }) {
   const { data: serviceHistories, loading } = useGet(useGetServiceHistoryQuery, {
     page,
-    status: "Scheduled",
-    // status: ["Scheduled", "In Progress", "Due Soon"],
+    status: ["Scheduled", "In Progress", "Due Soon"],
     search: searchTerm
   });
 

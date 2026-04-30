@@ -28,16 +28,6 @@ function SearchBar({ placeholder = "", value = "", onChange, onSearch, className
         placeholder={placeholder}
         className="bg-transparent outline-none text-sm lg:text-md text-[#A5A5A5] placeholder-[#A5A5A5] w-full"
       />
-
-      {value && (
-        <button
-          type="button"
-          onClick={onSearch}
-          className="shrink-0 text-xs font-semibold text-white bg-[#3d82f6] cursor-pointer rounded px-2 py-0.5"
-        >
-          Search
-        </button>
-      )}
     </div>
   );
 }
