@@ -93,8 +93,16 @@ const authApiSlice = generalApiSlice.injectEndpoints({
         body,
       })
     }),
+
+    changePassword: builder.mutation({
+      query: (body) => ({
+        url: "/user/change-password",
+        method: "PUT",
+        body,
+      })
+    }),
   }),
   overrideExisting: false
 });
 
-export const { useAdminLoginMutation, useLoginWithEmailMutation, useRegisterUserMutation, useVerifyUserEmailMutation, useGetUserQRQuery, useLoginByQrUploadMutation, useSendLoginOTPMutation, useVerifyLoginOTPMutation, useLogoutUserMutation, useLogoutAdminMutation, useAdminGetUserQRQuery, useUpdateProfileMutation } = authApiSlice;
+export const { useAdminLoginMutation, useLoginWithEmailMutation, useRegisterUserMutation, useVerifyUserEmailMutation, useGetUserQRQuery, useLoginByQrUploadMutation, useSendLoginOTPMutation, useVerifyLoginOTPMutation, useLogoutUserMutation, useLogoutAdminMutation, useAdminGetUserQRQuery, useUpdateProfileMutation, useChangePasswordMutation } = authApiSlice;

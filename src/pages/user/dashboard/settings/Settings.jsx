@@ -1,27 +1,28 @@
 import { useState, useEffect } from "react";
-import { Pencil, Eye, EyeOff, ArrowLeft, CheckCircle, HelpCircle } from "lucide-react";
+import { Pencil, ArrowLeft, CheckCircle, HelpCircle, QrCodeIcon, UserIcon, Download, LockIcon } from "lucide-react";
 import CTA from "../../../../components/CTA";
 import { useSelector } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
 import FormInputField from "../../../../components/FormInputField";
 import SearchableSelect from "../../../../components/SearchableSelect";
-import { useUpdateProfileMutation } from "../../../../redux/api/authApiSlice";
+import { useUpdateProfileMutation, useChangePasswordMutation } from "../../../../redux/api/authApiSlice";
 import usePost from "../../../../hooks/usePost";
 import { updateUserInfo } from "../../../../redux/slices/appSlice";
 import { useDispatch } from "react-redux";
+import useGet from "../../../../hooks/useGet";
+import { useGetUserQRQuery } from "../../../../redux/api/authApiSlice";
+import useDownloadQr from "../../../../hooks/useDownloadQr";
+import { toast } from "react-toastify";
 
-const ACCOUNT_TYPES = [
-  "Individual Car Owner",
-  "Automobile Related Business"
-];
 
 function Avatar({ name }) {
-  const initials = name
-    ?.split(" ")
-    .map((word) => word[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
+  let initials;
+
+  if (name?.split(" ").length >= 2) {
+    initials = name?.split(" ")[0][0] + name?.split(" ")[1][0];
+  } else {
+    initials = name?.split("")[0][0];
+  }
 
   return (
     <div className="relative w-fit mb-6">
@@ -37,6 +38,14 @@ function Avatar({ name }) {
 
 function ViewSettings({ onEdit }) {
   const user = useSelector((state) => state?.app?.userInfo);
+  const [activeTab, setActiveTab] = useState("personal");
+  const { data: qrData, loading: loadingQR } = useGet(useGetUserQRQuery, "");
+  const { downloadPDF, downloadImage } = useDownloadQr()
+
+  const TABS = [
+    { key: "personal", name: "Personal Information", icon: UserIcon },
+    { key: "qr", name: "QR Code", icon: QrCodeIcon },
+  ];
 
   return (
     <div className="flex flex-col gap-5 h-full">
@@ -52,36 +61,116 @@ function ViewSettings({ onEdit }) {
         </button>
       </div>
 
-      <div className="border border-gray-200 rounded-2xl p-8 flex-1">
-        <Avatar name={user?.fullname} />
+      <div className="border border-gray-200 rounded-2xl sm:p-6 p-4 flex-1">
+        <div className="flex gap-4 lg:gap-8 border-b lg:border-b-0 mb-7">
+          {TABS.map((tab) => {
+            const IconComponent = tab.icon;
+            const isActive = activeTab === tab.key;
+            return (
+              <button
+                key={tab.key}
+                onClick={() => {
+                  setActiveTab(tab.key);
+                }}
+                className={`cursor-pointer relative font-medium flex items-center gap-1 lg:gap-2 pb-2 lg:pb-3 text-xs lg:text-base transition-colors ${isActive
+                  ? "text-gray-900"
+                  : "text-gray-500 hover:text-gray-700"
+                  }`}
+              >
+                <IconComponent size={16} />
 
-        <h3 className="text-base font-bold text-gray-900 mb-4">Personal Information</h3>
-        <div className="grid grid-cols-3 gap-8 mb-8">
-          <div>
-            <p className="text-sm text-gray-400 mb-1">Full Name</p>
-            <p className="text-sm font-medium text-gray-900">{user?.user?.fullname || "—"}</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-400 mb-1">Email Address</p>
-            <p className="text-sm font-medium text-gray-900">{user?.user?.email || "—"}</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-400 mb-1">Phone Number</p>
-            <p className="text-sm font-medium text-gray-900">{user?.user?.phone || "—"}</p>
-          </div>
+                <span>
+                  {tab.name}
+                </span>
+
+                {isActive && (
+                  <div className="absolute bottom-0 left-0 right-0 h-1 rounded-t-3xl bg-(--blue)" />
+                )}
+              </button>
+            );
+          })}
         </div>
 
-        <h3 className="text-base font-bold text-gray-900 mb-4">Account Details</h3>
+        {activeTab === "personal" && (
+          <>
+            <Avatar name={user?.user?.fullname?.toUpperCase()} />
 
-        <div>
-          <p className="text-sm text-gray-400 mb-1">Account Type</p>
-          <p className="text-sm font-medium text-gray-900">{user?.accountType || user?.user?.accountType || "—"}</p>
-          <p className="text-xs text-gray-400 italic mt-2 leading-relaxed max-w-[320px]">
-            Individual accounts can register up to 10 vehicles, ideal for personal
-            or family use. If you manage a fleet or multiple customer cars, switch
-            to a dealer account for unlimited vehicle registrations.
-          </p>
-        </div>
+            <h3 className="text-base font-bold text-gray-900 mb-4">Personal Information</h3>
+            <div className="grid grid-cols-3 gap-8 mb-8">
+              <div>
+                <p className="text-sm text-gray-400 mb-1">Full Name</p>
+                <p className="text-sm font-medium text-gray-900">{user?.user?.fullname || "—"}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-400 mb-1">Email Address</p>
+                <p className="text-sm font-medium text-gray-900">{user?.user?.email || "—"}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-400 mb-1">Phone Number</p>
+                <p className="text-sm font-medium text-gray-900">{user?.user?.phone || "—"}</p>
+              </div>
+            </div>
+
+            <h3 className="text-base font-bold text-gray-900 mb-4">Account Details</h3>
+
+            <div>
+              <p className="text-sm text-gray-400 mb-1">Account Type</p>
+              <p className="text-sm font-medium text-gray-900">{user?.accountType || user?.user?.accountType || "—"}</p>
+              <p className="text-xs text-gray-400 italic mt-2 leading-relaxed max-w-[320px]">
+                Individual accounts can register up to 10 vehicles, ideal for personal
+                or family use. If you manage a fleet or multiple customer cars, switch
+                to a dealer account for unlimited vehicle registrations.
+              </p>
+            </div>
+          </>
+        )}
+
+        {activeTab === "qr" && (
+          <div className="flex justify-center">
+            <div className="flex flex-col items-center">
+              <div className="w-32 h-32 mb-4">
+                {loadingQR ? (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
+                  </div>
+                ) : qrData?.base64 ? (
+                  <img
+                    src={qrData?.base64}
+                    alt="QR Code"
+                    className="w-full h-full object-contain"
+                  />
+                ) : (
+                  <div className="w-full h-full border border-dashed border-gray-200 rounded flex items-center justify-center text-xs text-gray-400">
+                    Not available
+                  </div>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <button
+                  onClick={() =>
+                    downloadPDF(qrData?.base64, user?.user?.fullname)
+                  }
+                  className="flex items-center gap-1.5 px-6 py-3 bg-(--blue) text-white text-sm font-semibold rounded-lg hover:opacity-90 transition cursor-pointer"
+                >
+                  <Download size={13} />
+                  Download as PDF
+                </button>
+
+                <button
+                  onClick={() =>
+                    downloadImage(qrData?.base64, user?.user?.fullname)
+                  }
+                  className="flex items-center gap-1.5 px-6 py-3 border border-(--blue) text-(--blue) text-sm font-semibold rounded-lg hover:bg-gray-50 transition cursor-pointer"
+                >
+                  <Download size={13} />
+                  Download as Image
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
   );
@@ -121,12 +210,28 @@ function DiscardModal({ onStay, onExit }) {
 }
 
 function EditSettings({ onCancel, onSave }) {
+
+  const TABS = [
+    {
+      key: "personal",
+      name: "Personal Information",
+      icon: UserIcon
+    },
+    {
+      key: "password",
+      name: "Password Change",
+      icon: LockIcon
+    }
+  ]
+
   const dispatch = useDispatch();
   const user = useSelector((state) => state?.app?.userInfo);
-  
+
   const [showDiscard, setShowDiscard] = useState(false);
+  const [activeTab, setActiveTab] = useState("personal");
 
   const { postData: updateProfile, isLoading: isUpdating } = usePost(useUpdateProfileMutation);
+  const { postData: changePassword, isLoading: isChangingPassword } = usePost(useChangePasswordMutation);
 
   const { register, handleSubmit, control, formState: { errors, isDirty } } = useForm({
     defaultValues: {
@@ -152,6 +257,21 @@ function EditSettings({ onCancel, onSave }) {
     }
   };
 
+
+  const onChangePassword = async (data) => {
+    if (data?.newPassword !== data?.confirmNewPassword) {
+      toast.error("New Password and Confirm New Password do not match");
+      return;
+    }
+
+    const {confirmNewPassword, oldPassword, newPassword} = data;
+
+    const res = await changePassword({oldPassword, newPassword, confirmNewPassword});
+    if (res?.status == true) {
+      onSave();
+    }
+  };
+
   return (
     <>
       {showDiscard && (
@@ -167,68 +287,134 @@ function EditSettings({ onCancel, onSave }) {
           Edit Settings
         </button>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="border border-gray-200 rounded-2xl p-8 flex-1">
-          <Avatar name={user?.fullname} />
+        <div className="border border-gray-200 rounded-2xl sm:p-6 p-4 flex-1">
+          <div className="flex gap-4 lg:gap-8 border-b lg:border-b-0 mb-7">
+            {TABS.map((tab) => {
+              const IconComponent = tab.icon;
+              const isActive = activeTab === tab.key;
+              return (
+                <button
+                  key={tab.key}
+                  onClick={() => {
+                    setActiveTab(tab.key);
+                  }}
+                  className={`cursor-pointer relative font-medium flex items-center gap-1 lg:gap-2 pb-2 lg:pb-3 text-xs lg:text-base transition-colors ${isActive
+                    ? "text-gray-900"
+                    : "text-gray-500 hover:text-gray-700"
+                    }`}
+                >
+                  <IconComponent size={16} />
 
-          <h3 className="text-base font-bold text-gray-900 mb-4">Personal Information</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <FormInputField
-              label="Full Name"
-              {...register("fullname", { required: "Full name is required" })}
-              error={errors.fullname?.message}
-            />
+                  <span>
+                    {tab.name}
+                  </span>
 
-            <FormInputField
-              label="Email Address"
-              type="email"
-              {...register("email", {
-                required: "Email is required",
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "Invalid email address"
-                }
-              })}
-              error={errors.email?.message}
-              disabled
-            />
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-            <FormInputField
-              label="Phone Number"
-              {...register("phone", { required: "Phone number is required" })}
-              error={errors.phone?.message}
-            />
+                  {isActive && (
+                    <div className="absolute bottom-0 left-0 right-0 h-1 rounded-t-3xl bg-(--blue)" />
+                  )}
+                </button>
+              );
+            })}
           </div>
 
-          <h3 className="text-base font-bold text-gray-900 mb-4">Account Details</h3>
+          <Avatar name={user?.user?.fullname?.toUpperCase()} />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-            <Controller
-              name="accountType"
-              control={control}
-              render={({ field }) => (
-                <SearchableSelect
-                  label="Account Type"
-                  options={[
-                    "Individual Car Owner",
-                    "Automobile Related Business",
-                  ]}
-                  value={field.value}
-                  onChange={field.onChange}
-                  placeholder="Select Account Type"
-                  error={errors.accountType?.message}
-                  searchable={false}
+          {activeTab === "personal" && (
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <h3 className="text-base font-bold text-gray-900 mb-4">Personal Information</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <FormInputField
+                  label="Full Name"
+                  {...register("fullname", { required: "Full name is required" })}
+                  error={errors.fullname?.message}
                 />
-              )}
-            />
-          </div>
 
-          {/* Buttons */}
-          <div className="flex gap-3 mt-6">
-            <CTA name="Cancel" variant="outline" color="blue" type="button" onClick={handleCancel} />
-            <CTA name="Save Changes" color="blue" type="submit" isLoading={isUpdating} />
-          </div>
-        </form>
+                <FormInputField
+                  label="Email Address"
+                  type="email"
+                  {...register("email", {
+                    required: "Email is required",
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                      message: "Invalid email address"
+                    }
+                  })}
+                  error={errors.email?.message}
+                  disabled
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <FormInputField
+                  label="Phone Number"
+                  {...register("phone", { required: "Phone number is required" })}
+                  error={errors.phone?.message}
+                />
+              </div>
+
+              <h3 className="text-base font-bold text-gray-900 mb-4">Account Details</h3>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <Controller
+                  name="accountType"
+                  control={control}
+                  render={({ field }) => (
+                    <SearchableSelect
+                      label="Account Type"
+                      options={[
+                        "Individual Car Owner",
+                        "Automobile Related Business",
+                      ]}
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="Select Account Type"
+                      error={errors.accountType?.message}
+                      searchable={false}
+                    />
+                  )}
+                />
+              </div>
+
+              {/* Buttons */}
+              <div className="flex gap-3 mt-6">
+                <CTA name="Cancel" variant="outline" color="blue" type="button" onClick={handleCancel} />
+                <CTA name="Save Changes" color="blue" type="submit" isLoading={isUpdating} />
+              </div>
+            </form>)}
+
+          {activeTab === "password" && (
+            <form onSubmit={handleSubmit(onChangePassword)}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <FormInputField
+                  label="Current Password"
+                  type="password"
+                  {...register("oldPassword", { required: "Current password is required" })}
+                  error={errors.oldPassword?.message}
+                />
+
+                <FormInputField
+                  label="New Password"
+                  type="password"
+                  {...register("newPassword", { required: "New password is required" })}
+                  error={errors.newPassword?.message}
+                />
+
+                <FormInputField
+                  label="Confirm New Password"
+                  type="password"
+                  {...register("confirmNewPassword", { required: "Confirm new password is required" })}
+                  error={errors.confirmNewPassword?.message}
+                />
+              </div>
+
+
+              <div className="flex gap-3 mt-6">
+                <CTA name="Cancel" variant="outline" color="blue" type="button" onClick={handleCancel} />
+                <CTA name="Save Changes" color="blue" type="submit" isLoading={isChangingPassword} />
+              </div>
+            </form>
+          )}
+        </div>
       </div>
     </>
   );

@@ -28,6 +28,8 @@ function SearchBar({ placeholder = "", value = "", onChange, onSearch, className
         placeholder={placeholder}
         className="bg-transparent outline-none text-sm lg:text-md text-[#A5A5A5] placeholder-[#A5A5A5] w-full"
       />
+
+      {value && <button onClick={onSearch} className="text-white p-1 px-2 rounded-md text-xs bg-[#000066]">Search</button>}
     </div>
   );
 }

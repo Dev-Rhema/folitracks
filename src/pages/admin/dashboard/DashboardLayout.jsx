@@ -297,7 +297,7 @@ export default function DashboardLayout() {
         <TopDash onAddServiceHistory={() => handleAddLog()} />
         <main className="md:ml-44 xl:ml-70 px-3 xl:px-8 pb-3 xl:pb-6 pt-16 md:pt-12 xl:pt-18 min-h-screen flex flex-col">
           <div className="flex flex-col flex-1">
-            <div className="rounded-2xl pt-8 font-(--body) flex-1 flex flex-col">
+            <div className="rounded-2xl pt-8 font-(--body) flex-1 flex flex-col h-full">
               {renderComponent()}
             </div>
           </div>
