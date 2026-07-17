@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Lock } from "lucide-react";
+import { CloudCog, Lock } from "lucide-react";
 import CTA from "../../../../components/CTA";
 import FileUploadField from "../../../../components/FileUploadField";
 import FormInputField from "../../../../components/FormInputField";
@@ -22,9 +22,8 @@ export default function VehicleOwnershipStage({
   const { postData: registerVehicle, isLoading: isRegistering } = usePost(useRegisterVehicleMutation);
   const { postData: uploadDocument, isLoading: isUploading } = usePost(useUploadDocumentMutation);
 
-  const user = useSelector((state) => state.app.userInfo);
+  const user = useSelector((state) => state.app.userInfo?.authResponse);
   const isIndividual = user?.accountType === "Individual Car Owner";
-
 
   const [files, setFiles] = useState({
     vehicleRegistrationDocument: defaultValues?.files?.vehicleRegistrationDocument || null,
@@ -39,15 +38,13 @@ export default function VehicleOwnershipStage({
   });
 
   const {
-    register,
     handleSubmit,
-    watch,
-    setValue,
     getValues,
     formState: { errors },
   } = useForm({
     mode: "all",
   });
+
 
   const handleFileChange = async (e, fileKey) => {
     const file = e.target.files?.[0];
@@ -70,8 +67,6 @@ export default function VehicleOwnershipStage({
       }
     }
   };
-
-  console.log(vehicleData)
 
   const onSubmit = async (data) => {
     const requiredUrls = isIndividual

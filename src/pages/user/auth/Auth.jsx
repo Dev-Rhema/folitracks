@@ -14,9 +14,7 @@ const ALL_STAGES = ["signup", "otp", "vehicle", "ownership", "success"];
 export default function Auth() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { userInfo } = useSelector((state) => state.app);
-  const [authData, setAuthData] = useState({});
-
+  const [authData, setAuthData] = useState({})
 
   const stepFromUrl = searchParams.get("step");
   const currentStage = URL_STAGES.includes(stepFromUrl) ? stepFromUrl : stepFromUrl === "otp" ? "otp" : "signup";
@@ -66,7 +64,9 @@ export default function Auth() {
     goToUrlStep("vehicle");
   };
 
-  const handleContinueDashboard = () => navigate("/dashboard");
+  const handleContinueDashboard = () => {
+    navigate("/dashboard");
+  };
 
   return (
     <div className="min-h-screen bg-white pt-3">
@@ -93,6 +93,7 @@ export default function Auth() {
             onContinue={handleOTPContinue}
             onBack={handleOTPBack}
             onResend={handleOTPResend}
+            userInfo={authData}
           />
         )}
 
@@ -108,9 +109,8 @@ export default function Auth() {
           <VehicleOwnershipStage
             onContinue={handleOwnershipContinue}
             onBack={handleOwnershipBack}
-            fullName={userInfo?.fullname || ""}
-            vehicleData={authData.vehicle}
-            defaultValues={authData.ownership}
+            vehicleData={authData?.vehicle}
+            defaultValues={authData?.ownership}
           />
         )}
 

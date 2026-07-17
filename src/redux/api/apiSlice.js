@@ -31,8 +31,7 @@ const rawBaseQuery = fetchBaseQuery({
     const state = getState();
     const userInfo = state?.app?.userInfo;
 
-    const token = userInfo?.authResponse?.accessToken ||
-      userInfo?.accessToken || userInfo?.token
+    const token = userInfo?.authResponse?.accessToken || userInfo?.accessToken || userInfo?.token
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
     }

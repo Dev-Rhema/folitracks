@@ -24,11 +24,6 @@ const VEHICLE_MODELS = {
 };
 
 export default function VehicleRegistrationStage({ onContinue, onBack, defaultValues }) {
-
-  const userInfo = useSelector(state => state.app.userInfo);
-
-  console.log("User Info:", userInfo);
-
   const {
     register,
     handleSubmit,
@@ -51,8 +46,6 @@ export default function VehicleRegistrationStage({ onContinue, onBack, defaultVa
 
   const selectedMake = watch("make");
   const availableModels = VEHICLE_MODELS[selectedMake] || [];
-
-  console.log("Errors:", errors);
 
   const onSubmit = (data) => {
     console.log("Form Data:", data);

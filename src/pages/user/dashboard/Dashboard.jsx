@@ -136,6 +136,7 @@ function UpcomingRow({ item }) {
 
 export default function Dashboard() {
   const userInfo = useSelector((state) => state.app.userInfo);
+  const user = userInfo?.authResponse || userInfo?.user || userInfo;
   const { data: vehicles, loading: vehiclesLoading } = useGet(useGetVehiclesQuery)
   const { data: serviceHistories, loading: loadingServiceHistories } = useGet(useGetServiceHistoryQuery)
 
@@ -163,7 +164,7 @@ export default function Dashboard() {
   return (
     <div>
       <DashHeader
-        title={`Welcome ${capitalizeFirstLetter(userInfo?.user?.fullname || userInfo?.fullname)} 👋`}
+        title={`Welcome ${capitalizeFirstLetter(user?.fullname)} 👋`}
         subtitle="Manage your vehicles, track service history, set maintenance reminders all in one place."
       />
 

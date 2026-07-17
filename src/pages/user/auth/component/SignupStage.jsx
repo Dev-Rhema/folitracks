@@ -51,8 +51,7 @@ export default function SignupStage({ onContinue, onScanQR, defaultValues }) {
     const response = await registerUser(data);
 
     if (response) {
-      dispatch(setUserInfo({ fullname: data.fullname, accountType: data.accountType, businessName: data?.businessName }));
-      onContinue(response);
+      onContinue(data);
     }
   };
 

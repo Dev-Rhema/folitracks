@@ -7,7 +7,7 @@ import { setUserInfo } from "../../../../redux/slices/appSlice";
 import { useDispatch } from "react-redux";
 import AuthLayout from "../AuthLayout";
 
-export default function OTPStage({ email, onContinue, onBack, onResend }) {
+export default function OTPStage({ email, onContinue, onBack, onResend, userInfo }) {
   const dispatch = useDispatch();
   const [otpCode, setOtpCode] = useState("");
 
@@ -18,11 +18,17 @@ export default function OTPStage({ email, onContinue, onBack, onResend }) {
     if (otpCode.length < 4) return;
 
     const response = await verifyUserEmail({ code: otpCode });
+
+    const { accountType , fullname, businessName} = userInfo
+
     if (response) {
       dispatch(
         setUserInfo({
           authResponse: {
             accessToken: response?.token || response?.data?.token,
+            accountType,
+            fullname, 
+            businessName
           },
         })
       );
