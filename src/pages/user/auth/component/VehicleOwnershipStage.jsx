@@ -25,6 +25,7 @@ export default function VehicleOwnershipStage({
   const user = useSelector((state) => state.app.userInfo);
   const isIndividual = user?.accountType === "Individual Car Owner";
 
+
   const [files, setFiles] = useState({
     vehicleRegistrationDocument: defaultValues?.files?.vehicleRegistrationDocument || null,
     driverLicense: defaultValues?.files?.driverLicense || null,
@@ -70,6 +71,8 @@ export default function VehicleOwnershipStage({
     }
   };
 
+  console.log(vehicleData)
+
   const onSubmit = async (data) => {
     const requiredUrls = isIndividual
       ? [uploadedUrls.vehicleRegistrationDocument, uploadedUrls.driverLicense]
@@ -90,9 +93,6 @@ export default function VehicleOwnershipStage({
         plateNumber: vehicleData?.plateNumber || "",
         vin: vehicleData?.vin || "",
         accountType: user?.accountType,
-        fullName: user.fullname || "",
-        businessName: user.fullname || "",
-        // businessName: user.businessName || "",
         vehicleRegistrationDocument: uploadedUrls.vehicleRegistrationDocument,
         driverLicense: uploadedUrls.driverLicense,
         ...(isIndividual ? {} : { businessLicense: uploadedUrls.businessLicense })
@@ -182,6 +182,7 @@ export default function VehicleOwnershipStage({
           <div className="pt-4">
             <CTA
               name="Continue"
+              type="submit"
               color="blue"
               className="w-full"
               isLoading={isRegistering || isUploading}
