@@ -1,3 +1,4 @@
+import { getMakes, getModels } from "car-info";
 import { ChevronLeft } from "lucide-react";
 import CTA from "../../../../components/CTA";
 import FormInputField from "../../../../components/FormInputField";
@@ -7,20 +8,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { vehicleFullSchema } from "../../../../validation/vehicleSchema";
 import { useSelector } from "react-redux";
 
-const VEHICLE_MAKES = [
-  "Toyota", "Lexus", "Mercedes-Benz", "Ford",
-  "BMW", "Hyundai", "KIA", "Other",
-];
 
-const VEHICLE_MODELS = {
-  Toyota: ["Camry", "Corolla", "RAV4", "Highlander"],
-  Lexus: ["RX", "ES", "GX", "LX"],
-  "Mercedes-Benz": ["C-Class", "E-Class", "S-Class", "GLE"],
-  Ford: ["F-150", "Mustang", "Explorer", "Escape"],
-  BMW: ["3 Series", "5 Series", "7 Series", "X5"],
-  Hyundai: ["Elantra", "Sonata", "Tucson", "Santa Fe"],
-  KIA: ["Forte", "Optima", "Sportage", "Sorento"],
-  Other: ["Other Model"],
+const getYearOptions = () => {
+  const currentYear = new Date().getFullYear();
+  const years = [];
+  for (let year = currentYear; year >= 1900; year--) {
+    years.push(year.toString());
+  }
+  return years;
 };
 
 export default function VehicleRegistrationStage({ onContinue, onBack, defaultValues }) {
@@ -44,8 +39,10 @@ export default function VehicleRegistrationStage({ onContinue, onBack, defaultVa
     },
   });
 
+  const VEHICLE_MAKES = getMakes().sort();
   const selectedMake = watch("make");
-  const availableModels = VEHICLE_MODELS[selectedMake] || [];
+
+  const availableModels = selectedMake ? getModels(selectedMake) : [];
 
   const onSubmit = (data) => {
     console.log("Form Data:", data);
