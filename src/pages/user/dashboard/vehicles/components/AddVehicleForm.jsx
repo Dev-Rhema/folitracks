@@ -55,7 +55,9 @@ export default function AddVehicleForm({ onClose }) {
     },
   });
 
-  const user = useSelector((state) => state.app.userInfo);
+  let user = useSelector((state) => state.app.userInfo);
+  user = user?.user || user?.authResponse
+
   const isIndividual = user?.accountType === "Individual Car Owner";
 
   const handleFileChange = async (e, fileKey) => {
@@ -87,15 +89,15 @@ export default function AddVehicleForm({ onClose }) {
   };
 
   const onSubmit = async (data) => {
+    console.log(data)
+
     const payload = {
       make: data.make,
-      vehicleModel: data.vehicleModel,
+      vehicleModel: data.customVehicleModel || data.vehicleModel,
       yearOfManufacture: data.yearOfManufacture,
       plateNumber: data.plateNumber,
       vin: data.vin,
       accountType: user?.accountType,
-      fullName: user.fullname || "",
-      businessName: user.fullname || "",
       vehicleRegistrationDocument: uploadedUrls.vehicleRegistrationDocument,
       driverLicense: uploadedUrls.driverLicense,
       ...(isIndividual ? {} : { businessLicense: uploadedUrls.businessLicense }),

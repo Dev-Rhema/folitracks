@@ -16,7 +16,9 @@ export default function Ownership({
   isUploading,
   onClose,
 }) {
-  const user = useSelector((state) => state.app.userInfo);
+  let user = useSelector((state) => state.app.userInfo);
+  user = user?.user || user?.authResponse
+
   const isIndividual = user?.accountType === "Individual Car Owner";
 
   const handleSubmitClick = async () => {
