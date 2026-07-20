@@ -83,7 +83,7 @@ export default function VehicleOwnershipStage({
     try {
       const payload = {
         make: vehicleData?.make || "",
-        vehicleModel: vehicleData?.vehicleModel || "",
+        vehicleModel: vehicleData?.customVehicleModel || vehicleData?.vehicleModel || "",
         yearOfManufacture: vehicleData?.yearOfManufacture || "",
         plateNumber: vehicleData?.plateNumber || "",
         vin: vehicleData?.vin || "",

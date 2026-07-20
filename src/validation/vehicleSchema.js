@@ -19,6 +19,7 @@ export const vehicleFullSchema = z.object({
     // Vehicle details (hidden, pre-filled)
     make: z.string().min(1, 'Vehicle make is required'),
     vehicleModel: z.string().min(1, 'Vehicle model is required'),
+    customVehicleModel: z.string().optional(),
     yearOfManufacture: z.string().min(1, 'Year of manufacture is required'),
     plateNumber: z.string().min(1, 'Plate number is required'),
     vin: z.string().optional(),

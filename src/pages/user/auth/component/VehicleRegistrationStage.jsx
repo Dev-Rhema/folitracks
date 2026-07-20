@@ -7,16 +7,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { vehicleFullSchema } from "../../../../validation/vehicleSchema";
 import { useSelector } from "react-redux";
-
-
-const getYearOptions = () => {
-  const currentYear = new Date().getFullYear();
-  const years = [];
-  for (let year = currentYear; year >= 1900; year--) {
-    years.push(year.toString());
-  }
-  return years;
-};
+import { useState } from "react";
 
 export default function VehicleRegistrationStage({ onContinue, onBack, defaultValues }) {
   const {
@@ -33,6 +24,7 @@ export default function VehicleRegistrationStage({ onContinue, onBack, defaultVa
     defaultValues: {
       make: defaultValues?.make || "",
       vehicleModel: defaultValues?.vehicleModel || "",
+      customVehicleModel: defaultValues?.customVehicleModel || "",
       yearOfManufacture: defaultValues?.yearOfManufacture || "",
       plateNumber: defaultValues?.plateNumber || "",
       vin: defaultValues?.vin || "",
@@ -41,11 +33,16 @@ export default function VehicleRegistrationStage({ onContinue, onBack, defaultVa
 
   const VEHICLE_MAKES = getMakes().sort();
   const selectedMake = watch("make");
+  const selectedModel = watch("vehicleModel");
+  const isOtherModel = selectedModel === "Other";
 
-  const availableModels = selectedMake ? getModels(selectedMake) : [];
+  const availableModels = selectedMake
+    ? [...getModels(selectedMake).sort(), "Other"]
+    : [];
 
   const onSubmit = (data) => {
     console.log("Form Data:", data);
+    
     onContinue(data);
   };
 
@@ -100,14 +97,29 @@ export default function VehicleRegistrationStage({ onContinue, onBack, defaultVa
                 label="Vehicle Model"
                 options={availableModels}
                 value={field.value}
-                onChange={field.onChange}
+                onChange={(val) => {
+                  field.onChange(val);
+                  // Clear the custom text when switching away from Other
+                  if (val !== "Other") return;
+                }}
                 placeholder={selectedMake ? "Select vehicle model" : "Select a make first"}
                 disabled={!selectedMake}
-                error={errors.vehicleModel?.message}
+                error={!isOtherModel ? errors.vehicleModel?.message : undefined}
                 required
               />
             )}
           />
+
+          {isOtherModel && (
+            <FormInputField
+              label="Enter your model name"
+              name="customVehicleModel"
+              type="text"
+              placeholder="e.g. Prado, Land Cruiser 200…"
+              {...register("customVehicleModel")}
+              required
+            />
+          )}
 
           {/* Year of Manufacture */}
           <FormInputField
